@@ -8,7 +8,7 @@ want to invoke DEER and it will automatically be loaded.
 In order to invoke DEER, either download it from GitHub or use our Docker image:
 
 ```bash
-$  docker run -it --rm \
+docker run -it --rm \
    -v $(pwd)/plugins:/plugins -v $(pwd)/src/test/resources:/config dicegroup/deer:latest \
    java -jar deer.jar /config/configuration.ttl
 ```
