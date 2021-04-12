@@ -9,6 +9,6 @@ In order to invoke DEER, either download it from GitHub or use our Docker image:
 
 ```bash
 $  docker run -it --rm \
-   -v .:/plugins/ dicegroup/deer:latest \
-   java -jar deer.jar src/test/resources/configuration.ttl
+   -v $(pwd)/plugins:/plugins -v $(pwd)/src/test/resources:/config dicegroup/deer:latest \
+   java -jar deer.jar /config/configuration.ttl
 ```
