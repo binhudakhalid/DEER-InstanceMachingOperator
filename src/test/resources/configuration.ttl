@@ -1,0 +1,30 @@
+@prefix : <urn:example:plugin-demo/> .
+@prefix fcage: <https://w3id.org/fcage/> .
+@prefix deer: <https://w3id.org/deer/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geos: <http://www.opengis.net/ont/geosparql#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:reader
+  a deer:SparqlModelReader ;
+  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Paderborn> ;
+  deer:fromEndpoint <http://dbpedia.org/sparql> ;
+.
+
+:filter
+ a deer:FilterEnrichmentOperator ;
+ fcage:hasInput :reader ;
+ deer:selector [ deer:predicate rdfs:label ] ;
+.
+
+:example
+  a deer:ExampleEnrichmentOperator ;
+  deer:name "Students" ;
+  fcage:hasInput :filter ;
+.
+
+:writer
+  a deer:StdOutModelWriter ;
+  fcage:hasInput :example ;
+.
