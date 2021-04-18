@@ -12,3 +12,16 @@ docker run -it --rm \
    -v $(pwd)/plugins:/plugins -v $(pwd)/src/test/resources:/config dicegroup/deer:latest \
    java -jar deer.jar /config/configuration.ttl
 ```
+
+### For Windows
+
+1- you need to create a folder "plugins" inside deer-plugin-starter directory.
+
+2- copy the newly generated plugin under ./target/plugin-starter-${version}-plugin.jar to "plugins" folder.
+
+3- run the docker command from the deer-plugin-starter directory.
+
+###### Docker command for windows cmd
+```cmd
+docker run -it --rm  -v %cd%/plugins:/plugins -v %cd%/src/test/resources:/config dicegroup/deer:latest    java -jar deer.jar /config/configuration.ttl
+```
