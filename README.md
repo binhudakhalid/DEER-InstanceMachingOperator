@@ -10,7 +10,7 @@ In order to invoke DEER, either download it from GitHub or use our Docker image:
 ```bash
 docker run -it --rm \
    -v $(pwd)/plugins:/plugins -v $(pwd)/src/test/resources:/config dicegroup/deer:latest \
-   java -jar deer.jar /config/configuration.ttl
+   /config/configuration.ttl
 ```
 
 ## For Windows
@@ -23,5 +23,5 @@ docker run -it --rm \
 
 ### Docker command for Windows cmd
 ```cmd
-docker run -it --rm  -v %cd%/plugins:/plugins -v %cd%/src/test/resources:/config dicegroup/deer:latest java -jar deer.jar /config/configuration.ttl
+docker run -it --rm  -v %cd%/plugins:/plugins -v %cd%/src/test/resources:/config dicegroup/deer:latest /config/configuration.ttl
 ```
