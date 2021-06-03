@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -107,8 +109,9 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		System.out.println("from operaot alph models: end");
 
 		System.out.println("Just running Limes");
-		createConfigurationFile();
-		 //CallingLimes();
+		Configuration con =  createConfigurationFile();
+		System.out.println("Just running Limes into it KHD");
+		CallingLimes(con);
 		System.out.println("Just running Limes");
 
 		// create an empty Model
@@ -161,7 +164,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		return resultModel;
 	}
 
-	public void createConfigurationFile() {
+	public Configuration createConfigurationFile() {
 
 		Configuration conf = new Configuration();
 
@@ -185,6 +188,20 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		src.setPageSize(2000);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
+		
+		
+ 		Map<String, String> prefixes =new HashMap<String, String>();
+ 		prefixes.put("dbpo","http://dbpedia.org/ontology/");	
+ 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+ 		prefixes.put("url", "http://schema.org/");
+ 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+ 		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
+ 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+
+		
+		src.setPrefixes(prefixes);
+		
+		 
 
 		conf.setSourceInfo(src);
 		System.out.println("Just running Limes 1");
@@ -199,7 +216,9 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		target.setPageSize(2000);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type dbpo:Film" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
+		target.setPrefixes(prefixes);
 		conf.setTargetInfo(target);
+		
 		
 
 		
@@ -277,9 +296,10 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 			e.printStackTrace();
 		}
 
+	return conf;
 	}
 
-	public void CallingLimes() {
+	public void CallingLimes( Configuration configIn) {
 
 		/*
 		 * String LIMES_CONFIGURATION_FILE = "F://Newfolder//LIMES//t//fileOldML.xml";
@@ -293,8 +313,16 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		String hardCoded = "F://Newfolder//LIMES//t//fileOldML.xml";
 		String limesOutputLocation = "F://Newfolder//LIMES//t";
 		AConfigurationReader reader = new XMLConfigurationReader(hardCoded.toString());
+		
+		
+		
+		//Configuration config = configIn;
 		Configuration config = reader.read();
-		System.out.println(" yeh Allah : config.toString()" + config.toString());
+		System.out.println("---------------------------");
+		System.out.println(" yeh Allah pl : config.toString() 1:: " + config.toString());
+		System.out.println("---------------------------");
+		System.out.println(" yeh Allah pl : configIn.toString() 2:: " + configIn.toString());
+		System.out.println("---------------------------");
 		System.out.println(" yeh Allah : config.getMlAlgorithmName()" + config.getMlAlgorithmName());
 		System.out.println(" yeh Allah : config.getVerificationThreshold()" + config.getVerificationThreshold());
 
