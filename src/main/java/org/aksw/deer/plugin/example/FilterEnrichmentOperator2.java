@@ -12,6 +12,7 @@ import org.aksw.limes.core.io.config.KBInfo;
 import org.aksw.limes.core.io.config.reader.AConfigurationReader;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
 import org.aksw.limes.core.io.config.writer.RDFConfigurationWriter;
+import org.aksw.limes.core.io.config.writer.XMLConfigurationWriter;
 import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -105,6 +106,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 
 		System.out.println("Just running Limes");
 		createConfigurationFile();
+		//CallingLimes();
 		System.out.println("Just running Limes");
 		
 		// create an empty Model
@@ -166,6 +168,8 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		conf.addPrefix("geom", "http://geovocab.org/geometry#");
         conf.addPrefix("geos", "http://www.opengis.net/ont/geosparql#");
         conf.addPrefix("lgdo", "http://linkedgeodata.org/ontology/");
+        conf.addPrefix("alie", "https://linkedgeodata.org/ontology/");
+        
          
         KBInfo src = new KBInfo();
         
@@ -225,9 +229,19 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
         RDFConfigurationWriter writer = new RDFConfigurationWriter();
         System.out.println("Just running Limes 5" + writer.toString());
         
+        
+        
+         
+        System.out.println(" yeh Allah2 : config.toString()" +  conf.toString());
+
+	    System.out.println(" yeh Allah2 : config.getVerificationThreshold()" +  conf.getVerificationThreshold());
+	    System.out.println(" yeh Allah2 : config.getMlAlgorithmName()" +  conf.getMlAlgorithmName());
+	    System.out.println(" yeh Allah2 please : config.getPrefixes()" +  conf.getPrefixes());
+
+        
         try {
         	 System.out.println("Just running Limes 6");
-			writer.write(conf, "/testOne.rdf", "TTL");
+        	 writer.write(conf, "F:/Data/test10.ttl","TTL");
 
 			 System.out.println("Just running Limes 7");
 		} catch (IOException e) {
@@ -252,6 +266,11 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		String limesOutputLocation = "F://Newfolder//LIMES//t";
 		AConfigurationReader reader =  new XMLConfigurationReader(hardCoded.toString());
 	    Configuration config = reader.read();
+	    System.out.println(" yeh Allah : config.toString()" +  config.toString());
+	    System.out.println(" yeh Allah : config.getMlAlgorithmName()" +  config.getMlAlgorithmName());
+	    System.out.println(" yeh Allah : config.getVerificationThreshold()" +  config.getVerificationThreshold());
+	    
+	    
 	    
 	    String sourceEndpoint = config.getSourceInfo().getEndpoint();
 	    String targetEndpoint = config.getTargetInfo().getEndpoint();
