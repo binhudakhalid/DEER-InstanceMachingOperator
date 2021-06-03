@@ -8,7 +8,7 @@
 
 :reader
   a deer:SparqlModelReader ;
-  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Paderborn> ;
+  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
 .
 
