@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -190,7 +191,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		
 		
- 		Map<String, String> prefixes =new HashMap<String, String>();
+ 		Map<String, String> prefixes = new HashMap<String, String>();
  		prefixes.put("dbpo","http://dbpedia.org/ontology/");	
  		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
  		prefixes.put("url", "http://schema.org/");
@@ -201,7 +202,13 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		
 		src.setPrefixes(prefixes);
 		
-		 
+		//src.setFunctions(functions);
+		
+		HashMap<String, String> tempHashMap = new HashMap<String, String>();
+		tempHashMap.put("rdfs:label", "");
+		LinkedHashMap<String, Map<String, String>> functions = new LinkedHashMap<String, Map<String, String>>();
+		functions.put("rdfs:label", tempHashMap);
+		src.setFunctions(functions);
 
 		conf.setSourceInfo(src);
 		System.out.println("Just running Limes 1");
@@ -217,6 +224,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type dbpo:Film" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		target.setPrefixes(prefixes);
+		target.setFunctions(functions);
 		conf.setTargetInfo(target);
 		
 		
