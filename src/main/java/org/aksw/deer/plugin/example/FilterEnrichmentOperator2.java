@@ -186,7 +186,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		src.setId("sourceId");
 		src.setEndpoint("http://dbpedia.org/sparql");
 		src.setVar("?s");
-		src.setPageSize(2000);
+		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		
@@ -220,7 +220,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		target.setId("targetId");
 		target.setEndpoint("http://dbpedia.org/sparql");
 		target.setVar("?t");
-		target.setPageSize(2000);
+		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type dbpo:Film" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		target.setPrefixes(prefixes);
@@ -251,20 +251,6 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 	    
 	    conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 	    
-	    
-
-		//list.add(new MyObject("First MyObject"));, 0
-
-	 //L/ist<LearningParameter> mlAlgorithmParameters = new ArrayList<>();
-
-		
-	 
-
-	 
-	
-	 
-		
-		
 		//Acceptance
 		conf.setAcceptanceThreshold(0.98);
 		conf.setAcceptanceFile("accepted.nt");
@@ -288,11 +274,11 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		RDFConfigurationWriter writer = new RDFConfigurationWriter();
 		System.out.println("Just running Limes 5" + writer.toString());
 
-		System.out.println(" yeh Allah2 : config.toString()" + conf.toString());
+		System.out.println(" yeh -2 : config.toString()" + conf.toString());
 
-		System.out.println(" yeh Allah2 : config.getVerificationThreshold()" + conf.getVerificationThreshold());
-		System.out.println(" yeh Allah2 : config.getMlAlgorithmName()" + conf.getMlAlgorithmName());
-		System.out.println(" yeh Allah2 please : config.getPrefixes()" + conf.getPrefixes());
+		System.out.println(" yeh -2 : config.getVerificationThreshold()" + conf.getVerificationThreshold());
+		System.out.println(" yeh -2 : config.getMlAlgorithmName()" + conf.getMlAlgorithmName());
+		System.out.println(" yeh -2 please : config.getPrefixes()" + conf.getPrefixes());
 
 		try {
 			System.out.println("Just running Limes 6");
@@ -309,35 +295,24 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 
 	public void CallingLimes( Configuration configIn) {
 
-		/*
-		 * String LIMES_CONFIGURATION_FILE = "F://Newfolder//LIMES//t//fileOldML.xml";
-		 * String LIMES_OUTPUT_LOCATION = "F://Newfolder//LIMES//t";
-		 * ValidatableParameterMap parameters = getParameterMap();
-		 * 
-		 * String limesConfigurationFile =
-		 * parameters.get(LIMES_CONFIGURATION_FILE).asResource().getURI();
-		 */
-
 		String hardCoded = "F://Newfolder//LIMES//t//fileOldML.xml";
 		String limesOutputLocation = "F://Newfolder//LIMES//t";
 		AConfigurationReader reader = new XMLConfigurationReader(hardCoded.toString());
-		
-		
-		
-		//Configuration config = configIn;
-		Configuration config = reader.read();
-		System.out.println("---------------------------");
-		System.out.println(" yeh Allah pl : config.toString() 1:: " + config.toString());
-		System.out.println("---------------------------");
-		System.out.println(" yeh Allah pl : configIn.toString() 2:: " + configIn.toString());
-		System.out.println("---------------------------");
-		System.out.println(" yeh Allah : config.getMlAlgorithmName()" + config.getMlAlgorithmName());
-		System.out.println(" yeh Allah : config.getVerificationThreshold()" + config.getVerificationThreshold());
 
-		System.out.println(" yeh Allah : config.getMlAlgorithmParameters() khd: " + config.getMlAlgorithmParameters());
-		System.out.println(" yeh Allah : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().toString());
-		System.out.println(" yeh Allah : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().indexOf(0));
-		
+		Configuration config = configIn;
+		//Configuration config = reader.read();
+	/*	System.out.println("---------------------------");
+		System.out.println(" yeh  pl : config.toString() 1:: " + config.toString());
+		System.out.println("---------------------------");
+		System.out.println(" yeh - pl : configIn.toString() 2:: " + configIn.toString());
+		System.out.println("---------------------------");
+		System.out.println(" yeh - : config.getMlAlgorithmName()" + config.getMlAlgorithmName());
+		System.out.println(" yeh - : config.getVerificationThreshold()" + config.getVerificationThreshold());
+
+		System.out.println(" yeh - : config.getMlAlgorithmParameters() khd: " + config.getMlAlgorithmParameters());
+		System.out.println(" yeh - : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().toString());
+		System.out.println(" yeh - : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().indexOf(0));
+		*/
 		
 		String sourceEndpoint = config.getSourceInfo().getEndpoint();
 		String targetEndpoint = config.getTargetInfo().getEndpoint();
