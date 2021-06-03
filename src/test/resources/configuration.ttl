@@ -12,10 +12,15 @@
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
 .
 
+# deer:limesConfigurationFile <F://Newfolder//LIMES//t//fileOldML.xml> ;
+#  deer:limesOutputLocation <F://Newfolder//LIMES//t> ; 
+
 :filter
- a deer:FilterEnrichmentOperator ;
+ a deer:FilterEnrichmentOperator2 ;
  fcage:hasInput :reader ;
- deer:selector [ deer:predicate rdfs:label ] ;
+ deer:selector [ deer:predicate rdfs:label ];
+ #			   [ deer:predicate geo:long ],
+ #              [ deer:subject rdfs:abc ];
 .
 
 :example

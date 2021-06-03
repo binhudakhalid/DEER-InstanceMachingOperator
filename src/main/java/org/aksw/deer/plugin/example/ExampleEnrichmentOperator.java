@@ -28,6 +28,7 @@ public class ExampleEnrichmentOperator extends AbstractParameterizedEnrichmentOp
   @Override
   protected List<Model> safeApply(List<Model> models) {
     Model model = models.get(0);
+    System.out.println(" --khd-- model" +  model);
     model.setNsPrefix("deer", DEER.NS);
     Resource resource = model.createResource(model.expandPrefix("deer:examplePlugin"));
     Property property = model.createProperty(model.expandPrefix("deer:says"));
