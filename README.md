@@ -1,4 +1,4 @@
-# DEER Plugin Starter
+# Instance Matching Operator
 
 Using `mvn clean package` in this folder will generate the plugin under
 `./target/plugin-starter-${version}-plugin.jar`.
