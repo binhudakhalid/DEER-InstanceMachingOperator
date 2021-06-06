@@ -1,5 +1,15 @@
 package org.aksw.deer.plugin.example;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
 import org.aksw.deer.learning.ReverseLearnable;
 import org.aksw.deer.learning.SelfConfigurable;
@@ -12,35 +22,30 @@ import org.aksw.limes.core.io.config.KBInfo;
 import org.aksw.limes.core.io.config.reader.AConfigurationReader;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
 import org.aksw.limes.core.io.config.writer.RDFConfigurationWriter;
-import org.aksw.limes.core.io.config.writer.XMLConfigurationWriter;
 import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.SimpleSelector;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  */
 @Extension
-public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOperator
+public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator
 		implements ReverseLearnable, SelfConfigurable {
 
-	private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator2.class);
+	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 
 	public static final Property SUBJECT = DEER.property("subject");
 	public static final Property PREDICATE = DEER.property("predicate");
@@ -48,7 +53,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 	public static final Property SELECTOR = DEER.property("selector");
 	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
 
-	public FilterEnrichmentOperator2() {
+	public IntanceMactchingOperator() {
 
 		super();
 		System.out.println("--KHD-- + FilterEnrichmentOperator2 ");// 1
@@ -64,7 +69,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 	public ValidatableParameterMap createParameterMap() {
 		System.out.println("--KHD-- + createParameterMap "); // 2
 		return ValidatableParameterMap.builder().declareProperty(SELECTOR).declareProperty(SPARQL_CONSTRUCT_QUERY)
-				.declareValidationShape(getValidationModelFor(FilterEnrichmentOperator2.class)).build();
+				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
 	@Override
@@ -110,9 +115,9 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		System.out.println("from operaot alph models: end");
 
 		System.out.println("Just running Limes");
-		Configuration con =  createConfigurationFile();
+	//	Configuration con =  createLimeConfigurationFile();
 		System.out.println("Just running Limes into it KHD");
-		CallingLimes(con);
+	//	callLimes(con);
 		System.out.println("Just running Limes");
 
 		// create an empty Model
@@ -165,7 +170,7 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 		return resultModel;
 	}
 
-	public Configuration createConfigurationFile() {
+	public Configuration createLimeConfigurationFile() {
 
 		Configuration conf = new Configuration();
 
@@ -293,30 +298,19 @@ public class FilterEnrichmentOperator2 extends AbstractParameterizedEnrichmentOp
 	return conf;
 	}
 
-	public void CallingLimes( Configuration configIn) {
+	public void callLimes( Configuration config) {
 
-		String hardCoded = "F://Newfolder//LIMES//t//fileOldML.xml";
-		String limesOutputLocation = "F://Newfolder//LIMES//t";
+		String limesOutputLocation = "F://Newfolder//LIMES//t"; //for output
+		/*String hardCoded = "F://Newfolder//LIMES//t//fileOldML.xml";
 		AConfigurationReader reader = new XMLConfigurationReader(hardCoded.toString());
 
-		Configuration config = configIn;
-		//Configuration config = reader.read();
-	/*	System.out.println("---------------------------");
-		System.out.println(" yeh  pl : config.toString() 1:: " + config.toString());
-		System.out.println("---------------------------");
-		System.out.println(" yeh - pl : configIn.toString() 2:: " + configIn.toString());
-		System.out.println("---------------------------");
-		System.out.println(" yeh - : config.getMlAlgorithmName()" + config.getMlAlgorithmName());
-		System.out.println(" yeh - : config.getVerificationThreshold()" + config.getVerificationThreshold());
-
-		System.out.println(" yeh - : config.getMlAlgorithmParameters() khd: " + config.getMlAlgorithmParameters());
-		System.out.println(" yeh - : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().toString());
-		System.out.println(" yeh - : config.getMlAlgorithmParameters()toString khd: " + config.getMlAlgorithmParameters().indexOf(0));
-		*/
+		Configuration config = configIn;*/
 		
 		String sourceEndpoint = config.getSourceInfo().getEndpoint();
 		String targetEndpoint = config.getTargetInfo().getEndpoint();
+		
 		int limit = -1;
+		
 		LimesResult mappings = Controller.getMapping(config);
 		String outputFormat = config.getOutputFormat();
 		ISerializer output = SerializerFactory.createSerializer(outputFormat);
