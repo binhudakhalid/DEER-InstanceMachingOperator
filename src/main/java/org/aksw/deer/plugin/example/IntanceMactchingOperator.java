@@ -42,8 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  */
 @Extension
-public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator
-		implements ReverseLearnable, SelfConfigurable {
+public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator {
 
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 
@@ -56,92 +55,28 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public IntanceMactchingOperator() {
 
 		super();
-		System.out.println("--KHD-- + FilterEnrichmentOperator2 ");// 1
 	}
 
 	@Override
-	public DegreeBounds getLearnableDegreeBounds() {
-		System.out.println("--KHD-- + getLearnableDegreeBounds ");
-		return getDegreeBounds();
-	}
-
-	@Override
-	public ValidatableParameterMap createParameterMap() {
-		System.out.println("--KHD-- + createParameterMap "); // 2
+	public ValidatableParameterMap createParameterMap() { // 2
 		return ValidatableParameterMap.builder().declareProperty(SELECTOR).declareProperty(SPARQL_CONSTRUCT_QUERY)
 				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
 	@Override
-	public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target,
-			ValidatableParameterMap prototype) {
-		System.out.println("--KHD-- + learnParameterMap ");// not running
-		ValidatableParameterMap result = createParameterMap();
-		Model in = inputs.get(0);
-		System.out.println(" ==ALI " + in);
-
-		target.listStatements().mapWith(Statement::getPredicate).filterKeep(p -> in.contains(null, p)).toSet()
-				.forEach(p -> {
-					result.add(SELECTOR, result.createResource().addProperty(PREDICATE, p));
-				});
-		return result.init();
-	}
-
-	@Override
-	public double predictApplicability(List<Model> inputs, Model target) {
-		System.out.println("--KHD-- + predictApplicability ");
-
-		// size of target < input && combined recall of input/target is high.
-		Model in = inputs.get(0);
-		double propertyIntersectionSize = target.listStatements().mapWith(Statement::getPredicate)
-				.filterKeep(p -> in.contains(null, p)).toList().size();
-		double stmtIntersectionSize = target.listStatements().filterKeep(in::contains).toList().size();
-		double propertyRecall = propertyIntersectionSize / target.size();
-		double stmtRecall = stmtIntersectionSize / target.size();
-		return stmtRecall * 0.6 + propertyRecall * 0.3 + (in.size() - target.size()) / (double) in.size() * 0.1;
-	}
-
-	@Override
-	public List<Model> reverseApply(List<Model> inputs, Model target) {
-		System.out.println("--KHD-- + reverseApply ");
-		return List.of(ModelFactory.createDefaultModel().add(target).add(inputs.get(0)));
-	}
-
-	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		System.out.println("--KHD-- + safeApply ");
 		Model a = filterModel(models.get(0));
-		System.out.println(" meme from operaot alph models: " + a);
-		System.out.println("from operaot alph models: end");
+	 
+		Configuration con = createLimeConfigurationFile();
+		//System.out.println("Just running Limes into it KHD");
+		callLimes(con);
 
-		System.out.println("Just running Limes");
-	//	Configuration con =  createLimeConfigurationFile();
-		System.out.println("Just running Limes into it KHD");
-	//	callLimes(con);
-		System.out.println("Just running Limes");
-
-		// create an empty Model
-
-		// create the resource
-		// some definitions
-		String personURI = "http://somewhere/JohnSmith";
-		String givenName = "John";
-		String familyName = "Smith";
-		String fullName = givenName + " " + familyName;
-
-		// create an empty Model
+	 	// create an empty Model
 		Model model = ModelFactory.createDefaultModel();
-
-		// create the resource
-		// and add the properties cascading style
-		Resource johnSmith = model.createResource(personURI).addProperty(VCARD.FN, fullName).addProperty(VCARD.N,
-				model.createResource().addProperty(VCARD.Given, givenName).addProperty(VCARD.Family, familyName));
-
 		return List.of(model);
 	}
 
 	private Model filterModel(Model model) { // 4
-		System.out.println("--KHD-- + filterModel ");
 
 		final Model resultModel = ModelFactory.createDefaultModel();
 		final Optional<RDFNode> sparqlQuery = getParameterMap().getOptional(SPARQL_CONSTRUCT_QUERY);
@@ -153,10 +88,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
 				RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
 				Resource o = selectorResource.getPropertyResourceValue(OBJECT);
-
-				System.out.println(" --KHD-- s: " + s);
-				System.out.println(" --KHD-- p: " + p);
-				System.out.println(" --KHD-- o: " + o);
 
 				logger.info("Running filter " + getId() + " for triple pattern {} {} {} ...",
 						s == null ? "[]" : "<" + s.asResource().getURI() + ">",
@@ -171,7 +102,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	public Configuration createLimeConfigurationFile() {
-
+		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
 
 		// adding prefix
@@ -194,21 +125,19 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
-		
-		
- 		Map<String, String> prefixes = new HashMap<String, String>();
- 		prefixes.put("dbpo","http://dbpedia.org/ontology/");	
- 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
- 		prefixes.put("url", "http://schema.org/");
- 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
- 		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
- 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
-		
+		Map<String, String> prefixes = new HashMap<String, String>();
+		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
+		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+		prefixes.put("url", "http://schema.org/");
+		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
+		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+
 		src.setPrefixes(prefixes);
-		
-		//src.setFunctions(functions);
-		
+
+		// src.setFunctions(functions);
+
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
 		LinkedHashMap<String, Map<String, String>> functions = new LinkedHashMap<String, Map<String, String>>();
@@ -216,10 +145,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setFunctions(functions);
 
 		conf.setSourceInfo(src);
-		System.out.println("Just running Limes 1");
-
-		
-		System.out.println("Just running Limes 2");
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
@@ -231,86 +156,62 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
 		conf.setTargetInfo(target);
-		
-		
 
-		
-		//Set either Metric or MLALGORITHM
-		//conf.setMetricExpression("geo_hausdorff(x.polygon, y.polygon)");
-
-	    MLImplementationType mlImplementationType = MLImplementationType.UNSUPERVISED;
+		// Set either Metric or MLALGORITHM
+		// conf.setMetricExpression("geo_hausdorff(x.polygon, y.polygon)");
+		MLImplementationType mlImplementationType = MLImplementationType.UNSUPERVISED;
 		conf.setMlAlgorithmName("wombat simple");
 		conf.setMlImplementationType(mlImplementationType);
-		
-		
+
 		LearningParameter learningParameter = new LearningParameter();
 		learningParameter.setName("max execution time in minutes");
 		learningParameter.setValue(60);
-		
-		
-		
-		
-		
-	    List<LearningParameter> mlAlgorithmParameters = new ArrayList<>();
-	    mlAlgorithmParameters.add(learningParameter);
-	    
-	    conf.setMlAlgorithmParameters(mlAlgorithmParameters);
-	    
-		//Acceptance
+
+		List<LearningParameter> mlAlgorithmParameters = new ArrayList<>();
+		mlAlgorithmParameters.add(learningParameter);
+
+		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
+
+		// Acceptance
 		conf.setAcceptanceThreshold(0.98);
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
 
-		//Review
+		// Review
 		conf.setVerificationThreshold(0.9);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
-		//EXECUTION
+		// EXECUTION
 		conf.setExecutionRewriter("default");
 		conf.setExecutionPlanner("default");
 		conf.setExecutionEngine("default");
 
-		System.out.println("Just running Limes 3");
-
+		// Output format CSV etc
 		conf.setOutputFormat("TAB");
-		System.out.println("Just running Limes 4");
 
 		RDFConfigurationWriter writer = new RDFConfigurationWriter();
-		System.out.println("Just running Limes 5" + writer.toString());
-
-		System.out.println(" yeh -2 : config.toString()" + conf.toString());
-
-		System.out.println(" yeh -2 : config.getVerificationThreshold()" + conf.getVerificationThreshold());
-		System.out.println(" yeh -2 : config.getMlAlgorithmName()" + conf.getMlAlgorithmName());
-		System.out.println(" yeh -2 please : config.getPrefixes()" + conf.getPrefixes());
 
 		try {
-			System.out.println("Just running Limes 6");
+			System.out.println("Just wrting to a file");
 			writer.write(conf, "F:/Data/test10.ttl", "TTL");
 
-			System.out.println("Just running Limes 7");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-	return conf;
+		return conf;
 	}
 
-	public void callLimes( Configuration config) {
+	public void callLimes(Configuration config) {
 
-		String limesOutputLocation = "F://Newfolder//LIMES//t"; //for output
-		/*String hardCoded = "F://Newfolder//LIMES//t//fileOldML.xml";
-		AConfigurationReader reader = new XMLConfigurationReader(hardCoded.toString());
-
-		Configuration config = configIn;*/
-		
-		String sourceEndpoint = config.getSourceInfo().getEndpoint();
+		String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
+		 
+		/*String sourceEndpoint = config.getSourceInfo().getEndpoint();
 		String targetEndpoint = config.getTargetInfo().getEndpoint();
-		
-		int limit = -1;
-		
+		int limit = -1;*/
+
 		LimesResult mappings = Controller.getMapping(config);
 		String outputFormat = config.getOutputFormat();
 		ISerializer output = SerializerFactory.createSerializer(outputFormat);
@@ -325,7 +226,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				verificationFile.getAbsolutePath());
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-		System.out.println("100 ==HD== ");
+		System.out.println(" -Completed- ");
 
 	}
 
