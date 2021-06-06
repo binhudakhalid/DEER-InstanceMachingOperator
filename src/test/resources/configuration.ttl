@@ -16,8 +16,7 @@
  a deer:IntanceMactchingOperator ;
  fcage:hasInput :reader ;
  deer:selector [ deer:predicate rdfs:label ];
- #			   [ deer:predicate geo:long ],
- #              [ deer:subject rdfs:abc ];
+
 .
  
 

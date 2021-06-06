@@ -192,22 +192,23 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		RDFConfigurationWriter writer = new RDFConfigurationWriter();
 
-		try {
+	/*	try {
 			System.out.println("Just wrting to a file");
 			writer.write(conf, "F:/Data/test10.ttl", "TTL");
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
+		} */
+		
 		return conf;
 	}
 
 	public void callLimes(Configuration config) {
 
-		String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
+		//String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
 		 
+		String limesOutputLocation = new File("").getAbsolutePath();
 		/*String sourceEndpoint = config.getSourceInfo().getEndpoint();
 		String targetEndpoint = config.getTargetInfo().getEndpoint();
 		int limit = -1;*/
