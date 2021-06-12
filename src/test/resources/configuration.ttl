@@ -15,8 +15,6 @@
 :matcher
  a deer:IntanceMactchingOperator ;
  fcage:hasInput :reader ;
- deer:selector [ deer:predicate rdfs:label ];
-
 .
  
 

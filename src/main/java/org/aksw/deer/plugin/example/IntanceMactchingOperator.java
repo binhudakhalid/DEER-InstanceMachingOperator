@@ -65,6 +65,12 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+		
+		System.out.println(" -t-e-st- models " + models  + " -t-e-st- models ");
+
+		System.out.println(" -t-e-st- models  models.getClass()  " + models.getClass());
+		System.out.println(" -t-e-st- models  models.toString()  " + models.toString());
+		
 		Model a = filterModel(models.get(0));
 	 
 		Configuration con = createLimeConfigurationFile();
@@ -225,8 +231,45 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getVerificationMapping(), config.getVerificationRelation(),
 				verificationFile.getAbsolutePath());
+		
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
+		
+		/*System.out.println("mappings.getAcceptanceMapping() : " + mappings.getAcceptanceMapping());
+		
+		 * 
+		 * [http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai -> (http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai|1.0)]
+[http://dbpedia.org/resource/Malaiyoor_Mambattiyan -> (http://dbpedia.org/resource/Malaiyoor_Mambattiyan|1.0)]
+[http://dbpedia.org/resource/Lumière_and_Company -> (http://dbpedia.org/resource/Lumière_and_Company|1.0)]
+[http://dbpedia.org/resource/Lovin'_Molly -> (http://dbpedia.org/resource/Lovin'_Molly|1.0)]
+[http://dbpedia.org/resource/Lust_in_the_Dust -> (http://dbpedia.org/resource/Lust_in_the_Dust|1.0)]
+[http://dbpedia.org/resource/Vampariah -> (http://dbpedia.org/resource/Vampariah|1.0)]
+[http://dbpedia.org/resource/Mabel's_Lovers -> (http://dbpedia.org/resource/Mabel's_Lovers|1.0)]
+[http://dbpedia.org/resource/Unknown_Sender_(film) -> (http://dbpedia.org/resource/Unknown_Sender_(film)|1.0)]
+[http://dbpedia.org/resource/United_(2003_film) -> (http://dbpedia.org/resource/United_(2003_film)|1.0)]
+[http://dbpedia.org/resource/Consuelita -> (http://dbpedia.org/resource/Consuelita|1.0)]
+[http://dbpedia.org/resource/Lucky_Luke_(2009_film) -> (http://dbpedia.org/resource/Lucky_Luke_(2009_film)|1.0)]
+[http://dbpedia.org/resource/Un_uomo_a_metà -> (http://dbpedia.org/resource/Un_uomo_a_metà|1.0)]
+[http://dbpedia.org/resource/Vaadaka_Gunda -> (http://dbpedia.org/resource/Vaadaka_Gunda|1.0)]
+[http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F -> (http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F|1.0)]
+[http://dbpedia.org/resource/Unchained_(film) -> (http://dbpedia.org/resource/Unchained_(film)|1.0)]
+[http://dbpedia.org/resource/Main_Aur_Mr._Riight -> (http://dbpedia.org/resource/Main_Aur_Mr._Riight|1.0)]
+[http://dbpedia.org/resource/Uchathula_Shiva -> (http://dbpedia.org/resource/Uchathula_Shiva|1.0)]
+[http://dbpedia.org/resource/Love_per_Square_Foot -> (http://dbpedia.org/resource/Love_per_Square_Foot|1.0)]
+[http://dbpedia.org/resource/Lover_Come_Back_(1961_film) -> (http://dbpedia.org/resource/Lover_Come_Back_(1961_film)|1.0)]
+[http://dbpedia.org/resource/Uppena -> (http://dbpedia.org/resource/Uppena|1.0)]
+[http://dbpedia.org/resource/Contragolpe -> (http://dbpedia.org/resource/Contragolpe|1.0)]
+[http://dbpedia.org/resource/Undead_(film) -> (http://dbpedia.org/resource/Undead_(film)|1.0)]
+[http://dbpedia.org/resource/Madras_(film) -> (http://dbpedia.org/resource/Madras_(film)|1.0)]
+		 * 
+		 * 
+		 * */
+		/*System.out.println("config.getAcceptanceRelation() : " + config.getAcceptanceRelation());
+		System.out.println("acceptanceFile.getAbsolutePath() : " + acceptanceFile.getAbsolutePath());
+		
+		config.getAcceptanceRelation() : http://www.w3.org/2002/07/owl#sameAs
+			acceptanceFile.getAbsolutePath() : F:\Newfolder\deer-plugin-starter\accepted.nt*/
+		
 		System.out.println(" -Completed- ");
 
 	}
