@@ -17,8 +17,14 @@
  fcage:hasInput :reader ;
 .
  
+ 
+:consolidation
+ a deer:IntanceMactchingOperator ;
+ fcage:hasInput :matcher ;
+.
+  
 
 :writer
   a deer:StdOutModelWriter ;
-  fcage:hasInput :matcher ;
+  fcage:hasInput :consolidation ;
 .

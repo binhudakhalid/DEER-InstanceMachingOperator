@@ -42,9 +42,9 @@ import org.slf4j.LoggerFactory;
 /**
  */
 @Extension
-public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator {
+public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperator {
 
-	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConsolidationOperator.class);
 
 	public static final Property SUBJECT = DEER.property("subject");
 	public static final Property PREDICATE = DEER.property("predicate");
@@ -52,7 +52,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property SELECTOR = DEER.property("selector");
 	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
 
-	public IntanceMactchingOperator() {
+	public ConsolidationOperator() {
 
 		super();
 	}
@@ -60,7 +60,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
 		return ValidatableParameterMap.builder().declareProperty(SELECTOR).declareProperty(SPARQL_CONSTRUCT_QUERY)
-				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
+				.declareValidationShape(getValidationModelFor(ConsolidationOperator.class)).build();
 	}
 
 	@Override
