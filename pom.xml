@@ -8,20 +8,8 @@
   <artifactId>plugin-starter</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
-  <!-- @todo Customize this value 👇 -->
-  <name>DEER Simple Example Plugin</name>
-  <!-- @todo Customize this value 👇 -->
-  <description>DEER Plugin Starter</description>
-  <!-- @todo Customize this value 👇 -->
-  <url>https://github.com/dice-group/DEER</url>
-
-  <scm>
-    <!-- @todo Customize this value 👇 -->
-    <url>https://github.com/dice-group/deer-plugin-starter</url>
-    <!-- @todo Customize this value 👇 -->
-    <connection>scm:git:https://github.com/dice-group/deer-plugin-starter.git</connection>
-    <tag>HEAD</tag>
-  </scm>
+ 
+ 
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,7 +17,7 @@
     <!-- @todo Customize this value 👇 -->
     <plugin.id>example-enrichment-plugin</plugin.id>
     <!-- @todo Customize this value 👇 -->
-    <plugin.class>org.aksw.deer.plugin.example.ExampleEnrichmentPlugin</plugin.class>
+    <plugin.class>org.aksw.deer.plugin.example.InstanceMactching</plugin.class>
     <!-- @todo Customize this value 👇 -->
     <plugin.version>1.0.0</plugin.version>
     <!-- @todo Customize this value 👇 -->

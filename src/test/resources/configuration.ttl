@@ -10,6 +10,7 @@
   a deer:SparqlModelReader ;
   deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
+  fcage:hasOutput :matcher ;
 .
 
 :matcher
@@ -20,7 +21,7 @@
  
 :consolidation
  a deer:ConsolidationOperator ;
- fcage:hasInput :matcher ;
+ fcage:hasInput :matcher ; 
 .
   
 

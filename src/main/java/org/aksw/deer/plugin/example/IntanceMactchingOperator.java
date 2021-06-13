@@ -1,7 +1,7 @@
 package org.aksw.deer.plugin.example;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,18 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
-import org.aksw.deer.learning.ReverseLearnable;
-import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.controller.LimesResult;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.KBInfo;
-import org.aksw.limes.core.io.config.reader.AConfigurationReader;
-import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
 import org.aksw.limes.core.io.config.writer.RDFConfigurationWriter;
 import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
@@ -33,7 +30,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.SimpleSelector;
-import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -51,6 +47,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property OBJECT = DEER.property("object");
 	public static final Property SELECTOR = DEER.property("selector");
 	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
+	
+	public  HashMap<String, String> prefixMap;
+	 
 
 	public IntanceMactchingOperator() {
 
@@ -69,6 +68,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		
 		
 		
+		
+		
+		
+		
+		//animal ani = new animal();
+		//ani.name = "cow";
+		//ani.origin = "karachi";
 		 // some definitions
         String personURI    = "http://somewhere/JohnSmith";
         String givenName    = "Ali";
@@ -98,13 +104,20 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" -t-e-st- models  models.toString()  " + models.toString());
 		
 		Model a = filterModel(models.get(0));
-	 
-		//Configuration con = createLimeConfigurationFile();
+		
+		
+		dynamicPrefix();
+	  
+		//Model m = new Model();
+		//Model modelOne = ModelFactory.createDefaultModel();
+		 
+		 Configuration con = createLimeConfigurationFile();
 		//System.out.println("Just running Limes into it KHD");
 		//callLimes(con);
 
 	 	// create an empty Model
 		//Model model = ModelFactory.createDefaultModel();
+		
 		return List.of(model);
 	}
 
@@ -136,8 +149,24 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public Configuration createLimeConfigurationFile() {
 		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
-
+		
+		
+		// Dynamically adding prefix
+		dynamicPrefix();
+		
+		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
+		    String key = entry.getKey();
+		    String value = entry.getValue();
+			conf.addPrefix(entry.getKey(), entry.getValue());
+		}
+		
+		 
+		
+		
+		
+		
 		// adding prefix
+		conf.addPrefix("geom", "http://geovocab.org/geometry#");
 		conf.addPrefix("geom", "http://geovocab.org/geometry#");
 		conf.addPrefix("geos", "http://www.opengis.net/ont/geosparql#");
 		conf.addPrefix("lgdo", "http://linkedgeodata.org/ontology/");
@@ -299,5 +328,45 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" -Completed- ");
 
 	}
+	
+	
+	public void dynamicPrefix() {
+		
+		
+	prefixMap = new HashMap<String,String>();//Creating HashMap    
+		        
+		   
+		
+		System.out.println("  dynamicPrefix  ");
+		String prefix;
+		String prefixValue;
+		try {
+		      File myObj = new File("bookEntityFileSource.ttl");
+		      Scanner myReader = new Scanner(myObj);
+		      while (myReader.hasNextLine()) {
+		        String Line = myReader.nextLine();
+		      //  System.out.println("mt ttl file" +  Line);
+		        	if(Line.contains("@prefix")) {
+		        		prefix = Line.substring(8, 11);
+		        		prefixValue  = Line.substring(13, Line.length()).trim().replaceAll("<", "").replaceAll("> .", "");//.replaceAll(":", "").replaceAll(".", "") ;
+		        		 System.out.println(" =khd=  prefix: " +  prefix);
+		        		 System.out.println("prefixValue: " +  prefixValue);
+		        		prefixMap.put(prefix, prefixValue);
+		        		
+		        	}
+		      }
+		      myReader.close();
+		    } catch (FileNotFoundException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }
+		
+		
+		System.out.println(" Kha " + prefixMap);
+		
+		//return prefixMap;
+	}
+	
+	
 
 }
