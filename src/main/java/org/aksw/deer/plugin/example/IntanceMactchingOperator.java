@@ -155,9 +155,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		dynamicPrefix();
 		
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
-		    String key = entry.getKey();
-		    String value = entry.getValue();
-			conf.addPrefix(entry.getKey(), entry.getValue());
+		    String prefixName = entry.getKey();
+		    String prefixValue = entry.getValue();
+			conf.addPrefix(prefixName, prefixValue);
 		}
 		
 		 
