@@ -30,6 +30,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.SimpleSelector;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -47,9 +48,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property OBJECT = DEER.property("object");
 	public static final Property SELECTOR = DEER.property("selector");
 	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
-	
-	public  HashMap<String, String> prefixMap;
-	 
+
+	public HashMap<String, String> prefixMap;
 
 	public IntanceMactchingOperator() {
 
@@ -64,60 +64,53 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		
-		
-		
-		
-		
-		
-		
-		//animal ani = new animal();
-		//ani.name = "cow";
-		//ani.origin = "karachi";
-		 // some definitions
-        String personURI    = "http://somewhere/JohnSmith";
-        String givenName    = "Ali";
-        String familyName   = "Khan";
-        String fullName     = givenName + " " + familyName;
+
+		// animal ani = new animal();
+		// ani.name = "cow";
+		// ani.origin = "karachi";
+		// some definitions
+		String personURI = "http://somewhere/JohnSmith";
+		String givenName = "Ali";
+		String familyName = "Khan";
+		String fullName = givenName + " " + familyName;
 		Model model = ModelFactory.createDefaultModel();
 		
+		 //Statement s1  = new Statement ;
 
-        // create the resource
-        //   and add the properties cascading style
-        Resource johnSmith  = model.createResource(personURI)
-             .addProperty(VCARD.FN, fullName)
-             .addProperty(VCARD.N, 
-                      model.createResource()
-                           .addProperty(VCARD.Given, givenName)
-                           .addProperty(VCARD.Family, familyName));
-		
-		
-		
+
+		// create the resource
+		// and add the properties cascading style
+		Resource johnSmith = model.createResource(personURI).addProperty(VCARD.FN, fullName).addProperty(VCARD.N,
+				model.createResource().addProperty(VCARD.Given, givenName).addProperty(VCARD.Family, familyName));
+
 		Model modelOne = ModelFactory.createDefaultModel();
-	 
+
 		models.add(modelOne);
-		
-		System.out.println(" -t-e-st- models " + models  + " -t-e-st- models ");
+
+		System.out.println(" -t-e-st- models " + models + " -t-e-st- models ");
 
 		System.out.println(" -t-e-st- models  models.getClass()  " + models.getClass());
 		System.out.println(" -t-e-st- models  models.toString()  " + models.toString());
-		
-		Model a = filterModel(models.get(0));
-		
-		
-		dynamicPrefix();
-	  
-		//Model m = new Model();
-		//Model modelOne = ModelFactory.createDefaultModel();
-		 
-		 Configuration con = createLimeConfigurationFile();
-		//System.out.println("Just running Limes into it KHD");
-		//callLimes(con);
 
-	 	// create an empty Model
-		//Model model = ModelFactory.createDefaultModel();
+		Model a = filterModel(models.get(0));
+
+		//dynamicPrefix();
+
+		// Model m = new Model();
+		// Model modelOne = ModelFactory.createDefaultModel();
+
+		Configuration con = createLimeConfigurationFile();
+		// System.out.println("Just running Limes into it KHD");
+		// callLimes(con);
+
+		// create an empty Model
+		// Model model = ModelFactory.createDefaultModel();
+
+		animal cow12 = new animal();
 		
+		
+		
+				 
 		return List.of(model);
 	}
 
@@ -149,22 +142,16 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public Configuration createLimeConfigurationFile() {
 		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
-		
-		
-		// Dynamically adding prefix
+
+		// This weeks task add prefix dynamically 
 		dynamicPrefix();
-		
+
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
-		    String prefixName = entry.getKey();
-		    String prefixValue = entry.getValue();
+			String prefixName = entry.getKey();
+			String prefixValue = entry.getValue();
 			conf.addPrefix(prefixName, prefixValue);
 		}
-		
-		 
-		
-		
-		
-		
+
 		// adding prefix
 		conf.addPrefix("geom", "http://geovocab.org/geometry#");
 		conf.addPrefix("geom", "http://geovocab.org/geometry#");
@@ -253,26 +240,26 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		RDFConfigurationWriter writer = new RDFConfigurationWriter();
 
-	/*	try {
-			System.out.println("Just wrting to a file");
-			writer.write(conf, "F:/Data/test10.ttl", "TTL");
+		/*
+		 * try { System.out.println("Just wrting to a file"); writer.write(conf,
+		 * "F:/Data/test10.ttl", "TTL");
+		 * 
+		 * } catch (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} */
-		
 		return conf;
 	}
 
 	public void callLimes(Configuration config) {
 
-		//String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
-		 
+		// String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
+
 		String limesOutputLocation = new File("").getAbsolutePath();
-		/*String sourceEndpoint = config.getSourceInfo().getEndpoint();
-		String targetEndpoint = config.getTargetInfo().getEndpoint();
-		int limit = -1;*/
+		/*
+		 * String sourceEndpoint = config.getSourceInfo().getEndpoint(); String
+		 * targetEndpoint = config.getTargetInfo().getEndpoint(); int limit = -1;
+		 */
 
 		LimesResult mappings = Controller.getMapping(config);
 		String outputFormat = config.getOutputFormat();
@@ -286,87 +273,105 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getVerificationMapping(), config.getVerificationRelation(),
 				verificationFile.getAbsolutePath());
-		
+
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-		
-		/*System.out.println("mappings.getAcceptanceMapping() : " + mappings.getAcceptanceMapping());
-		
-		 * 
-		 * [http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai -> (http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai|1.0)]
-[http://dbpedia.org/resource/Malaiyoor_Mambattiyan -> (http://dbpedia.org/resource/Malaiyoor_Mambattiyan|1.0)]
-[http://dbpedia.org/resource/Lumière_and_Company -> (http://dbpedia.org/resource/Lumière_and_Company|1.0)]
-[http://dbpedia.org/resource/Lovin'_Molly -> (http://dbpedia.org/resource/Lovin'_Molly|1.0)]
-[http://dbpedia.org/resource/Lust_in_the_Dust -> (http://dbpedia.org/resource/Lust_in_the_Dust|1.0)]
-[http://dbpedia.org/resource/Vampariah -> (http://dbpedia.org/resource/Vampariah|1.0)]
-[http://dbpedia.org/resource/Mabel's_Lovers -> (http://dbpedia.org/resource/Mabel's_Lovers|1.0)]
-[http://dbpedia.org/resource/Unknown_Sender_(film) -> (http://dbpedia.org/resource/Unknown_Sender_(film)|1.0)]
-[http://dbpedia.org/resource/United_(2003_film) -> (http://dbpedia.org/resource/United_(2003_film)|1.0)]
-[http://dbpedia.org/resource/Consuelita -> (http://dbpedia.org/resource/Consuelita|1.0)]
-[http://dbpedia.org/resource/Lucky_Luke_(2009_film) -> (http://dbpedia.org/resource/Lucky_Luke_(2009_film)|1.0)]
-[http://dbpedia.org/resource/Un_uomo_a_metà -> (http://dbpedia.org/resource/Un_uomo_a_metà|1.0)]
-[http://dbpedia.org/resource/Vaadaka_Gunda -> (http://dbpedia.org/resource/Vaadaka_Gunda|1.0)]
-[http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F -> (http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F|1.0)]
-[http://dbpedia.org/resource/Unchained_(film) -> (http://dbpedia.org/resource/Unchained_(film)|1.0)]
-[http://dbpedia.org/resource/Main_Aur_Mr._Riight -> (http://dbpedia.org/resource/Main_Aur_Mr._Riight|1.0)]
-[http://dbpedia.org/resource/Uchathula_Shiva -> (http://dbpedia.org/resource/Uchathula_Shiva|1.0)]
-[http://dbpedia.org/resource/Love_per_Square_Foot -> (http://dbpedia.org/resource/Love_per_Square_Foot|1.0)]
-[http://dbpedia.org/resource/Lover_Come_Back_(1961_film) -> (http://dbpedia.org/resource/Lover_Come_Back_(1961_film)|1.0)]
-[http://dbpedia.org/resource/Uppena -> (http://dbpedia.org/resource/Uppena|1.0)]
-[http://dbpedia.org/resource/Contragolpe -> (http://dbpedia.org/resource/Contragolpe|1.0)]
-[http://dbpedia.org/resource/Undead_(film) -> (http://dbpedia.org/resource/Undead_(film)|1.0)]
-[http://dbpedia.org/resource/Madras_(film) -> (http://dbpedia.org/resource/Madras_(film)|1.0)]
+
+		/*
+		 * System.out.println("mappings.getAcceptanceMapping() : " +
+		 * mappings.getAcceptanceMapping());
 		 * 
 		 * 
-		 * */
-		/*System.out.println("config.getAcceptanceRelation() : " + config.getAcceptanceRelation());
-		System.out.println("acceptanceFile.getAbsolutePath() : " + acceptanceFile.getAbsolutePath());
-		
-		config.getAcceptanceRelation() : http://www.w3.org/2002/07/owl#sameAs
-			acceptanceFile.getAbsolutePath() : F:\Newfolder\deer-plugin-starter\accepted.nt*/
-		
+		 * [http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai ->
+		 * (http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai|1.0)]
+		 * [http://dbpedia.org/resource/Malaiyoor_Mambattiyan ->
+		 * (http://dbpedia.org/resource/Malaiyoor_Mambattiyan|1.0)]
+		 * [http://dbpedia.org/resource/Lumière_and_Company ->
+		 * (http://dbpedia.org/resource/Lumière_and_Company|1.0)]
+		 * [http://dbpedia.org/resource/Lovin'_Molly ->
+		 * (http://dbpedia.org/resource/Lovin'_Molly|1.0)]
+		 * [http://dbpedia.org/resource/Lust_in_the_Dust ->
+		 * (http://dbpedia.org/resource/Lust_in_the_Dust|1.0)]
+		 * [http://dbpedia.org/resource/Vampariah ->
+		 * (http://dbpedia.org/resource/Vampariah|1.0)]
+		 * [http://dbpedia.org/resource/Mabel's_Lovers ->
+		 * (http://dbpedia.org/resource/Mabel's_Lovers|1.0)]
+		 * [http://dbpedia.org/resource/Unknown_Sender_(film) ->
+		 * (http://dbpedia.org/resource/Unknown_Sender_(film)|1.0)]
+		 * [http://dbpedia.org/resource/United_(2003_film) ->
+		 * (http://dbpedia.org/resource/United_(2003_film)|1.0)]
+		 * [http://dbpedia.org/resource/Consuelita ->
+		 * (http://dbpedia.org/resource/Consuelita|1.0)]
+		 * [http://dbpedia.org/resource/Lucky_Luke_(2009_film) ->
+		 * (http://dbpedia.org/resource/Lucky_Luke_(2009_film)|1.0)]
+		 * [http://dbpedia.org/resource/Un_uomo_a_metà ->
+		 * (http://dbpedia.org/resource/Un_uomo_a_metà|1.0)]
+		 * [http://dbpedia.org/resource/Vaadaka_Gunda ->
+		 * (http://dbpedia.org/resource/Vaadaka_Gunda|1.0)]
+		 * [http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F ->
+		 * (http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F|1.0)]
+		 * [http://dbpedia.org/resource/Unchained_(film) ->
+		 * (http://dbpedia.org/resource/Unchained_(film)|1.0)]
+		 * [http://dbpedia.org/resource/Main_Aur_Mr._Riight ->
+		 * (http://dbpedia.org/resource/Main_Aur_Mr._Riight|1.0)]
+		 * [http://dbpedia.org/resource/Uchathula_Shiva ->
+		 * (http://dbpedia.org/resource/Uchathula_Shiva|1.0)]
+		 * [http://dbpedia.org/resource/Love_per_Square_Foot ->
+		 * (http://dbpedia.org/resource/Love_per_Square_Foot|1.0)]
+		 * [http://dbpedia.org/resource/Lover_Come_Back_(1961_film) ->
+		 * (http://dbpedia.org/resource/Lover_Come_Back_(1961_film)|1.0)]
+		 * [http://dbpedia.org/resource/Uppena ->
+		 * (http://dbpedia.org/resource/Uppena|1.0)]
+		 * [http://dbpedia.org/resource/Contragolpe ->
+		 * (http://dbpedia.org/resource/Contragolpe|1.0)]
+		 * [http://dbpedia.org/resource/Undead_(film) ->
+		 * (http://dbpedia.org/resource/Undead_(film)|1.0)]
+		 * [http://dbpedia.org/resource/Madras_(film) ->
+		 * (http://dbpedia.org/resource/Madras_(film)|1.0)]
+		 * 
+		 * 
+		 */
+		/*
+		 * System.out.println("config.getAcceptanceRelation() : " +
+		 * config.getAcceptanceRelation());
+		 * System.out.println("acceptanceFile.getAbsolutePath() : " +
+		 * acceptanceFile.getAbsolutePath());
+		 * 
+		 * config.getAcceptanceRelation() : http://www.w3.org/2002/07/owl#sameAs
+		 * acceptanceFile.getAbsolutePath() :
+		 * F:\Newfolder\deer-plugin-starter\accepted.nt
+		 */
+
 		System.out.println(" -Completed- ");
 
 	}
-	
-	
+
 	public void dynamicPrefix() {
-		
-		
-	prefixMap = new HashMap<String,String>();//Creating HashMap    
-		        
-		   
-		
-		System.out.println("  dynamicPrefix  ");
-		String prefix;
-		String prefixValue;
+
+		prefixMap = new HashMap<String, String>();// Creating HashMap
+
+		String prefix, prefixValue;
 		try {
-		      File myObj = new File("bookEntityFileSource.ttl");
-		      Scanner myReader = new Scanner(myObj);
-		      while (myReader.hasNextLine()) {
-		        String Line = myReader.nextLine();
-		      //  System.out.println("mt ttl file" +  Line);
-		        	if(Line.contains("@prefix")) {
-		        		prefix = Line.substring(8, 11);
-		        		prefixValue  = Line.substring(13, Line.length()).trim().replaceAll("<", "").replaceAll("> .", "");//.replaceAll(":", "").replaceAll(".", "") ;
-		        		 System.out.println(" =khd=  prefix: " +  prefix);
-		        		 System.out.println("prefixValue: " +  prefixValue);
-		        		prefixMap.put(prefix, prefixValue);
-		        		
-		        	}
-		      }
-		      myReader.close();
-		    } catch (FileNotFoundException e) {
-		      System.out.println("An error occurred.");
-		      e.printStackTrace();
-		    }
-		
-		
-		System.out.println(" Kha " + prefixMap);
-		
-		//return prefixMap;
+			
+			// We will this data from team eventually
+			File tempDataFile = new File("bookEntityFileSource.ttl");
+			Scanner myReader = new Scanner(tempDataFile);
+			// We need this loop to run for every line as we don't know where the prefix can be found in the data file.
+			while (myReader.hasNextLine()) {
+				String Line = myReader.nextLine();
+				if (Line.contains("@prefix")) {
+					prefix = Line.substring(8, 11);
+					// this should will done in the new util method
+					prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<", "").replaceAll("> .", "");// .replaceAll(":",
+					prefixMap.put(prefix, prefixValue);
+				}
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		// return prefixMap;
 	}
-	
-	
 
 }

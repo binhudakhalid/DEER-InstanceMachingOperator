@@ -4,5 +4,7 @@ public class animal {
 	
 	String name;
 	String origin;
+	
+	 
 
 }
