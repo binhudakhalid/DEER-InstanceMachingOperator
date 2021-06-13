@@ -66,10 +66,15 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 		
-		System.out.println(" -t-e-st- models " + models  + " -t-e-st- models ");
+		System.out.println(" models.get()0 " + models.get(0));
+		//System.out.println(" models.get()1 " + models.get(1));
+		
+		System.out.println(" -t-e-st- models2 " + models  + " -t-e-st- models ");
 
-		System.out.println(" -t-e-st- models  models.getClass()  " + models.getClass());
-		System.out.println(" -t-e-st- models  models.toString()  " + models.toString());
+		System.out.println(" -t-e-st- models  models.getClass()2  " + models.getClass());
+		System.out.println(" -t-e-st- models  models.toString()2  " + models.toString());
+		
+	
 		
 		Model a = filterModel(models.get(0));
 	 

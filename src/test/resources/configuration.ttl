@@ -19,7 +19,7 @@
  
  
 :consolidation
- a deer:IntanceMactchingOperator ;
+ a deer:ConsolidationOperator ;
  fcage:hasInput :matcher ;
 .
   

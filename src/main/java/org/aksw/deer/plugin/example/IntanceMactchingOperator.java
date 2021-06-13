@@ -66,6 +66,32 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 		
+		
+		
+		
+		 // some definitions
+        String personURI    = "http://somewhere/JohnSmith";
+        String givenName    = "Ali";
+        String familyName   = "Khan";
+        String fullName     = givenName + " " + familyName;
+		Model model = ModelFactory.createDefaultModel();
+		
+
+        // create the resource
+        //   and add the properties cascading style
+        Resource johnSmith  = model.createResource(personURI)
+             .addProperty(VCARD.FN, fullName)
+             .addProperty(VCARD.N, 
+                      model.createResource()
+                           .addProperty(VCARD.Given, givenName)
+                           .addProperty(VCARD.Family, familyName));
+		
+		
+		
+		Model modelOne = ModelFactory.createDefaultModel();
+	 
+		models.add(modelOne);
+		
 		System.out.println(" -t-e-st- models " + models  + " -t-e-st- models ");
 
 		System.out.println(" -t-e-st- models  models.getClass()  " + models.getClass());
@@ -78,7 +104,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		//callLimes(con);
 
 	 	// create an empty Model
-		Model model = ModelFactory.createDefaultModel();
+		//Model model = ModelFactory.createDefaultModel();
 		return List.of(model);
 	}
 
