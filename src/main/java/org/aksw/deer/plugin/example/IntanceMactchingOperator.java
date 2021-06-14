@@ -147,7 +147,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
         
         
         Model ourModel = RDFDataMgr.loadModel("001accepted.nt") ;
-        System.out.println("ourModel : " + ourModel);
+        // System.out.println("ourModel : " + ourModel);
 	 
        
 		
@@ -170,7 +170,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		
 		
 				 
-		return List.of(model);
+		return List.of(ourModel);
 	}
 
 	private Model filterModel(Model model) { // 4

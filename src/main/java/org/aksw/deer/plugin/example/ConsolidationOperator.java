@@ -66,7 +66,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 		
-		System.out.println(" models.get()0 " + models.get(0) + " models.get()0");
+		System.out.println(" models.get(Jei)0 " + models.get(0) + " models.get()0");
 		
 		//System.out.println(" models.get(khalidbhia)0 " + models.get(0).getProperty("@http://www.w3.org/2001/vcard-rdf/3.0#FN").getPr.toString() + " models.get()0");
 
