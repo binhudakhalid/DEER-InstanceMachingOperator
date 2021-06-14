@@ -3,6 +3,7 @@ package org.aksw.deer.plugin.example;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -125,16 +127,29 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
         System.out.println("ourModel : " + ourModel);
         */
         
-        File initialFile = new File("001accepted.nt");
-        InputStream targetStream = null;
+        //File initialFile = new File("001accepted.nt");
+       // InputStream targetStream = null;
+        String filename = "001accepted.nt";
+        File file = new File(filename);
+        String content = null;
 		try {
-			targetStream = new FileInputStream(initialFile);
-		} catch (FileNotFoundException e) {
+			content = FileUtils.readFileToString(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			FileUtils.write(file, content, "UTF-8");
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
-		System.out.println("Stream : " + targetStream.toString());
+        
+        Model ourModel = RDFDataMgr.loadModel("001accepted.nt") ;
+        System.out.println("ourModel : " + ourModel);
+	 
+       
 		
 	//	Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
 
@@ -144,9 +159,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
      //   System.out.println("ourModel : " + ourModel);
         
 
-	//	Configuration con = createLimeConfigurationFile();
+		//Configuration con = createLimeConfigurationFile();
 		// System.out.println("Just running Limes into it KHD");
-	//	   callLimes(con);
+	   //callLimes(con);
 
 		// create an empty Model
 		// Model model = ModelFactory.createDefaultModel();
@@ -322,6 +337,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
+		
+		
+	
 
 		 System.out.println(" __Khalid___mappings.getAcceptanceMapping() : "  + mappings.getAcceptanceMapping());
 		 System.out.println(" __Khalid___ mappings.getStatistics() : "  +  mappings.getStatistics());
