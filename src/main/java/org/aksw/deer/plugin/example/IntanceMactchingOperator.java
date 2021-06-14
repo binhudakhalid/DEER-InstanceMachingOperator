@@ -1,7 +1,9 @@
 package org.aksw.deer.plugin.example;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +33,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.SimpleSelector;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -65,49 +69,89 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		// animal ani = new animal();
-		// ani.name = "cow";
-		// ani.origin = "karachi";
-		// some definitions
-		String personURI = "http://somewhere/JohnSmith";
-		String givenName = "Ali";
-		String familyName = "Khan";
-		String fullName = givenName + " " + familyName;
-		Model model = ModelFactory.createDefaultModel();
+		 
+		 // some definitions
+        String personURI    = "http://somewhere/JohnSmith";
+        String givenName    = "<http://dbpedia.org/resource/Spider-Man_3>";
+        String familyName   = "<http://dbpedia.org/resource/Doctor_Who_(film)>";
+        String fullName     =    "0.4444444444444444";//givenName + " " + familyName;
+
+        // create an empty model
+        Model model = ModelFactory.createDefaultModel();
+
+        
+        
+        
+        
+        
+        
+        // create the resource
+        //   and add the properties cascading style
+        Resource johnSmith  = model.createResource(personURI)
+             .addProperty(VCARD.FN, fullName)
+             .addProperty(VCARD.N, 
+                      model.createResource()
+                           .addProperty(VCARD.Given, givenName)
+                           .addProperty(VCARD.Family, familyName));
+        
+      
 		
-		 //Statement s1  = new Statement ;
-
-
-		// create the resource
-		// and add the properties cascading style
-		Resource johnSmith = model.createResource(personURI).addProperty(VCARD.FN, fullName).addProperty(VCARD.N,
-				model.createResource().addProperty(VCARD.Given, givenName).addProperty(VCARD.Family, familyName));
-
-		Model modelOne = ModelFactory.createDefaultModel();
-
-		models.add(modelOne);
-
-		System.out.println(" -t-e-st- models " + models + " -t-e-st- models ");
-
-		System.out.println(" -t-e-st- models  models.getClass()  " + models.getClass());
-		System.out.println(" -t-e-st- models  models.toString()  " + models.toString());
-
-		Model a = filterModel(models.get(0));
-
 		//dynamicPrefix();
 
 		// Model m = new Model();
 		// Model modelOne = ModelFactory.createDefaultModel();
+        
+        
+     // Create a model and read into it from file 
+     // "data.ttl" assumed to be Turtle.
+        
+       // RDFDataMgr.load
+     //   Model ourModel =   model.read("001accepted.nt") ;// RDFDataMgr.loadModel("001accepted.nt", Lang.NT);
+      //RDFDataMgr.loadModel("001accepted.nt") ;
+     
+        
+      
+       
+        
+        /*
+         * working fine for NT
+        Model ourModel = RDFDataMgr.loadModel("xyznt.nt") ;
+        System.out.println("ourModel : " + ourModel);
+         */
+        
+        /*
+        * working fine
+        *  Model ourModel = RDFDataMgr.loadModel("abc.ttl") ;
+        System.out.println("ourModel : " + ourModel);
+        */
+        
+        File initialFile = new File("001accepted.nt");
+        InputStream targetStream = null;
+		try {
+			targetStream = new FileInputStream(initialFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		System.out.println("Stream : " + targetStream.toString());
+		
+	//	Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
 
-		Configuration con = createLimeConfigurationFile();
+    //    Model ourModel =   model.read(targetStream, null,  "N-TRIPLE");
+        		
+        		//read("001accepted.nt", "N-TRIPLES") ;
+     //   System.out.println("ourModel : " + ourModel);
+        
+
+	//	Configuration con = createLimeConfigurationFile();
 		// System.out.println("Just running Limes into it KHD");
-		// callLimes(con);
+	//	   callLimes(con);
 
 		// create an empty Model
 		// Model model = ModelFactory.createDefaultModel();
 
-		animal cow12 = new animal();
-		
+ 		
 		
 		
 				 
@@ -221,12 +265,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.98);
+		conf.setAcceptanceThreshold(0.2);
+		 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
+	 
 
 		// Review
-		conf.setVerificationThreshold(0.9);
+		conf.setVerificationThreshold(0.1);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
@@ -236,9 +282,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setExecutionEngine("default");
 
 		// Output format CSV etc
-		conf.setOutputFormat("TAB");
+		conf.setOutputFormat("TTL"); //NT or TTL
 
-		RDFConfigurationWriter writer = new RDFConfigurationWriter();
+		// RDFConfigurationWriter writer = new RDFConfigurationWriter();
 
 		/*
 		 * try { System.out.println("Just wrting to a file"); writer.write(conf,
@@ -277,6 +323,11 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
 
+		 System.out.println(" __Khalid___mappings.getAcceptanceMapping() : "  + mappings.getAcceptanceMapping());
+		 System.out.println(" __Khalid___ mappings.getStatistics() : "  +  mappings.getStatistics());
+		
+		 
+		
 		/*
 		 * System.out.println("mappings.getAcceptanceMapping() : " +
 		 * mappings.getAcceptanceMapping());
