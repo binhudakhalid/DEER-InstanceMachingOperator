@@ -345,9 +345,15 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			while (myReader.hasNextLine()) {
 				String Line = myReader.nextLine();
 				if (Line.contains("@prefix")) {
-					prefix = Line.substring(8, 11);
+					prefix = Line.substring(Line.indexOf(" "), Line.indexOf(":"));
+					System.out.println("prefix:::: " + prefix);
+
 					// this should will done in the new util method
-					prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<", "").replaceAll("> .", "");// .replaceAll(":",
+					prefixValue = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));// .replaceAll(":",
+					System.out.println("prefixValue:::: " + prefixValue);
+
+					// prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<",
+					// "").replaceAll("> .", "");// .replaceAll(":",
 					prefixMap.put(prefix, prefixValue);
 				}
 			}
@@ -355,6 +361,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			Scanner myReader2 = new Scanner(tempDataFile);
 
 			while (myReader2.hasNextLine()) {
+
+				int i = 1;
 				String Line = myReader2.nextLine();
 
 				if (Line.contains("<http://")) {
@@ -366,6 +374,15 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 					int index1 = temp.lastIndexOf('/');
 					String prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
+					i = i + 1;
+					/// creating prefix key
+
+					String prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+
+					System.out.println(" aURL.getHost().substring(0, 2)  : " + aURL.getHost().substring(0, 2));
+					System.out.println("aURL.getPath().substring(1, 2) : " + aURL.getPath().substring(1, 2));
+
+					prefixMap.put(prefixKey, prefixV);
 
 					System.out.println("prefixV: " + prefixV);
 
@@ -379,14 +396,20 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 					// "").replaceAll("> .", "");// .replaceAll(":",
 					// prefixMap.put(prefix, prefixValue);
 				}
+
 			}
+			System.out.println(" wo ist das prefixMap " + prefixMap);
 
 			myReader.close();
-		} catch (FileNotFoundException | MalformedURLException e) {
+		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
 		// return prefixMap;
+		catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
