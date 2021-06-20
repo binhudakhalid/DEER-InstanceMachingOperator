@@ -19,6 +19,9 @@
 @prefix wik: <edia-en:	http://en.wikipedia.org/wiki/> .
 @prefix foa: <http://xmlns.com/foaf/0.1/> .
 <http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai> .
+
+
+
 <http://dbpedia.org/resource/Malaiyoor_Mambattiyan> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/resource/Malaiyoor_Mambattiyan> .
 <http://dbpedia.org/resource/Lumière_and_Company> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/resource/Lumière_and_Company> .
 <http://dbpedia.org/resource/Lovin'_Molly> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/resource/Lovin'_Molly> .

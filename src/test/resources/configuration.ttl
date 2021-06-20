@@ -10,17 +10,22 @@
   a deer:SparqlModelReader ;
   deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
+  fcage:hasOutput :matcher ;
 .
 
 :matcher
  a deer:IntanceMactchingOperator ;
  fcage:hasInput :reader ;
- deer:selector [ deer:predicate rdfs:label ];
-
 .
  
+ 
+:consolidation
+ a deer:ConsolidationOperator ;
+ fcage:hasInput :matcher ; 
+.
+  
 
 :writer
   a deer:StdOutModelWriter ;
-  fcage:hasInput :matcher ;
+  fcage:hasInput :consolidation ;
 .

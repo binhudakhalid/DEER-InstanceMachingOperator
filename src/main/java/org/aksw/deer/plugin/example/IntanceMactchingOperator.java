@@ -1,7 +1,10 @@
 package org.aksw.deer.plugin.example;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,23 +12,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
-import org.aksw.deer.learning.ReverseLearnable;
-import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.controller.LimesResult;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.KBInfo;
-import org.aksw.limes.core.io.config.reader.AConfigurationReader;
-import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
 import org.aksw.limes.core.io.config.writer.RDFConfigurationWriter;
 import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -34,6 +35,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.SimpleSelector;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -45,67 +48,100 @@ import org.slf4j.LoggerFactory;
 public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator {
 
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
-
-	public static final Property SUBJECT = DEER.property("subject");
-	public static final Property PREDICATE = DEER.property("predicate");
-	public static final Property OBJECT = DEER.property("object");
-	public static final Property SELECTOR = DEER.property("selector");
-	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
+	public HashMap<String, String> prefixMap;
 
 	public IntanceMactchingOperator() {
-
 		super();
 	}
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder().declareProperty(SELECTOR).declareProperty(SPARQL_CONSTRUCT_QUERY)
+		return ValidatableParameterMap.builder()
 				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		Model a = filterModel(models.get(0));
-	 
-		Configuration con = createLimeConfigurationFile();
-		//System.out.println("Just running Limes into it KHD");
-		callLimes(con);
 
-	 	// create an empty Model
+		// create an empty model
 		Model model = ModelFactory.createDefaultModel();
-		return List.of(model);
-	}
 
-	private Model filterModel(Model model) { // 4
+		// dynamicPrefix();
 
-		final Model resultModel = ModelFactory.createDefaultModel();
-		final Optional<RDFNode> sparqlQuery = getParameterMap().getOptional(SPARQL_CONSTRUCT_QUERY);
-		if (sparqlQuery.isPresent()) {
-			logger.info("Executing SPARQL CONSTRUCT query for " + getId() + " ...");
-			return QueryExecutionFactory.create(sparqlQuery.get().asLiteral().getString(), model).execConstruct();
-		} else {
-			getParameterMap().listPropertyObjects(SELECTOR).map(RDFNode::asResource).forEach(selectorResource -> {
-				RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
-				RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
-				Resource o = selectorResource.getPropertyResourceValue(OBJECT);
+		// Model m = new Model();
+		// Model modelOne = ModelFactory.createDefaultModel();
 
-				logger.info("Running filter " + getId() + " for triple pattern {} {} {} ...",
-						s == null ? "[]" : "<" + s.asResource().getURI() + ">",
-						p == null ? "[]" : "<" + p.asResource().getURI() + ">",
-						o == null ? "[]" : "(<)(\")" + o.toString() + "(\")(>)");
-				SimpleSelector selector = new SimpleSelector(s == null ? null : s.asResource(),
-						p == null ? null : p.as(Property.class), o);
-				resultModel.add(model.listStatements(selector));
-			});
+		// Create a model and read into it from file
+		// "data.ttl" assumed to be Turtle.
+
+		// RDFDataMgr.load
+		// Model ourModel = model.read("001accepted.nt") ;//
+		// RDFDataMgr.loadModel("001accepted.nt", Lang.NT);
+		// RDFDataMgr.loadModel("001accepted.nt") ;
+
+		/*
+		 * working fine for NT Model ourModel = RDFDataMgr.loadModel("xyznt.nt") ;
+		 * System.out.println("ourModel : " + ourModel);
+		 */
+
+		/*
+		 * working fine Model ourModel = RDFDataMgr.loadModel("abc.ttl") ;
+		 * System.out.println("ourModel : " + ourModel);
+		 */
+
+		// File initialFile = new File("001accepted.nt");
+		// InputStream targetStream = null;
+		String filename = "001accepted.nt";
+		File file = new File(filename);
+		String content = null;
+		try {
+			content = FileUtils.readFileToString(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return resultModel;
+		try {
+			FileUtils.write(file, content, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
+		// System.out.println("ourModel : " + ourModel);
+
+		// Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
+
+		// Model ourModel = model.read(targetStream, null, "N-TRIPLE");
+
+		// read("001accepted.nt", "N-TRIPLES") ;
+		// System.out.println("ourModel : " + ourModel);
+
+		// Configuration con = createLimeConfigurationFile();
+		// System.out.println("Just running Limes into it KHD");
+		// callLimes(con);
+
+		// create an empty Model
+		// Model model = ModelFactory.createDefaultModel();
+
+		return List.of(ourModel);
 	}
 
 	public Configuration createLimeConfigurationFile() {
 		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
 
+		// This weeks task add prefix dynamically
+		dynamicPrefix();
+
+		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
+			String prefixName = entry.getKey();
+			String prefixValue = entry.getValue();
+			conf.addPrefix(prefixName, prefixValue);
+		}
+
 		// adding prefix
+		conf.addPrefix("geom", "http://geovocab.org/geometry#");
 		conf.addPrefix("geom", "http://geovocab.org/geometry#");
 		conf.addPrefix("geos", "http://www.opengis.net/ont/geosparql#");
 		conf.addPrefix("lgdo", "http://linkedgeodata.org/ontology/");
@@ -173,12 +209,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.98);
+		conf.setAcceptanceThreshold(0.2);
+
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
 
 		// Review
-		conf.setVerificationThreshold(0.9);
+		conf.setVerificationThreshold(0.1);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
@@ -188,30 +225,30 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setExecutionEngine("default");
 
 		// Output format CSV etc
-		conf.setOutputFormat("TAB");
+		conf.setOutputFormat("TTL"); // NT or TTL
 
-		RDFConfigurationWriter writer = new RDFConfigurationWriter();
+		// RDFConfigurationWriter writer = new RDFConfigurationWriter();
 
-	/*	try {
-			System.out.println("Just wrting to a file");
-			writer.write(conf, "F:/Data/test10.ttl", "TTL");
+		/*
+		 * try { System.out.println("Just wrting to a file"); writer.write(conf,
+		 * "F:/Data/test10.ttl", "TTL");
+		 * 
+		 * } catch (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} */
-		
 		return conf;
 	}
 
 	public void callLimes(Configuration config) {
 
-		//String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
-		 
+		// String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
+
 		String limesOutputLocation = new File("").getAbsolutePath();
-		/*String sourceEndpoint = config.getSourceInfo().getEndpoint();
-		String targetEndpoint = config.getTargetInfo().getEndpoint();
-		int limit = -1;*/
+		/*
+		 * String sourceEndpoint = config.getSourceInfo().getEndpoint(); String
+		 * targetEndpoint = config.getTargetInfo().getEndpoint(); int limit = -1;
+		 */
 
 		LimesResult mappings = Controller.getMapping(config);
 		String outputFormat = config.getOutputFormat();
@@ -225,10 +262,109 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getVerificationMapping(), config.getVerificationRelation(),
 				verificationFile.getAbsolutePath());
+
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
+
+		System.out.println(" __Khalid___mappings.getAcceptanceMapping() : " + mappings.getAcceptanceMapping());
+		System.out.println(" __Khalid___ mappings.getStatistics() : " + mappings.getStatistics());
+
+		/*
+		 * System.out.println("mappings.getAcceptanceMapping() : " +
+		 * mappings.getAcceptanceMapping());
+		 * 
+		 * 
+		 * [http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai ->
+		 * (http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai|1.0)]
+		 * [http://dbpedia.org/resource/Malaiyoor_Mambattiyan ->
+		 * (http://dbpedia.org/resource/Malaiyoor_Mambattiyan|1.0)]
+		 * [http://dbpedia.org/resource/Lumière_and_Company ->
+		 * (http://dbpedia.org/resource/Lumière_and_Company|1.0)]
+		 * [http://dbpedia.org/resource/Lovin'_Molly ->
+		 * (http://dbpedia.org/resource/Lovin'_Molly|1.0)]
+		 * [http://dbpedia.org/resource/Lust_in_the_Dust ->
+		 * (http://dbpedia.org/resource/Lust_in_the_Dust|1.0)]
+		 * [http://dbpedia.org/resource/Vampariah ->
+		 * (http://dbpedia.org/resource/Vampariah|1.0)]
+		 * [http://dbpedia.org/resource/Mabel's_Lovers ->
+		 * (http://dbpedia.org/resource/Mabel's_Lovers|1.0)]
+		 * [http://dbpedia.org/resource/Unknown_Sender_(film) ->
+		 * (http://dbpedia.org/resource/Unknown_Sender_(film)|1.0)]
+		 * [http://dbpedia.org/resource/United_(2003_film) ->
+		 * (http://dbpedia.org/resource/United_(2003_film)|1.0)]
+		 * [http://dbpedia.org/resource/Consuelita ->
+		 * (http://dbpedia.org/resource/Consuelita|1.0)]
+		 * [http://dbpedia.org/resource/Lucky_Luke_(2009_film) ->
+		 * (http://dbpedia.org/resource/Lucky_Luke_(2009_film)|1.0)]
+		 * [http://dbpedia.org/resource/Un_uomo_a_metà ->
+		 * (http://dbpedia.org/resource/Un_uomo_a_metà|1.0)]
+		 * [http://dbpedia.org/resource/Vaadaka_Gunda ->
+		 * (http://dbpedia.org/resource/Vaadaka_Gunda|1.0)]
+		 * [http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F ->
+		 * (http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F|1.0)]
+		 * [http://dbpedia.org/resource/Unchained_(film) ->
+		 * (http://dbpedia.org/resource/Unchained_(film)|1.0)]
+		 * [http://dbpedia.org/resource/Main_Aur_Mr._Riight ->
+		 * (http://dbpedia.org/resource/Main_Aur_Mr._Riight|1.0)]
+		 * [http://dbpedia.org/resource/Uchathula_Shiva ->
+		 * (http://dbpedia.org/resource/Uchathula_Shiva|1.0)]
+		 * [http://dbpedia.org/resource/Love_per_Square_Foot ->
+		 * (http://dbpedia.org/resource/Love_per_Square_Foot|1.0)]
+		 * [http://dbpedia.org/resource/Lover_Come_Back_(1961_film) ->
+		 * (http://dbpedia.org/resource/Lover_Come_Back_(1961_film)|1.0)]
+		 * [http://dbpedia.org/resource/Uppena ->
+		 * (http://dbpedia.org/resource/Uppena|1.0)]
+		 * [http://dbpedia.org/resource/Contragolpe ->
+		 * (http://dbpedia.org/resource/Contragolpe|1.0)]
+		 * [http://dbpedia.org/resource/Undead_(film) ->
+		 * (http://dbpedia.org/resource/Undead_(film)|1.0)]
+		 * [http://dbpedia.org/resource/Madras_(film) ->
+		 * (http://dbpedia.org/resource/Madras_(film)|1.0)]
+		 * 
+		 * 
+		 */
+		/*
+		 * System.out.println("config.getAcceptanceRelation() : " +
+		 * config.getAcceptanceRelation());
+		 * System.out.println("acceptanceFile.getAbsolutePath() : " +
+		 * acceptanceFile.getAbsolutePath());
+		 * 
+		 * config.getAcceptanceRelation() : http://www.w3.org/2002/07/owl#sameAs
+		 * acceptanceFile.getAbsolutePath() :
+		 * F:\Newfolder\deer-plugin-starter\accepted.nt
+		 */
+
 		System.out.println(" -Completed- ");
 
+	}
+
+	public void dynamicPrefix() {
+
+		prefixMap = new HashMap<String, String>();// Creating HashMap
+
+		String prefix, prefixValue;
+		try {
+
+			// We will this data from team eventually
+			File tempDataFile = new File("bookEntityFileSource.ttl");
+			Scanner myReader = new Scanner(tempDataFile);
+			// We need this loop to run for every line as we don't know where the prefix can
+			// be found in the data file.
+			while (myReader.hasNextLine()) {
+				String Line = myReader.nextLine();
+				if (Line.contains("@prefix")) {
+					prefix = Line.substring(8, 11);
+					// this should will done in the new util method
+					prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<", "").replaceAll("> .", "");// .replaceAll(":",
+					prefixMap.put(prefix, prefixValue);
+				}
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		// return prefixMap;
 	}
 
 }
