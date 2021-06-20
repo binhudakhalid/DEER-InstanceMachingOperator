@@ -96,6 +96,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		String content = null;
 		try {
 			content = FileUtils.readFileToString(file);
+			System.out.println(" a nc d a ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
