@@ -34,7 +34,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		System.out.println(" Data from InstanceMatchingOperator " + models.get(0) + " models.get()0");
+		System.out.println(" Data from InstanceMatchingOperator " + models.get(0) + " models.get()0090");
 
 		// list the statements in the Model from Instance Matching
 		StmtIterator iter = models.get(0).listStatements();

@@ -1,43 +1,30 @@
 package org.aksw.deer.plugin.example;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
-import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.controller.LimesResult;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.KBInfo;
-import org.aksw.limes.core.io.config.writer.RDFConfigurationWriter;
 import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
 import org.apache.commons.io.FileUtils;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.SimpleSelector;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +50,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
+	
+		System.out.println(" -abc- ");
 		// create an empty model
 		Model model = ModelFactory.createDefaultModel();
 
@@ -95,18 +84,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		File file = new File(filename);
 		String content = null;
 		try {
-			content = FileUtils.readFileToString(file);
-			System.out.println(" a nc d a ");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
+			content = FileUtils.readFileToString(file,  "UTF-8");
 			FileUtils.write(file, content, "UTF-8");
+			System.out.println(" a nc d a-2 ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	 
 
 		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
 		// System.out.println("ourModel : " + ourModel);
