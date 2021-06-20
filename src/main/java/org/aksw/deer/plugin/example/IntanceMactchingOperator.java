@@ -3,6 +3,8 @@ package org.aksw.deer.plugin.example;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,10 +52,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-	
+		System.out.println(" wo ist das 1");
+
 		System.out.println(" -abc- ");
 		// create an empty model
 		Model model = ModelFactory.createDefaultModel();
+
+		dynamicPrefix();
 
 		// dynamicPrefix();
 
@@ -84,14 +89,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		File file = new File(filename);
 		String content = null;
 		try {
-			content = FileUtils.readFileToString(file,  "UTF-8");
+			content = FileUtils.readFileToString(file, "UTF-8");
 			FileUtils.write(file, content, "UTF-8");
 			System.out.println(" a nc d a-2 ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	 
 
 		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
 		// System.out.println("ourModel : " + ourModel);
@@ -326,6 +330,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	public void dynamicPrefix() {
 
+		System.out.println(" wo ist das -33 ali2 ");
+
 		prefixMap = new HashMap<String, String>();// Creating HashMap
 
 		String prefix, prefixValue;
@@ -345,8 +351,38 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 					prefixMap.put(prefix, prefixValue);
 				}
 			}
+
+			Scanner myReader2 = new Scanner(tempDataFile);
+
+			while (myReader2.hasNextLine()) {
+				String Line = myReader2.nextLine();
+
+				if (Line.contains("<http://")) {
+					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
+
+					URL aURL = new URL(subjecturl);
+
+					String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+
+					int index1 = temp.lastIndexOf('/');
+					String prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
+
+					System.out.println("prefixV: " + prefixV);
+
+					// String[] temp2 = temp.split(regex)
+
+					System.out.println(" wo ist das -33 " + temp);
+
+					// prefix = Line.substring(8, 11);
+					// this should will done in the new util method
+					// prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<",
+					// "").replaceAll("> .", "");// .replaceAll(":",
+					// prefixMap.put(prefix, prefixValue);
+				}
+			}
+
 			myReader.close();
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException | MalformedURLException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
