@@ -48,161 +48,90 @@ import org.slf4j.LoggerFactory;
 public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator {
 
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
-
-	public static final Property SUBJECT = DEER.property("subject");
-	public static final Property PREDICATE = DEER.property("predicate");
-	public static final Property OBJECT = DEER.property("object");
-	public static final Property SELECTOR = DEER.property("selector");
-	public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
-
 	public HashMap<String, String> prefixMap;
 
 	public IntanceMactchingOperator() {
-
 		super();
 	}
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder().declareProperty(SELECTOR).declareProperty(SPARQL_CONSTRUCT_QUERY)
+		return ValidatableParameterMap.builder()
 				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		 
-		 // some definitions
-        String personURI    = "http://somewhere/JohnSmith";
-        String givenName    = "<http://dbpedia.org/resource/Spider-Man_3>";
-        String familyName   = "<http://dbpedia.org/resource/Doctor_Who_(film)>";
-        String fullName     =    "0.4444444444444444";//givenName + " " + familyName;
+		// create an empty model
+		Model model = ModelFactory.createDefaultModel();
 
-        // create an empty model
-        Model model = ModelFactory.createDefaultModel();
-
-        
-        
-        
-        
-        
-        
-        // create the resource
-        //   and add the properties cascading style
-        Resource johnSmith  = model.createResource(personURI)
-             .addProperty(VCARD.FN, fullName)
-             .addProperty(VCARD.N, 
-                      model.createResource()
-                           .addProperty(VCARD.Given, givenName)
-                           .addProperty(VCARD.Family, familyName));
-        
-      
-		
-		//dynamicPrefix();
+		// dynamicPrefix();
 
 		// Model m = new Model();
 		// Model modelOne = ModelFactory.createDefaultModel();
-        
-        
-     // Create a model and read into it from file 
-     // "data.ttl" assumed to be Turtle.
-        
-       // RDFDataMgr.load
-     //   Model ourModel =   model.read("001accepted.nt") ;// RDFDataMgr.loadModel("001accepted.nt", Lang.NT);
-      //RDFDataMgr.loadModel("001accepted.nt") ;
-     
-        
-      
-       
-        
-        /*
-         * working fine for NT
-        Model ourModel = RDFDataMgr.loadModel("xyznt.nt") ;
-        System.out.println("ourModel : " + ourModel);
-         */
-        
-        /*
-        * working fine
-        *  Model ourModel = RDFDataMgr.loadModel("abc.ttl") ;
-        System.out.println("ourModel : " + ourModel);
-        */
-        
-        //File initialFile = new File("001accepted.nt");
-       // InputStream targetStream = null;
-        String filename = "001accepted.nt";
-        File file = new File(filename);
-        String content = null;
+
+		// Create a model and read into it from file
+		// "data.ttl" assumed to be Turtle.
+
+		// RDFDataMgr.load
+		// Model ourModel = model.read("001accepted.nt") ;//
+		// RDFDataMgr.loadModel("001accepted.nt", Lang.NT);
+		// RDFDataMgr.loadModel("001accepted.nt") ;
+
+		/*
+		 * working fine for NT Model ourModel = RDFDataMgr.loadModel("xyznt.nt") ;
+		 * System.out.println("ourModel : " + ourModel);
+		 */
+
+		/*
+		 * working fine Model ourModel = RDFDataMgr.loadModel("abc.ttl") ;
+		 * System.out.println("ourModel : " + ourModel);
+		 */
+
+		// File initialFile = new File("001accepted.nt");
+		// InputStream targetStream = null;
+		String filename = "001accepted.nt";
+		File file = new File(filename);
+		String content = null;
 		try {
 			content = FileUtils.readFileToString(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        try {
+		try {
 			FileUtils.write(file, content, "UTF-8");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        
-        Model ourModel = RDFDataMgr.loadModel("001accepted.nt") ;
-        // System.out.println("ourModel : " + ourModel);
-	 
-       
-		
-	//	Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
 
-    //    Model ourModel =   model.read(targetStream, null,  "N-TRIPLE");
-        		
-        		//read("001accepted.nt", "N-TRIPLES") ;
-     //   System.out.println("ourModel : " + ourModel);
-        
+		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
+		// System.out.println("ourModel : " + ourModel);
 
-		//Configuration con = createLimeConfigurationFile();
+		// Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
+
+		// Model ourModel = model.read(targetStream, null, "N-TRIPLE");
+
+		// read("001accepted.nt", "N-TRIPLES") ;
+		// System.out.println("ourModel : " + ourModel);
+
+		// Configuration con = createLimeConfigurationFile();
 		// System.out.println("Just running Limes into it KHD");
-	   //callLimes(con);
+		// callLimes(con);
 
 		// create an empty Model
 		// Model model = ModelFactory.createDefaultModel();
 
- 		
-		
-		
-				 
 		return List.of(ourModel);
-	}
-
-	private Model filterModel(Model model) { // 4
-
-		final Model resultModel = ModelFactory.createDefaultModel();
-		final Optional<RDFNode> sparqlQuery = getParameterMap().getOptional(SPARQL_CONSTRUCT_QUERY);
-		if (sparqlQuery.isPresent()) {
-			logger.info("Executing SPARQL CONSTRUCT query for " + getId() + " ...");
-			return QueryExecutionFactory.create(sparqlQuery.get().asLiteral().getString(), model).execConstruct();
-		} else {
-			getParameterMap().listPropertyObjects(SELECTOR).map(RDFNode::asResource).forEach(selectorResource -> {
-				RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
-				RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
-				Resource o = selectorResource.getPropertyResourceValue(OBJECT);
-
-				logger.info("Running filter " + getId() + " for triple pattern {} {} {} ...",
-						s == null ? "[]" : "<" + s.asResource().getURI() + ">",
-						p == null ? "[]" : "<" + p.asResource().getURI() + ">",
-						o == null ? "[]" : "(<)(\")" + o.toString() + "(\")(>)");
-				SimpleSelector selector = new SimpleSelector(s == null ? null : s.asResource(),
-						p == null ? null : p.as(Property.class), o);
-				resultModel.add(model.listStatements(selector));
-			});
-		}
-		return resultModel;
 	}
 
 	public Configuration createLimeConfigurationFile() {
 		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
 
-		// This weeks task add prefix dynamically 
+		// This weeks task add prefix dynamically
 		dynamicPrefix();
 
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
@@ -281,10 +210,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		// Acceptance
 		conf.setAcceptanceThreshold(0.2);
-		 
+
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
-	 
 
 		// Review
 		conf.setVerificationThreshold(0.1);
@@ -297,7 +225,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setExecutionEngine("default");
 
 		// Output format CSV etc
-		conf.setOutputFormat("TTL"); //NT or TTL
+		conf.setOutputFormat("TTL"); // NT or TTL
 
 		// RDFConfigurationWriter writer = new RDFConfigurationWriter();
 
@@ -337,15 +265,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-		
-		
-	
 
-		 System.out.println(" __Khalid___mappings.getAcceptanceMapping() : "  + mappings.getAcceptanceMapping());
-		 System.out.println(" __Khalid___ mappings.getStatistics() : "  +  mappings.getStatistics());
-		
-		 
-		
+		System.out.println(" __Khalid___mappings.getAcceptanceMapping() : " + mappings.getAcceptanceMapping());
+		System.out.println(" __Khalid___ mappings.getStatistics() : " + mappings.getStatistics());
+
 		/*
 		 * System.out.println("mappings.getAcceptanceMapping() : " +
 		 * mappings.getAcceptanceMapping());
@@ -421,11 +344,12 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		String prefix, prefixValue;
 		try {
-			
+
 			// We will this data from team eventually
 			File tempDataFile = new File("bookEntityFileSource.ttl");
 			Scanner myReader = new Scanner(tempDataFile);
-			// We need this loop to run for every line as we don't know where the prefix can be found in the data file.
+			// We need this loop to run for every line as we don't know where the prefix can
+			// be found in the data file.
 			while (myReader.hasNextLine()) {
 				String Line = myReader.nextLine();
 				if (Line.contains("@prefix")) {
