@@ -52,36 +52,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		System.out.println(" wo ist das 1");
-
-		System.out.println(" -abc- ");
-		// create an empty model
 		Model model = ModelFactory.createDefaultModel();
 
 		dynamicPrefix();
-
-		// dynamicPrefix();
-
-		// Model m = new Model();
-		// Model modelOne = ModelFactory.createDefaultModel();
-
-		// Create a model and read into it from file
-		// "data.ttl" assumed to be Turtle.
-
-		// RDFDataMgr.load
-		// Model ourModel = model.read("001accepted.nt") ;//
-		// RDFDataMgr.loadModel("001accepted.nt", Lang.NT);
-		// RDFDataMgr.loadModel("001accepted.nt") ;
-
-		/*
-		 * working fine for NT Model ourModel = RDFDataMgr.loadModel("xyznt.nt") ;
-		 * System.out.println("ourModel : " + ourModel);
-		 */
-
-		/*
-		 * working fine Model ourModel = RDFDataMgr.loadModel("abc.ttl") ;
-		 * System.out.println("ourModel : " + ourModel);
-		 */
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -96,28 +69,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
-		// System.out.println("ourModel : " + ourModel);
-
-		// Model ourModel = model.read(targetStream, null, "N-TRIPLES") ;
-
-		// Model ourModel = model.read(targetStream, null, "N-TRIPLE");
-
-		// read("001accepted.nt", "N-TRIPLES") ;
-		// System.out.println("ourModel : " + ourModel);
-
-		// Configuration con = createLimeConfigurationFile();
-		// System.out.println("Just running Limes into it KHD");
-		// callLimes(con);
-
-		// create an empty Model
-		// Model model = ModelFactory.createDefaultModel();
 
 		return List.of(ourModel);
 	}
 
 	public Configuration createLimeConfigurationFile() {
+
 		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
 
@@ -217,16 +175,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// Output format CSV etc
 		conf.setOutputFormat("TTL"); // NT or TTL
 
-		// RDFConfigurationWriter writer = new RDFConfigurationWriter();
-
-		/*
-		 * try { System.out.println("Just wrting to a file"); writer.write(conf,
-		 * "F:/Data/test10.ttl", "TTL");
-		 * 
-		 * } catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
-
 		return conf;
 	}
 
@@ -256,73 +204,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
 
-		System.out.println(" __Khalid___mappings.getAcceptanceMapping() : " + mappings.getAcceptanceMapping());
-		System.out.println(" __Khalid___ mappings.getStatistics() : " + mappings.getStatistics());
-
-		/*
-		 * System.out.println("mappings.getAcceptanceMapping() : " +
-		 * mappings.getAcceptanceMapping());
-		 * 
-		 * 
-		 * [http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai ->
-		 * (http://dbpedia.org/resource/Vaathiyaar_Veettu_Pillai|1.0)]
-		 * [http://dbpedia.org/resource/Malaiyoor_Mambattiyan ->
-		 * (http://dbpedia.org/resource/Malaiyoor_Mambattiyan|1.0)]
-		 * [http://dbpedia.org/resource/Lumière_and_Company ->
-		 * (http://dbpedia.org/resource/Lumière_and_Company|1.0)]
-		 * [http://dbpedia.org/resource/Lovin'_Molly ->
-		 * (http://dbpedia.org/resource/Lovin'_Molly|1.0)]
-		 * [http://dbpedia.org/resource/Lust_in_the_Dust ->
-		 * (http://dbpedia.org/resource/Lust_in_the_Dust|1.0)]
-		 * [http://dbpedia.org/resource/Vampariah ->
-		 * (http://dbpedia.org/resource/Vampariah|1.0)]
-		 * [http://dbpedia.org/resource/Mabel's_Lovers ->
-		 * (http://dbpedia.org/resource/Mabel's_Lovers|1.0)]
-		 * [http://dbpedia.org/resource/Unknown_Sender_(film) ->
-		 * (http://dbpedia.org/resource/Unknown_Sender_(film)|1.0)]
-		 * [http://dbpedia.org/resource/United_(2003_film) ->
-		 * (http://dbpedia.org/resource/United_(2003_film)|1.0)]
-		 * [http://dbpedia.org/resource/Consuelita ->
-		 * (http://dbpedia.org/resource/Consuelita|1.0)]
-		 * [http://dbpedia.org/resource/Lucky_Luke_(2009_film) ->
-		 * (http://dbpedia.org/resource/Lucky_Luke_(2009_film)|1.0)]
-		 * [http://dbpedia.org/resource/Un_uomo_a_metà ->
-		 * (http://dbpedia.org/resource/Un_uomo_a_metà|1.0)]
-		 * [http://dbpedia.org/resource/Vaadaka_Gunda ->
-		 * (http://dbpedia.org/resource/Vaadaka_Gunda|1.0)]
-		 * [http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F ->
-		 * (http://dbpedia.org/resource/Uu_Kodathara%3F_Ulikki_Padathara%3F|1.0)]
-		 * [http://dbpedia.org/resource/Unchained_(film) ->
-		 * (http://dbpedia.org/resource/Unchained_(film)|1.0)]
-		 * [http://dbpedia.org/resource/Main_Aur_Mr._Riight ->
-		 * (http://dbpedia.org/resource/Main_Aur_Mr._Riight|1.0)]
-		 * [http://dbpedia.org/resource/Uchathula_Shiva ->
-		 * (http://dbpedia.org/resource/Uchathula_Shiva|1.0)]
-		 * [http://dbpedia.org/resource/Love_per_Square_Foot ->
-		 * (http://dbpedia.org/resource/Love_per_Square_Foot|1.0)]
-		 * [http://dbpedia.org/resource/Lover_Come_Back_(1961_film) ->
-		 * (http://dbpedia.org/resource/Lover_Come_Back_(1961_film)|1.0)]
-		 * [http://dbpedia.org/resource/Uppena ->
-		 * (http://dbpedia.org/resource/Uppena|1.0)]
-		 * [http://dbpedia.org/resource/Contragolpe ->
-		 * (http://dbpedia.org/resource/Contragolpe|1.0)]
-		 * [http://dbpedia.org/resource/Undead_(film) ->
-		 * (http://dbpedia.org/resource/Undead_(film)|1.0)]
-		 * [http://dbpedia.org/resource/Madras_(film) ->
-		 * (http://dbpedia.org/resource/Madras_(film)|1.0)]
-		 * 
-		 * 
-		 */
-		/*
-		 * System.out.println("config.getAcceptanceRelation() : " +
-		 * config.getAcceptanceRelation());
-		 * System.out.println("acceptanceFile.getAbsolutePath() : " +
-		 * acceptanceFile.getAbsolutePath());
-		 * 
-		 * config.getAcceptanceRelation() : http://www.w3.org/2002/07/owl#sameAs
-		 * acceptanceFile.getAbsolutePath() :
-		 * F:\Newfolder\deer-plugin-starter\accepted.nt
-		 */
+		// System.out.println(" __test___mappings.getAcceptanceMapping() : " +
+		// mappings.getAcceptanceMapping());
+		// System.out.println(" __test___ mappings.getStatistics() : " +
+		// mappings.getStatistics());
 
 		System.out.println(" -Completed- ");
 
@@ -352,8 +237,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 					prefixValue = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));// .replaceAll(":",
 					System.out.println("prefixValue:::: " + prefixValue);
 
-					// prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<",
-					// "").replaceAll("> .", "");// .replaceAll(":",
 					prefixMap.put(prefix, prefixValue);
 				}
 			}
@@ -362,45 +245,25 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			while (myReader2.hasNextLine()) {
 
-				int i = 1;
 				String Line = myReader2.nextLine();
 
 				if (Line.contains("<http://")) {
 					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
-
 					URL aURL = new URL(subjecturl);
-
 					String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-
-					int index1 = temp.lastIndexOf('/');
 					String prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
-					i = i + 1;
-					/// creating prefix key
 
+					/// creating prefix key
 					String prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
 
-					System.out.println(" aURL.getHost().substring(0, 2)  : " + aURL.getHost().substring(0, 2));
-					System.out.println("aURL.getPath().substring(1, 2) : " + aURL.getPath().substring(1, 2));
-
 					prefixMap.put(prefixKey, prefixV);
-
-					System.out.println("prefixV: " + prefixV);
-
-					// String[] temp2 = temp.split(regex)
-
-					System.out.println(" wo ist das -33 " + temp);
-
-					// prefix = Line.substring(8, 11);
-					// this should will done in the new util method
-					// prefixValue = Line.substring(13, Line.length()).trim().replaceAll("<",
-					// "").replaceAll("> .", "");// .replaceAll(":",
-					// prefixMap.put(prefix, prefixValue);
 				}
 
 			}
-			System.out.println(" wo ist das prefixMap " + prefixMap);
+			System.out.println(" prefixMap " + prefixMap);
 
 			myReader.close();
+			myReader2.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
