@@ -54,11 +54,16 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		Model model = ModelFactory.createDefaultModel();
 
-		dynamicPrefix();
+
+		// Configuration con = createLimeConfigurationFile();
+		// callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
-		String filename = "001accepted.nt";
+		
+		//002accepted.nt file contains the output of LIMES
+		//between movies from yago and films from Dbpedia
+		String filename = "002accepted.nt";
 		File file = new File(filename);
 		String content = null;
 		try {
@@ -69,7 +74,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Model ourModel = RDFDataMgr.loadModel("001accepted.nt");
+		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 
 		return List.of(ourModel);
 	}
@@ -157,7 +162,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.2);
+		conf.setAcceptanceThreshold(0.9);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
@@ -173,7 +178,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setExecutionEngine("default");
 
 		// Output format CSV etc
-		conf.setOutputFormat("TTL"); // NT or TTL
+		conf.setOutputFormat("NT"); // NT or TTL
 
 		return conf;
 	}
@@ -189,8 +194,15 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		 */
 
 		LimesResult mappings = Controller.getMapping(config);
+
+		System.out.println("mappings-khd- : " + mappings.getStatistics());
+		System.out.println("mappings-khd- : " + mappings.getClass());
+		System.out.println("mappings-kh- : " + mappings.toString());
+
 		String outputFormat = config.getOutputFormat();
 		ISerializer output = SerializerFactory.createSerializer(outputFormat);
+
+		// mappings.toString();
 
 		output.setPrefixes(config.getPrefixes());
 
@@ -214,8 +226,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	public void dynamicPrefix() {
-
-		System.out.println(" wo ist das -33 ali2 ");
+//https://stackoverflow.com/questions/27745/getting-parts-of-a-url-regex
 
 		prefixMap = new HashMap<String, String>();// Creating HashMap
 
