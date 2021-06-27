@@ -1,6 +1,9 @@
 @prefix dbo:	<http://dbpedia.org/ontology/> .
 @prefix dbr:	<http://dbpedia.org/resource/> .
 dbr:Paper	dbo:wikiPageWikiLink	dbr:Book .
+<http://www.facebook.org/1999/02/22-syntax-ns#asdasd> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+<http://dbpedia.org/resource/1000_Blank_White_Cards> .
 dbr:Museum_integrated_pest_management	dbo:wikiPageWikiLink	dbr:Book .
 dbr:Aspergillus_penicillioides	dbo:wikiPageWikiLink	dbr:Book .
 dbr:Hippocampus_Press	dbo:wikiPageWikiLink	dbr:Book .
