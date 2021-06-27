@@ -63,8 +63,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		
+
 		dynamicPrefix();
 
 		spark();
@@ -335,70 +334,39 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
 
-		
-
 			if (predicate.contains("#")) {
 				// http://www.w3.org/2002/07/owl#sameAs=903475
 				System.out.println("****************-URL with Hash********************");
+				System.out.print("predicate : " + predicate);
 
-				String predicatePrefixKey;
-				String predicatePrefixValue;
-				String predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#"),
+				String predicatePrefixKey, predicatePrefixValue;
+				String predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#") + 1,
 						predicate.length());
-				/// creating prefix key
 
+				/// creating prefix key
 				URL aURL = null;
 				try {
 					aURL = new URL(predicate);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-				
+
 				/// creating predicatePrefixKey
 				if (aURL.getHost().contains("www.")) {
 					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 				} else {
 					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 				}
-				
-				/// predicatePrefixValue
-				
-
-			 
-				String temp2 = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + aURL.getFile();
 
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-				
-				//String prefixV = temp.substring(0, temp.indexOf("#"));
-				
-				System.out.println(" predicate : " + predicate);
+
 				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
 				System.out.println(" predicatePrefixValue : " + predicatePrefixValue);
 				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
-				//System.out.println(" temp2 here : " + temp2);
-				
-				//System.out.println(" temp aURL.aURL.aURL(); : " +  aURL);
-		        //System.out.println("temp aURL.getRef( :- " + aURL.getRef());
-		        //System.out.println("Reference:- " + aURL.getF());
-
-
-				
-				//System.out.println(" predicatePrefixValue : " + prefixV);
-				
 				System.out.println("-------------------------------------------------");
-				// System.out.println(" aURL.getHost() abc-1 : " + aURL.getHost() );
-				// System.out.println(" aURL.getPath(): " + aURL.getPath() );
-
-				// String predicatePrefixKey = aURL.getHost().substring(0, 2) +
-				// aURL.getPath().substring(1, 2);
-
-				// System.out.println(" predicatePrefix 1: " + predicatePrefix );
-
-				// System.out.println(" predicatePrefixKey 1: " + predicatePrefixKey );
-
 			} else {
 				System.out.println("****************-URL without Hash********************");
-
+				System.out.print("predicate : " + predicate);
 			}
 
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
@@ -489,30 +457,19 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 }
 
-
-
-
-
-
-
-
-
 /*
- * ------------------------------------------------
- predicate : http://www.w3.org/1999/02/22-rdf-syntax-ns#type
- 
- 
- prefixKey: w3199
- predicatePrefixValue  http://www.w3.org/1999/02/22-rdf-syntax-ns#
- predicatePrefixValue2 1: #type
- 
- 
- w3199:type
-------------------------------------------------------------
- 
- ns5=http://dbpedia.org/resource/Think
- 
- key = ns5
- value = http://dbpedia.org/resource/Think
+ * ------------------------------------------------ predicate :
+ * http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+ * 
+ * 
+ * prefixKey: w3199 predicatePrefixValue
+ * http://www.w3.org/1999/02/22-rdf-syntax-ns# predicatePrefixValue2 1: #type
+ * 
+ * 
+ * w3199:type ------------------------------------------------------------
+ * 
+ * ns5=http://dbpedia.org/resource/Think
+ * 
+ * key = ns5 value = http://dbpedia.org/resource/Think
  *
  */
