@@ -80,8 +80,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		// Configuration con = createLimeConfigurationFile();
-		// callLimes(con);
+		 Configuration con = createLimeConfigurationFile();
+		 callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -123,7 +123,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("url", "http://schema.org/");
-		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		
 		conf.addPrefix("dbpo", "http://dbpedia.org/ontology/");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
@@ -286,7 +286,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				String predicatePrefixValue;
 
 				// System.out.println("khan Red alert subjecturl" + Line);
-				if (Line.contains("<http://")) {
+				if (Line.contains("@prefix")) {
+					
+				}
+				else if(Line.contains("<http://")) {
 					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
 
 					if (subjecturl.contains("#")) {
