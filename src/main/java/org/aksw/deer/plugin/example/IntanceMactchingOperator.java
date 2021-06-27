@@ -3,6 +3,7 @@ package org.aksw.deer.plugin.example;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +63,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+		
+		
+		dynamicPrefix();
 
 		spark();
 		Object[] property = propertyMap.keySet().toArray();
@@ -77,8 +81,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		Configuration con = createLimeConfigurationFile();
-		callLimes(con);
+		// Configuration con = createLimeConfigurationFile();
+		// callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -293,7 +297,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				}
 
 			}
-			System.out.println(" prefixMap " + prefixMap);
+			System.out.println(" let check prefixMap " + prefixMap);
 
 			myReader.close();
 			myReader2.close();
@@ -309,12 +313,11 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	public void spark() {
-		
+
 		Model mop = ModelFactory.createDefaultModel();
 
-		addStatement("sss", "ppp", "ooo",mop);
+		addStatement("sss", "ppp", "ooo", mop);
 		System.out.println("Ali Header  " + mop);
-		
 
 		propertyMap = new HashMap<String, Integer>();
 
@@ -329,8 +332,92 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 
 		resultOne.forEachRemaining(qsol -> {
+			String predicate = qsol.getResource("predicate").toString();
+			int PredicateCount = qsol.getLiteral("count").getInt();
+
+			System.out.println(" -khalid- : ");
+
+			if (predicate.contains("#")) {
+				System.out.println(" --ali-");
+				// http://www.w3.org/2002/07/owl#sameAs=903475
+
+				String predicatePrefix = (String) predicate.subSequence(0, predicate.indexOf("#"));
+		
+				
+				
+				String predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#"),
+						predicate.length());
+				/// creating prefix key
+
+				URL aURL = null;
+				try {
+					aURL = new URL(predicate);
+					//URI uri = new URI(aURL);
+					
+					URL url=new URL(predicate);    
+					System.out.println("Protocol: "+predicate); 
+					System.out.println("Protocol: "+url.getProtocol());    
+					System.out.println("Host Name: "+url.getHost());    
+					System.out.println("Port Number: "+url.getPort());    
+					System.out.println("Default Port Number: "+url.getDefaultPort());    
+					System.out.println("Query String: "+url.getQuery());    
+					System.out.println("Path: "+url.getPath());    
+					System.out.println("File: "+url.getFile());    
+					  
+					
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			 
+				String temp2 = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + aURL.getPath() + aURL.getFile();
+
+				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+				
+				//String prefixV = temp.substring(0, temp.indexOf("#"));
+				
+				String predicatePrefixKey = null;
+				/// creating prefix key
+				if (aURL.getHost().contains("www.")) {
+					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+
+				} else {
+					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+				}
+
+				System.out.println("-------------------------------------------------");
+				System.out.println(" predicate : " + predicate);
+				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
+				System.out.println(" temp : " + temp);
+				System.out.println(" temp2 : " + temp2);
+				
+				System.out.println(" temp aURL.aURL.aURL(); : " +  aURL);
+		        System.out.println("temp aURL.getRef( :- " + aURL.getRef());
+		        //System.out.println("Reference:- " + aURL.getF());
+
+
+				
+				//System.out.println(" predicatePrefixValue : " + prefixV);
+				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
+				System.out.println("-------------------------------------------------");
+				// System.out.println(" aURL.getHost() abc-1 : " + aURL.getHost() );
+				// System.out.println(" aURL.getPath(): " + aURL.getPath() );
+
+				// String predicatePrefixKey = aURL.getHost().substring(0, 2) +
+				// aURL.getPath().substring(1, 2);
+
+				// System.out.println(" predicatePrefix 1: " + predicatePrefix );
+
+				// System.out.println(" predicatePrefixKey 1: " + predicatePrefixKey );
+
+			} else {
+
+			}
 
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+
 			System.out.println(
 					"khad : " + qsol.getLiteral("count").getInt() + "khad2 : " + qsol.getResource("predicate"));
 
@@ -406,8 +493,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		qe.close();
 	}
 
-
-
 	public void addStatement(String s, String p, String o, Model model) {
 
 		Resource subject = model.createResource(s);
@@ -418,3 +503,31 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 }
+
+
+
+
+
+
+
+
+
+/*
+ * ------------------------------------------------
+ predicate : http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+ 
+ 
+ prefixKey: w3199
+ predicatePrefixValue  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+ predicatePrefixValue2 1: #type
+ 
+ 
+ w3199:type
+------------------------------------------------------------
+ 
+ ns5=http://dbpedia.org/resource/Think
+ 
+ key = ns5
+ value = http://dbpedia.org/resource/Think
+ *
+ */
