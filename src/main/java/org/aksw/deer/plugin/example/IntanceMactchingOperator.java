@@ -283,6 +283,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 				String Line = myReader2.nextLine();
 				String prefixKey = null, prefixV = null;
+				String predicatePrefixValue;
 
 				// System.out.println("khan Red alert subjecturl" + Line);
 				if (Line.contains("<http://")) {
@@ -304,12 +305,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 						}
 
-						
-						
 
-						String predicatePrefixValue = subjecturl.substring(0 , subjecturl.indexOf("#") + 1);
+						predicatePrefixValue = subjecturl.substring(0 , subjecturl.indexOf("#") + 1);
 						String predicatePrefixValue2 = subjecturl.substring(subjecturl.indexOf("#") + 1, subjecturl.length());
-						
 						
 						System.out.println("RedALret prefixKey  :" + prefixKey);
 						System.out.println("RedALret predicatePrefixValue :" + predicatePrefixValue);
@@ -317,15 +315,22 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 
 					} else {
+
 						URL aURL = new URL(subjecturl);
 						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-						prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
+						predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 						/// creating prefix key
-						prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+						//prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+						if (aURL.getHost().contains("www.")) {
+							prefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+						} else {
+							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+						}
+
 
 					}
-
-					prefixMap.put(prefixKey, prefixV);
+					 
+					prefixMap.put(prefixKey, predicatePrefixValue);
 				}
 
 			}
