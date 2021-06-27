@@ -335,16 +335,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
 
-			System.out.println(" -khalid- : ");
+		
 
 			if (predicate.contains("#")) {
-				System.out.println(" --ali-");
 				// http://www.w3.org/2002/07/owl#sameAs=903475
+				System.out.println("****************-URL with Hash********************");
 
-				String predicatePrefix = (String) predicate.subSequence(0, predicate.indexOf("#"));
-		
-				
-				
+				String predicatePrefixKey;
+				String predicatePrefixValue;
 				String predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#"),
 						predicate.length());
 				/// creating prefix key
@@ -352,55 +350,41 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				URL aURL = null;
 				try {
 					aURL = new URL(predicate);
-					//URI uri = new URI(aURL);
-					
-					URL url=new URL(predicate);    
-					System.out.println("Protocol: "+predicate); 
-					System.out.println("Protocol: "+url.getProtocol());    
-					System.out.println("Host Name: "+url.getHost());    
-					System.out.println("Port Number: "+url.getPort());    
-					System.out.println("Default Port Number: "+url.getDefaultPort());    
-					System.out.println("Query String: "+url.getQuery());    
-					System.out.println("Path: "+url.getPath());    
-					System.out.println("File: "+url.getFile());    
-					  
-					
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
-				
-			 
-				String temp2 = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + aURL.getPath() + aURL.getFile();
-
-				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-				
-				//String prefixV = temp.substring(0, temp.indexOf("#"));
-				
-				String predicatePrefixKey = null;
-				/// creating prefix key
+				/// creating predicatePrefixKey
 				if (aURL.getHost().contains("www.")) {
 					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-
 				} else {
 					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 				}
+				
+				/// predicatePrefixValue
+				
 
-				System.out.println("-------------------------------------------------");
+			 
+				String temp2 = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + aURL.getFile();
+
+				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
+				
+				//String prefixV = temp.substring(0, temp.indexOf("#"));
+				
 				System.out.println(" predicate : " + predicate);
 				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
-				System.out.println(" temp : " + temp);
-				System.out.println(" temp2 : " + temp2);
+				System.out.println(" predicatePrefixValue : " + predicatePrefixValue);
+				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
+				//System.out.println(" temp2 here : " + temp2);
 				
-				System.out.println(" temp aURL.aURL.aURL(); : " +  aURL);
-		        System.out.println("temp aURL.getRef( :- " + aURL.getRef());
+				//System.out.println(" temp aURL.aURL.aURL(); : " +  aURL);
+		        //System.out.println("temp aURL.getRef( :- " + aURL.getRef());
 		        //System.out.println("Reference:- " + aURL.getF());
 
 
 				
 				//System.out.println(" predicatePrefixValue : " + prefixV);
-				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
+				
 				System.out.println("-------------------------------------------------");
 				// System.out.println(" aURL.getHost() abc-1 : " + aURL.getHost() );
 				// System.out.println(" aURL.getPath(): " + aURL.getPath() );
@@ -413,6 +397,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				// System.out.println(" predicatePrefixKey 1: " + predicatePrefixKey );
 
 			} else {
+				System.out.println("****************-URL without Hash********************");
 
 			}
 
