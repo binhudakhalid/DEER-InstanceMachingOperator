@@ -1,6 +1,12 @@
 @prefix dbo:	<http://dbpedia.org/ontology/> .
 @prefix dbr:	<http://dbpedia.org/resource/> .
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:	<http://www.w3.org/2002/07/owl#> .
+@prefix url:	<http://schema.org/> .
+@prefix dbpo:	<http://dbpedia.org/ontology/> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+
+
 dbr:Paper	dbo:wikiPageWikiLink	dbr:Book .
 <http://www.facebook.org/1999/02/22-syntax-ns#asdasd> .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
