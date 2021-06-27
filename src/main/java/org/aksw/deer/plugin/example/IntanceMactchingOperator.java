@@ -2,7 +2,6 @@ package org.aksw.deer.plugin.example;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,10 +22,21 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
-import org.apache.commons.io.FileUtils;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.resultset.RDFOutput;
+import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +48,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 	public HashMap<String, String> prefixMap;
+	public HashMap<String, Integer> propertyMap;
 
 	public IntanceMactchingOperator() {
 		super();
@@ -52,28 +63,29 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
+		spark();
+
 		Model model = ModelFactory.createDefaultModel();
 
+		// DOn't need to uncomment these line as you don't want
+		// to run as the output is already is saved in 002accepted.nt
+		// and it takes atleast 1 hour to execute.
 
 		// Configuration con = createLimeConfigurationFile();
 		// callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
-		
-		//002accepted.nt file contains the output of LIMES
-		//between movies from yago and films from Dbpedia
-		String filename = "002accepted.nt";
-		File file = new File(filename);
-		String content = null;
-		try {
-			content = FileUtils.readFileToString(file, "UTF-8");
-			FileUtils.write(file, content, "UTF-8");
-			System.out.println(" a nc d a-2 ");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		// 002accepted.nt file contains the output of LIMES
+		// between movies from yago and films from Dbpedia
+		/*
+		 * String filename = "002accepted.nt"; File file = new File(filename); String
+		 * content = null; try { content = FileUtils.readFileToString(file, "UTF-8");
+		 * FileUtils.write(file, content, "UTF-8"); System.out.println(" a nc d a-2 ");
+		 * } catch (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 
 		return List.of(ourModel);
@@ -284,6 +296,98 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void spark() {
+		
+		propertyMap = new  HashMap<String, Integer>();
+
+		QueryExecution qe = QueryExecutionFactory.sparqlService(
+
+				"http://dbpedia.org/sparql",
+				"SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
+						+ "  ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Movie> .\r\n"
+						+ "  ?s ?predicate ?o .\r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )"
+						+ "LIMIT 10");
+
+		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+
+		resultOne.forEachRemaining(qsol -> {
+		
+			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+			System.out.println(
+					"khad : " + qsol.getLiteral("count").getInt() + "khad2 : " + qsol.getResource("predicate"));
+
+		});
+		
+		System.out.println("Here am I : " + propertyMap);
+
+		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
+
+		// some definitions
+		String personURI = "http://somewhere/JohnSmith";
+		String givenName = "John";
+		String familyName = "Smith";
+		String fullName = givenName + " " + familyName;
+
+		// create an empty model
+		Model model = ModelFactory.createDefaultModel();
+
+		// create the resource
+		// and add the properties cascading style
+		Resource johnSmith = model.createResource(personURI).addProperty(VCARD.FN, fullName).addProperty(VCARD.N,
+				model.createResource().addProperty(VCARD.Given, givenName).addProperty(VCARD.Family, familyName));
+
+		model.add(johnSmith, VCARD.Given, "abc");
+		// System.out.println(" The Test" + model.getResource("));
+
+		Model abc = RDFOutput.encodeAsModel(resultOne);
+
+		System.out.println(" under me ");
+		abc.write(System.out, "N-TRIPLES");
+
+		System.out.println(" tttest : " + RDFOutput.encodeAsRDF(abc, false).toString());
+
+		// Model abc = RDFOutput.asModel(resultOne);
+		// RDFOutput.encodeAsRDF(model, resultOne);//(model,
+		// booleanResult);//encodeAsModel(resultOne);
+		System.out.println("ali haider" + abc.getReader() + "ali haider");
+
+		// String text1 = ResultSetFormatter.to();
+
+		StmtIterator iter = abc.listStatements();
+
+		// print out the predicate, subject and object of each statement
+		while (iter.hasNext()) {
+			Statement stmt = iter.nextStatement(); // get next statement
+			Resource subject = stmt.getSubject(); // get the subject
+			Property predicate = stmt.getPredicate(); // get the predicate
+			RDFNode object = stmt.getObject(); // get the object
+
+			System.out.print(" waee : " + subject.toString());
+			System.out.print(" waee2 " + predicate.toString() + " s0d-o ");
+			if (object instanceof Resource) {
+				System.out.print(object.toString());
+			} else {
+				// object is a literal
+				System.out.print(" \"" + object.toString() + "\"");
+			}
+
+			System.out.println(" .");
+		}
+
+		ResultSet result1 = qe.execSelect();
+		String text1 = ResultSetFormatter.asText(result1);
+		System.out.println("text1;1" + text1);
+
+		ResultSet results = qe.execSelect();
+
+		System.out.println(" bos1 m  " + results.getResourceModel());
+		ResultSetFormatter.out(System.out, results);
+
+		System.out.println("me " + results);
+
+		qe.close();
 	}
 
 }

@@ -34,7 +34,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		System.out.println(" Data from InstanceMatchingOperator " + models.get(0));
+		//System.out.println(" Data from InstanceMatchingOperator " + models.get(0));
 
 		// list the statements in the Model from Instance Matching
 		StmtIterator iter = models.get(0).listStatements();
@@ -46,16 +46,16 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 			Property predicate = stmt.getPredicate(); // get the predicate
 			RDFNode object = stmt.getObject(); // get the object
 
-			System.out.print(subject.toString());
-			System.out.print(" " + predicate.toString() + " s0d-o ");
+			//System.out.print(subject.toString());
+			//System.out.print(" " + predicate.toString() + " s0d-o ");
 			if (object instanceof Resource) {
-				System.out.print(object.toString());
+				//System.out.print(object.toString());
 			} else {
 				// object is a literal
-				System.out.print(" \"" + object.toString() + "\"");
+				//System.out.print(" \"" + object.toString() + "\"");
 			}
 
-			System.out.println(" .");
+			//System.out.println(" .");
 		}
 
 		/// ConsolidationOperator team, add your code here
