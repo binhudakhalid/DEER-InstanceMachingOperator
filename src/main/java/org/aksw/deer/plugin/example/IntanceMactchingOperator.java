@@ -64,6 +64,12 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	protected List<Model> safeApply(List<Model> models) { // 3
 
 		spark();
+		Object[] property = propertyMap.keySet().toArray();
+		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
+
+		for (int i = 0; i < strArr.length; i++) {
+			System.out.println("strArr: " + strArr[i]);
+		}
 
 		Model model = ModelFactory.createDefaultModel();
 
@@ -71,8 +77,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		// Configuration con = createLimeConfigurationFile();
-		// callLimes(con);
+		Configuration con = createLimeConfigurationFile();
+		callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -125,6 +131,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
+
+		Object[] property = propertyMap.keySet().toArray();
+		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
+
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 
 		Map<String, String> prefixes = new HashMap<String, String>();
@@ -300,7 +310,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	public void spark() {
 		
-		propertyMap = new  HashMap<String, Integer>();
+		Model mop = ModelFactory.createDefaultModel();
+
+		addStatement("sss", "ppp", "ooo",mop);
+		System.out.println("Ali Header  " + mop);
+		
+
+		propertyMap = new HashMap<String, Integer>();
 
 		QueryExecution qe = QueryExecutionFactory.sparqlService(
 
@@ -313,13 +329,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 
 		resultOne.forEachRemaining(qsol -> {
-		
+
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
 			System.out.println(
 					"khad : " + qsol.getLiteral("count").getInt() + "khad2 : " + qsol.getResource("predicate"));
 
 		});
-		
+
 		System.out.println("Here am I : " + propertyMap);
 
 		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
@@ -388,6 +404,17 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println("me " + results);
 
 		qe.close();
+	}
+
+
+
+	public void addStatement(String s, String p, String o, Model model) {
+
+		Resource subject = model.createResource(s);
+		Property predicate = model.createProperty(p);
+		RDFNode object = model.createResource(o);
+		Statement stmt = model.createStatement(subject, predicate, object);
+		model.add(stmt);
 	}
 
 }
