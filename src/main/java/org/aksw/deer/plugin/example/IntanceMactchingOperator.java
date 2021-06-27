@@ -333,25 +333,24 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-
+			String predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
+			URL aURL = null;
 			if (predicate.contains("#")) {
 				// http://www.w3.org/2002/07/owl#sameAs=903475
 				System.out.println("****************-URL with Hash********************");
-				System.out.print("predicate : " + predicate);
+				System.out.println("predicate : " + predicate);
 
-				String predicatePrefixKey, predicatePrefixValue;
-				String predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#") + 1,
-						predicate.length());
+				predicatePrefixValue2 = (String) predicate.subSequence(predicate.indexOf("#") + 1, predicate.length());
 
 				/// creating prefix key
-				URL aURL = null;
+				aURL = null;
 				try {
 					aURL = new URL(predicate);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
 
-				/// creating predicatePrefixKey
+				/// creating predicate Prefix Key
 				if (aURL.getHost().contains("www.")) {
 					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 				} else {
@@ -366,7 +365,33 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				System.out.println("-------------------------------------------------");
 			} else {
 				System.out.println("****************-URL without Hash********************");
-				System.out.print("predicate : " + predicate);
+				System.out.println("predicate : " + predicate);
+
+				// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
+
+				try {
+					aURL = new URL(predicate);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				/// creating prefix key
+				/// creating predicate Prefix Key
+				if (aURL.getHost().contains("www.")) {
+					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+				} else {
+					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+				}
+				//predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+
+				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
+				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
+				
+				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
+				System.out.println(" predicatePrefixValue prefixV : " + predicatePrefixValue);
+				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
+				System.out.println("-------------------------------------------------");
+
 			}
 
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
