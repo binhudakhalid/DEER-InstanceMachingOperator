@@ -374,10 +374,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				}
 
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-
-				/*System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
-				System.out.println(" predicatePrefixValue : " + predicatePrefixValue);
-				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);*/
 				System.out.println("-------------------------------------------------");
 			} else {
 				System.out.println("****************-URL without Hash********************");
@@ -390,91 +386,27 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-				/// creating prefix key
 				/// creating predicate Prefix Key
 				if (aURL.getHost().contains("www.")) {
 					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 				} else {
 					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 				}
-				// predicatePrefixKey = aURL.getHost().substring(0, 2) +
-				// aURL.getPath().substring(1, 2);
 
 				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
 				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-				/*System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
-				System.out.println(" predicatePrefixValue prefixV : " + predicatePrefixValue);
-				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
-				System.out.println("-------------------------------------------------");*/
-
 			}
-
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-
-			System.out.println(
-					"khad : " + qsol.getLiteral("count").getInt() + "khad2 : " + qsol.getResource("predicate"));
 
 		});
 
-		System.out.println("Here am I : " + propertyMap);
+		System.out.println("Here is the log propertyMap : " + propertyMap);
 
 		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
-
-		// some definitions
-		String personURI = "http://somewhere/JohnSmith";
-		String givenName = "John";
-		String familyName = "Smith";
-		String fullName = givenName + " " + familyName;
-
-		// create an empty model
-		Model model = ModelFactory.createDefaultModel();
-
-		// create the resource
-		// and add the properties cascading style
-		Resource johnSmith = model.createResource(personURI).addProperty(VCARD.FN, fullName).addProperty(VCARD.N,
-				model.createResource().addProperty(VCARD.Given, givenName).addProperty(VCARD.Family, familyName));
-
-		model.add(johnSmith, VCARD.Given, "abc");
-		// System.out.println(" The Test" + model.getResource("));
-
-		Model abc = RDFOutput.encodeAsModel(resultOne);
-
-		abc.write(System.out, "N-TRIPLES");
-
-		StmtIterator iter = abc.listStatements();
-
-		// print out the predicate, subject and object of each statement
-		while (iter.hasNext()) {
-			Statement stmt = iter.nextStatement(); // get next statement
-			Resource subject = stmt.getSubject(); // get the subject
-			Property predicate = stmt.getPredicate(); // get the predicate
-			RDFNode object = stmt.getObject(); // get the object
-
-			System.out.print(" waee : " + subject.toString());
-			System.out.print(" waee2 " + predicate.toString() + " s0d-o ");
-			if (object instanceof Resource) {
-				System.out.print(object.toString());
-			} else {
-				// object is a literal
-				System.out.print(" \"" + object.toString() + "\"");
-			}
-
-			System.out.println(" .");
-		}
-
-		ResultSet result1 = qe.execSelect();
-		String text1 = ResultSetFormatter.asText(result1);
-		System.out.println("text1;1" + text1);
-
 		ResultSet results = qe.execSelect();
-
-		System.out.println(" bos1 m  " + results.getResourceModel());
 		ResultSetFormatter.out(System.out, results);
-
-		System.out.println("me " + results);
-
 		qe.close();
 	}
 
