@@ -64,16 +64,12 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
+		
 		dynamicPrefix();
-
-		spark();
-		Object[] property = propertyMap.keySet().toArray();
-		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
-
-		for (int i = 0; i < strArr.length; i++) {
-			System.out.println("strArr: " + strArr[i]);
-		}
-
+		
+		// Querying through Sparql to count the number of predicate of the entity
+		countEntityPredicate();
+	 
 		Model model = ModelFactory.createDefaultModel();
 
 		// DOn't need to uncomment these line as you don't want
@@ -115,15 +111,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 
 		// adding prefix
-		conf.addPrefix("geom", "http://geovocab.org/geometry#");
-		conf.addPrefix("geom", "http://geovocab.org/geometry#");
-		conf.addPrefix("geos", "http://www.opengis.net/ont/geosparql#");
-		conf.addPrefix("lgdo", "http://linkedgeodata.org/ontology/");
-		conf.addPrefix("alie", "https://linkedgeodata.org/ontology/");
-
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
-		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		 
 
 		KBInfo src = new KBInfo();
 
@@ -139,12 +127,15 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 
 		Map<String, String> prefixes = new HashMap<String, String>();
-		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
+		
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		prefixes.put("url", "http://schema.org/");
-		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		prefixes.put("dbpo", "http://dbpedia.org/ontology/");
-		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		
+		System.out.println("prefixMap length : " + prefixMap.size());
+		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
+			String prefixName = entry.getKey();
+			String prefixValue = entry.getValue();
+			prefixes.put(prefixName, prefixValue);
+		}
 
 		src.setPrefixes(prefixes);
 
@@ -170,7 +161,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setTargetInfo(target);
 
 		// Set either Metric or MLALGORITHM
-		// conf.setMetricExpression("geo_hausdorff(x.polygon, y.polygon)");
 		MLImplementationType mlImplementationType = MLImplementationType.UNSUPERVISED;
 		conf.setMlAlgorithmName("wombat simple");
 		conf.setMlImplementationType(mlImplementationType);
@@ -211,10 +201,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// String limesOutputLocation = "F://Newfolder//LIMES//t"; // for output
 
 		String limesOutputLocation = new File("").getAbsolutePath();
-		/*
-		 * String sourceEndpoint = config.getSourceInfo().getEndpoint(); String
-		 * targetEndpoint = config.getTargetInfo().getEndpoint(); int limit = -1;
-		 */
 
 		LimesResult mappings = Controller.getMapping(config);
 
@@ -239,17 +225,11 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
 
-		// System.out.println(" __test___mappings.getAcceptanceMapping() : " +
-		// mappings.getAcceptanceMapping());
-		// System.out.println(" __test___ mappings.getStatistics() : " +
-		// mappings.getStatistics());
-
 		System.out.println(" -Completed- ");
 
 	}
 
 	public void dynamicPrefix() {
-//https://stackoverflow.com/questions/27745/getting-parts-of-a-url-regex
 
 		prefixMap = new HashMap<String, String>();// Creating HashMap
 
@@ -296,7 +276,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
 						prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
 						
-						
 						/// creating prefix key
 						//prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
 						
@@ -327,8 +306,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 						} else {
 							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 						}
-
-
 					}
 					 
 					prefixMap.put(prefixKey, predicatePrefixValue);
@@ -350,7 +327,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 	}
 
-	public void spark() {
+	public void countEntityPredicate() {
 
 		Model mop = ModelFactory.createDefaultModel();
 
@@ -398,9 +375,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 
-				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
+				/*System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
 				System.out.println(" predicatePrefixValue : " + predicatePrefixValue);
-				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
+				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);*/
 				System.out.println("-------------------------------------------------");
 			} else {
 				System.out.println("****************-URL without Hash********************");
@@ -427,10 +404,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-				System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
+				/*System.out.println(" predicatePrefixKey : " + predicatePrefixKey);
 				System.out.println(" predicatePrefixValue prefixV : " + predicatePrefixValue);
 				System.out.println(" predicatePrefixValue2 : " + predicatePrefixValue2);
-				System.out.println("-------------------------------------------------");
+				System.out.println("-------------------------------------------------");*/
 
 			}
 
@@ -464,17 +441,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		Model abc = RDFOutput.encodeAsModel(resultOne);
 
-		System.out.println(" under me ");
 		abc.write(System.out, "N-TRIPLES");
-
-		System.out.println(" tttest : " + RDFOutput.encodeAsRDF(abc, false).toString());
-
-		// Model abc = RDFOutput.asModel(resultOne);
-		// RDFOutput.encodeAsRDF(model, resultOne);//(model,
-		// booleanResult);//encodeAsModel(resultOne);
-		System.out.println("ali haider" + abc.getReader() + "ali haider");
-
-		// String text1 = ResultSetFormatter.to();
 
 		StmtIterator iter = abc.listStatements();
 
