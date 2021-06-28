@@ -64,20 +64,19 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		
 		dynamicPrefix();
-		
+
 		// Querying through Sparql to count the number of predicate of the entity
 		countEntityPredicate();
-	 
+
 		Model model = ModelFactory.createDefaultModel();
 
 		// DOn't need to uncomment these line as you don't want
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		 Configuration con = createLimeConfigurationFile();
-		 callLimes(con);
+		Configuration con = createLimeConfigurationFile();
+		callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -127,9 +126,12 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 
 		Map<String, String> prefixes = new HashMap<String, String>();
-		
+
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+		prefixes.put("yago", "http://yago-knowledge.org/resource/");
+		prefixes.put("schema", "http://schema.org/");
 		
+
 		System.out.println("prefixMap length : " + prefixMap.size());
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
 			String prefixName = entry.getKey();
@@ -151,10 +153,11 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("http://dbpedia.org/sparql");
+		target.setEndpoint("https://yago-knowledge.org/sparql/query");
 		target.setVar("?t");
-		target.setPageSize(-1);
-		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type dbpo:Film" })));
+		target.setPageSize(1000);
+		target.setRestrictions(new ArrayList<String>(
+				Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t  schema:actor yago:Jennifer_Aniston" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
@@ -265,9 +268,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 				// System.out.println("khan Red alert subjecturl" + Line);
 				if (Line.contains("@prefix")) {
-					
-				}
-				else if(Line.contains("<http://")) {
+
+				} else if (Line.contains("<http://")) {
 					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
 
 					if (subjecturl.contains("#")) {
@@ -275,24 +277,23 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 						URL aURL = new URL(subjecturl);
 						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
 						prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
-						
+
 						/// creating prefix key
-						//prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
-						
+						// prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+
 						if (aURL.getHost().contains("www.")) {
 							prefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 						} else {
 							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 						}
 
+						predicatePrefixValue = subjecturl.substring(0, subjecturl.indexOf("#") + 1);
+						String predicatePrefixValue2 = subjecturl.substring(subjecturl.indexOf("#") + 1,
+								subjecturl.length());
 
-						predicatePrefixValue = subjecturl.substring(0 , subjecturl.indexOf("#") + 1);
-						String predicatePrefixValue2 = subjecturl.substring(subjecturl.indexOf("#") + 1, subjecturl.length());
-						
 						System.out.println("RedALret prefixKey  :" + prefixKey);
 						System.out.println("RedALret predicatePrefixValue :" + predicatePrefixValue);
 						System.out.println("RedALret predicatePrefixValue2 :" + predicatePrefixValue2);
-
 
 					} else {
 
@@ -300,14 +301,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
 						predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 						/// creating prefix key
-						//prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
+						// prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
 						if (aURL.getHost().contains("www.")) {
 							prefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 						} else {
 							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 						}
 					}
-					 
+
 					prefixMap.put(prefixKey, predicatePrefixValue);
 				}
 
