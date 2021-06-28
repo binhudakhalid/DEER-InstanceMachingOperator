@@ -128,10 +128,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		prefixes.put("yago", "http://yago-knowledge.org/resource/");
-		prefixes.put("schema", "http://schema.org/");
-		
-
+		 
 		System.out.println("prefixMap length : " + prefixMap.size());
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
 			String prefixName = entry.getKey();
@@ -157,7 +154,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setVar("?t");
 		target.setPageSize(1000);
 		target.setRestrictions(new ArrayList<String>(
-				Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t  schema:actor yago:Jennifer_Aniston" })));
+				Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t  url:actor yago:Jennifer_Aniston" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
@@ -240,7 +237,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		try {
 
 			// We will this data from team eventually
-			File tempDataFile = new File("bookEntityFileSource.ttl");
+			File tempDataFile = new File("EntityFileSource.ttl");
 			Scanner myReader = new Scanner(tempDataFile);
 			// We need this loop to run for every line as we don't know where the prefix can
 			// be found in the data file.
