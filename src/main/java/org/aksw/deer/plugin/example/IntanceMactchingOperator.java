@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
+import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.controller.LimesResult;
@@ -28,6 +29,7 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -50,6 +52,9 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
+	
+	  public static Property Coverage = DEER.property("coverage");
+
 
 	public IntanceMactchingOperator() {
 		super();
@@ -57,12 +62,19 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder()
+		return ValidatableParameterMap.builder().declareProperty(Coverage)
 				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+		
+		String coverage = getParameterMap()
+			      .getOptional(Coverage)
+			      .map(RDFNode::asLiteral)
+			      .map(Literal::getString)
+			      .orElse("World");
+		System.out.println(" drecipient-d " + coverage);
 
 		dynamicPrefix();
 
