@@ -52,10 +52,10 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
-	
-	  public static Property Coverage = DEER.property("coverage");
-	  public static Property MaxLimit = DEER.property("maxLimit");
+	public int totalInstances;
 
+	public static Property Coverage = DEER.property("coverage");
+	public static Property MaxLimit = DEER.property("maxLimit");
 
 	public IntanceMactchingOperator() {
 		super();
@@ -69,25 +69,22 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		String coverage = getParameterMap()
-			      .getOptional(Coverage)
-			      .map(RDFNode::asLiteral)
-			      .map(Literal::getString)
-			      .orElse("World");
+
+		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("World");
 		System.out.println(" drecipient-d coverage: " + coverage);
-		
-		String maxLimit = getParameterMap()
-			      .getOptional(MaxLimit)
-			      .map(RDFNode::asLiteral)
-			      .map(Literal::getString)
-			      .orElse("none");
+
+		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("none");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 
-		dynamicPrefix();
+		int tempTotal = totalInstance("Movie");
+		System.out.println("THe Count is: " + tempTotal);
+
+		// - dynamicPrefix();
 
 		// Querying through Sparql to count the number of predicate of the entity
-		countEntityPredicate();
+		// -countEntityPredicate();
 
 		Model model = ModelFactory.createDefaultModel();
 
@@ -95,8 +92,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		Configuration con = createLimeConfigurationFile();
-		callLimes(con);
+		// -Configuration con = createLimeConfigurationFile();
+		// -callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -148,7 +145,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		 
+
 		System.out.println("prefixMap length : " + prefixMap.size());
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
 			String prefixName = entry.getKey();
@@ -426,6 +423,32 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
 		qe.close();
+	}
+
+	public int totalInstance(String instanceType) {
+
+		QueryExecution qe = QueryExecutionFactory.sparqlService(
+
+				"http://dbpedia.org/sparql",
+				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+						+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
+
+		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+
+		// totalInstance = resultOne.forEachRemaining(action);
+		// qsol.getLiteral("totalInstances").getInt();
+
+		System.out.println("Here is the log propertyMap : " + propertyMap);
+
+		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
+		ResultSet results = qe.execSelect();
+		ResultSetFormatter.out(System.out, results);
+		qe.close();
+
+		return totalInstances;
 	}
 
 	public void addStatement(String s, String p, String o, Model model) {
