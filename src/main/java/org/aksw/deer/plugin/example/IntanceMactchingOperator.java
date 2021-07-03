@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
@@ -52,6 +53,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
+	public HashMap<String, Double> coverageMap;
 	public int totalInstances;
 
 	public static Property Coverage = DEER.property("coverage");
@@ -78,9 +80,21 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 				.orElse("none");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 
-		int tempTotal = totalInstance("Movie");
-		System.out.println("THe Count is: " + tempTotal);
+		//
 		countEntityPredicate();
+
+		// calculateCoverage
+		calculateCoverage();
+		
+		System.out.println(" coverageMap1 " + coverageMap  );
+		
+		
+		System.out.println("coverageMap :: " + coverageMap);
+
+		/*
+		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
+		 * tempTotal); countEntityPredicate();
+		 */
 
 		// - dynamicPrefix();
 
@@ -345,32 +359,19 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	public void countEntityPredicate() {
 
-		Model mop = ModelFactory.createDefaultModel();
-
-		addStatement("sss", "ppp", "ooo", mop);
-		System.out.println("Ali Header  " + mop);
-
 		propertyMap = new HashMap<String, Integer>();
 
 		QueryExecution qe = QueryExecutionFactory.sparqlService(
 
 				"http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n"
-				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n"
-				+ "WHERE\r\n"
-				+ "{\r\n"
-				+ "  ?instance rdf:type url:Movie .\r\n"
-				+ "  ?instance ?predicate ?o .\r\n"
-				+ "  FILTER(isLiteral(?o)) \r\n"
-				+ "} \r\n"
-				+ "GROUP BY ?predicate\r\n"
-				+ "order by desc ( ?count )\r\n"
-				+ "LIMIT 10");
+				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
+						+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+						+ "  ?instance rdf:type url:Movie .\r\n" + "  ?instance ?predicate ?o .\r\n"
+						+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
+						+ "order by desc ( ?count )\r\n" + "LIMIT 10");
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 
@@ -436,6 +437,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
 		qe.close();
+
 	}
 
 	public int totalInstance(String instanceType) {
@@ -457,97 +459,27 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		return totalInstances;
 	}
-	
+
 	public void calculateCoverage() {
+		
+		coverageMap = new HashMap<String, Double>();
 
-		 
-		propertyMap = new HashMap<String, Integer>();
+		double tempTotal = totalInstance("Movie");
+		System.out.println("tempTotal : " + tempTotal);
 
-		QueryExecution qe = QueryExecutionFactory.sparqlService(
+		System.out.println(" H1e1r1e is the log propertyMap : " + propertyMap);
 
-				"http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n"
-				+ "SELECT  (COUNT(Distinct ?instance) as ?count), ?predicate\r\n"
-				+ "WHERE\r\n"
-				+ "{\r\n"
-				+ "  ?instance rdf:type url:Movie .\r\n"
-				+ "  ?instance ?predicate ?o .\r\n"
-				+ "  FILTER(isLiteral(?o)) \r\n"
-				+ "} \r\n"
-				+ "GROUP BY ?predicate\r\n"
-				+ "order by desc ( ?count )");
+		for (Entry<String, Integer> entry : propertyMap.entrySet()) {
+			String prefixName = entry.getKey();
+			int prefixValue = entry.getValue();
+			// prefixes.put(prefixName, prefixValue);
+			// calculate coverage
+			Double tempCoverage = (double)prefixValue / tempTotal;
+			coverageMap.put(prefixName, tempCoverage);
 
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+		}
 
-		resultOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
-			String predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
-			URL aURL = null;
-			if (predicate.contains("#")) {
-				// http://www.w3.org/2002/07/owl#sameAs=903475
-				System.out.println("****************-URL with Hash********************");
-				System.out.println("predicate : " + predicate);
-
-				predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
-
-				/// creating prefix key
-				aURL = null;
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-				System.out.println("-------------------------------------------------");
-			} else {
-				System.out.println("****************-URL without Hash********************");
-				System.out.println("predicate : " + predicate);
-
-				// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
-
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
-				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
-
-			}
-			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-
-		});
-
-		System.out.println("Here is the log propertyMap : " + propertyMap);
-
-		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
-		ResultSet results = qe.execSelect();
-		ResultSetFormatter.out(System.out, results);
-		qe.close();
 	}
-	
 
 	public void addStatement(String s, String p, String o, Model model) {
 		Resource subject = model.createResource(s);
