@@ -73,11 +73,11 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	protected List<Model> safeApply(List<Model> models) { // 3
 
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("World");
+				.orElse("did not able to find coverage");
 		System.out.println(" drecipient-d coverage: " + coverage);
 
 		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("none");
+				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 
 		//
@@ -85,10 +85,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		// calculateCoverage
 		calculateCoverage();
-		
-		System.out.println(" coverageMap1 " + coverageMap  );
-		
-		
+
+		System.out.println(" coverageMap1 " + coverageMap);
 		System.out.println("coverageMap :: " + coverageMap);
 
 		/*
@@ -96,7 +94,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		 * tempTotal); countEntityPredicate();
 		 */
 
-		// - dynamicPrefix();
+		dynamicPrefix();
 
 		// Querying through Sparql to count the number of predicate of the entity
 		// -countEntityPredicate();
@@ -107,8 +105,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		// to run as the output is already is saved in 002accepted.nt
 		// and it takes atleast 1 hour to execute.
 
-		// -Configuration con = createLimeConfigurationFile();
-		// -callLimes(con);
+		Configuration con = createLimeConfigurationFile();
+		callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -357,6 +355,8 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 	}
 
+	// finding the number of records having the specific property
+	// save it to hashMap.
 	public void countEntityPredicate() {
 
 		propertyMap = new HashMap<String, Integer>();
@@ -440,6 +440,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	}
 
+	// Finding total number of instances of an entity like Movie, Film, Book
 	public int totalInstance(String instanceType) {
 
 		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
@@ -460,13 +461,13 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		return totalInstances;
 	}
 
+	// Calculating coverage and putting it in "coverageMap" hashMap
 	public void calculateCoverage() {
-		
+
 		coverageMap = new HashMap<String, Double>();
 
 		double tempTotal = totalInstance("Movie");
 		System.out.println("tempTotal : " + tempTotal);
-
 		System.out.println(" H1e1r1e is the log propertyMap : " + propertyMap);
 
 		for (Entry<String, Integer> entry : propertyMap.entrySet()) {
@@ -474,7 +475,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			int prefixValue = entry.getValue();
 			// prefixes.put(prefixName, prefixValue);
 			// calculate coverage
-			Double tempCoverage = (double)prefixValue / tempTotal;
+			Double tempCoverage = (double) prefixValue / tempTotal;
 			coverageMap.put(prefixName, tempCoverage);
 
 		}
