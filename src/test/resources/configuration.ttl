@@ -15,7 +15,8 @@
 
 :matcher
  a deer:IntanceMactchingOperator ;
- deer:coverage "8.66" ;
+ deer:coverage "8.66" ;			   #Coverage of a Property     #propteryCount/TotalInstanceCount
+ deer:maxLimit "10";               #Maximum number of Properties
  fcage:hasInput :reader ;
 .
  

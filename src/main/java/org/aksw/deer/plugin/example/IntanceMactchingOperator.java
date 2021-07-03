@@ -54,6 +54,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public HashMap<String, Integer> propertyMap;
 	
 	  public static Property Coverage = DEER.property("coverage");
+	  public static Property MaxLimit = DEER.property("maxLimit");
 
 
 	public IntanceMactchingOperator() {
@@ -62,7 +63,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder().declareProperty(Coverage)
+		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
 				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
 	}
 
@@ -74,7 +75,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 			      .map(RDFNode::asLiteral)
 			      .map(Literal::getString)
 			      .orElse("World");
-		System.out.println(" drecipient-d " + coverage);
+		System.out.println(" drecipient-d coverage: " + coverage);
+		
+		String maxLimit = getParameterMap()
+			      .getOptional(MaxLimit)
+			      .map(RDFNode::asLiteral)
+			      .map(Literal::getString)
+			      .orElse("none");
+		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 
 		dynamicPrefix();
 
