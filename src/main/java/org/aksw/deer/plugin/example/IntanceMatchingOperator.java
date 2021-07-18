@@ -429,26 +429,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	}
 
-	// Finding total number of instances of an entity like Movie, Film, Book
-	public int totalInstance(String instanceType) {
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
-						+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
-
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
-
-		/* for debugging */
-		// ResultSet results = qe.execSelect();
-		// ResultSetFormatter.out(System.out, results);
-		qe.close();
-
-		return totalInstances;
-	}
 
 	// Calculating coverage and putting it in "coverageMap" hashMap
 	public void calculateCoverage() {
@@ -471,12 +451,22 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	}
 
-	public void addStatement(String s, String p, String o, Model model) {
-		Resource subject = model.createResource(s);
-		Property predicate = model.createProperty(p);
-		RDFNode object = model.createResource(o);
-		Statement stmt = model.createStatement(subject, predicate, object);
-		model.add(stmt);
+	// Finding total number of instances of an entity like Movie, Film, Book
+	public int totalInstance(String instanceType) {
+
+		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
+				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+						+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
+
+		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
+		qe.close();
+
+		return totalInstances;
 	}
 
+	
 }

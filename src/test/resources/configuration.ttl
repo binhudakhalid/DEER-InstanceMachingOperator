@@ -6,7 +6,7 @@
 @prefix geos: <http://www.opengis.net/ont/geosparql#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-:reader
+:reader                #will be replaced with the output of ontology operator
   a deer:SparqlModelReader ;
   deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
@@ -16,7 +16,7 @@
 :matcher
  a deer:IntanceMatchingOperator ;
  deer:coverage "8.66" ;			   #Coverage of a Property     #propteryCount/TotalInstanceCount
- deer:maxLimit "10";               #Maximum number of Properties
+ deer:maxLimit "10";           #Maximum number of Properties
  fcage:hasInput :reader ;
 .
  
