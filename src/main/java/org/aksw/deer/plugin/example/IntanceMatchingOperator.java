@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 /**
  */
 @Extension
-public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOperator {
+public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOperator {
 
-	private static final Logger logger = LoggerFactory.getLogger(IntanceMactchingOperator.class);
+	private static final Logger logger = LoggerFactory.getLogger(IntanceMatchingOperator.class);
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
 	public HashMap<String, Double> coverageMap;
@@ -59,14 +59,14 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static Property Coverage = DEER.property("coverage");
 	public static Property MaxLimit = DEER.property("maxLimit");
 
-	public IntanceMactchingOperator() {
+	public IntanceMatchingOperator() {
 		super();
 	}
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
 		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
-				.declareValidationShape(getValidationModelFor(IntanceMactchingOperator.class)).build();
+				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
 	@Override
@@ -75,7 +75,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
 		System.out.println(" drecipient-d coverage: " + coverage);
-
 		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
@@ -85,9 +84,7 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		// calculateCoverage
 		calculateCoverage();
-
 		System.out.println(" coverageMap1 " + coverageMap);
-		System.out.println("coverageMap :: " + coverageMap);
 
 		/*
 		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
@@ -233,11 +230,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 		String limesOutputLocation = new File("").getAbsolutePath();
 
 		LimesResult mappings = Controller.getMapping(config);
-
-		System.out.println("mappings-khd- : " + mappings.getStatistics());
-		System.out.println("mappings-khd- : " + mappings.getClass());
-		System.out.println("mappings-kh- : " + mappings.toString());
-
 		String outputFormat = config.getOutputFormat();
 		ISerializer output = SerializerFactory.createSerializer(outputFormat);
 
@@ -254,9 +246,6 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-
-		System.out.println(" -Completed- ");
-
 	}
 
 	public void dynamicPrefix() {
@@ -491,20 +480,3 @@ public class IntanceMactchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 }
-
-/*
- * ------------------------------------------------ predicate :
- * http://www.w3.org/1999/02/22-rdf-syntax-ns#type
- * 
- * 
- * prefixKey: w3199 predicatePrefixValue
- * http://www.w3.org/1999/02/22-rdf-syntax-ns# predicatePrefixValue2 1: #type
- * 
- * 
- * w3199:type ------------------------------------------------------------
- * 
- * ns5=http://dbpedia.org/resource/Think
- * 
- * key = ns5 value = http://dbpedia.org/resource/Think
- *
- */
