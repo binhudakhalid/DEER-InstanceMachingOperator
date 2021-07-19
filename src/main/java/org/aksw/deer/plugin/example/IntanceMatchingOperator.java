@@ -255,7 +255,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String prefix, prefixValue;
 		try {
 
-			// We will this data from team eventually
+			// We will get this data from Ontology team eventually
 			File tempDataFile = new File("EntityFileSource.ttl");
 			Scanner myReader = new Scanner(tempDataFile);
 			// We need this loop to run for every line as we don't know where the prefix can
@@ -282,12 +282,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				String prefixKey = null, prefixV = null;
 				String predicatePrefixValue;
 
-				// System.out.println("khan Red alert subjecturl" + Line);
+			
 				if (Line.contains("@prefix")) {
-
+					System.out.println("Contains @prefix");
 				} else if (Line.contains("<http://")) {
 					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
-
+					
+					//@prefix prov:	<http://www.w3.org/ns/prov#> 
 					if (subjecturl.contains("#")) {
 
 						URL aURL = new URL(subjecturl);
@@ -346,6 +347,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	// finding the number of records having the specific property
 	// save it to hashMap.
+	// Query returns the number of times every property is present in all records.
 	public void countEntityPredicate() {
 
 		propertyMap = new HashMap<String, Integer>();
