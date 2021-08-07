@@ -158,9 +158,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 
 		//Setting properties or predicates
-		//http://dbpedia.org/ontology/abstract
-		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "rdfs:comment",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
-				"z3:name", "z1:abstract", 
+		//http://dbpedia.org/ontology/abstract  
+		// -"rdfs:comment", "rdfs:label"
+		src.setProperties(Arrays.asList(new String[] { "z3:country",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
+			 "z1:abstract", "rdfs:label"
 			  })); 
 
 		//"z3:name ,  error
