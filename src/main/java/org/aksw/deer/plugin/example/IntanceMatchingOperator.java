@@ -97,6 +97,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// -countEntityPredicate();
 
 		Model model = ModelFactory.createDefaultModel();
+		
+		int abc = totalInstanceTarget("Movie");
+		System.out.println("abcd : " + abc);
+		
+		countEntityPredicateTarget();
 
 		// DOn't need to uncomment these line as you don't want
 		// to run as the output is already is saved in 002accepted.nt
@@ -138,6 +143,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// adding prefix
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
+		//conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
 
 		KBInfo src = new KBInfo();
 
@@ -150,11 +156,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Object[] property = propertyMap.keySet().toArray();
 		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
 
-		src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
+
+		//Setting properties or predicates
+		//http://dbpedia.org/ontology/abstract
+		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "zoo:abstract", "zoo1:language" }));
 
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+		prefixes.put("zoo", "http://dbpedia.org/ontology/");
+		
+		prefixes.put("zoo1", "http://dbpedia.org/property/");
+		
+		
+		
 
 		System.out.println("prefixMap length : " + prefixMap.size());
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
@@ -418,7 +433,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
 			}
+			
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+			System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
 
 		});
 
@@ -427,9 +444,105 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
+		System.out.println("after countEntityPredicate");
 		qe.close();
 
 	}
+	
+	// finding the number of records having the specific property
+		// save it to hashMap.
+		// Query returns the number of times every property is present in all records.
+		public void countEntityPredicateTarget() {
+
+			propertyMap = new HashMap<String, Integer>();
+
+			QueryExecution qe = QueryExecutionFactory.sparqlService(
+					"https://yago-knowledge.org/sparql/query",
+					"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+					+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+					+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+					+ "PREFIX url: <http://schema.org/>\r\n"
+					+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n"
+					+ "WHERE{\r\n"
+					+ "?instance rdf:type url:Movie . \r\n"
+					+ "?instance ?predicate ?o .\r\n"
+					+ "FILTER(isLiteral(?o))   \r\n"
+					+ "} \r\n"
+					+ "GROUP BY ?predicate\r\n"
+					+ "order by desc ( ?count ) \r\n"
+					+ "LIMIT 10");
+
+			ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+
+			resultOne.forEachRemaining(qsol -> {
+				String predicate = qsol.getResource("predicate").toString();
+				int PredicateCount = qsol.getLiteral("count").getInt();
+				String predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
+				URL aURL = null;
+				if (predicate.contains("#")) {
+					// http://www.w3.org/2002/07/owl#sameAs=903475
+					System.out.println("****************-URL with Hash********************");
+					System.out.println("predicate : " + predicate);
+
+					predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
+
+					/// creating prefix key
+					aURL = null;
+					try {
+						aURL = new URL(predicate);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+
+					/// creating predicate Prefix Key
+					if (aURL.getHost().contains("www.")) {
+						predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+					} else {
+						predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+					}
+
+					predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
+					System.out.println("-------------------------------------------------");
+				} else {
+					System.out.println("****************-URL without Hash********************");
+					System.out.println("predicate : " + predicate);
+
+					// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
+
+					try {
+						aURL = new URL(predicate);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+					/// creating predicate Prefix Key
+					if (aURL.getHost().contains("www.")) {
+						predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+					} else {
+						predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+					}
+
+					String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+					predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
+					predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
+
+				}
+				
+				propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+				System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+
+			});
+
+			System.out.println("Here is the log propertyMap : " + propertyMap);
+
+			resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
+			ResultSet results = qe.execSelect();
+			ResultSetFormatter.out(System.out, results);
+			System.out.println("after countEntityPredicate");
+			qe.close();
+
+		}
+
 
 
 	// Calculating coverage and putting it in "coverageMap" hashMap
@@ -469,6 +582,27 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		return totalInstances;
 	}
+	
+	// Finding total number of instances of an entity like Movie, Film, Book
+		public int totalInstanceTarget(String instanceType) {
+
+			QueryExecution qe = QueryExecutionFactory.sparqlService("https://yago-knowledge.org/sparql/query",
+					"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+					+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+					+ "PREFIX url: <http://schema.org/>\r\n"
+					+ "\r\n"
+					+ "\r\n"
+					+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+					+ "WHERE { \r\n"
+					+ "?s rdf:type url:" + instanceType + " .\r\n"
+					+ "}");
+
+			ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+			resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
+			qe.close();
+
+			return totalInstances;
+		}
 
 	
 }
