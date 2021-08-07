@@ -98,10 +98,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Model model = ModelFactory.createDefaultModel();
 		
-		int abc = totalInstanceTarget("Movie");
-		System.out.println("abcd : " + abc);
+		//int abc = totalInstanceTarget("Movie");
+		//System.out.println("abcd : " + abc);
 		
-		countEntityPredicateTarget();
+		//countEntityPredicateTarget();
 
 		// DOn't need to uncomment these line as you don't want
 		// to run as the output is already is saved in 002accepted.nt
@@ -159,14 +159,23 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		//Setting properties or predicates
 		//http://dbpedia.org/ontology/abstract
-		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "zoo:abstract", "zoo1:language" }));
+		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "rdfs:comment",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
+				"z3:name", "z1:abstract", 
+			  })); 
 
+		//"z3:name ,  error
+		//"rdfs:comment", error
+		//"z1:abstract" error
+		//"z3:country", error
+		//"z3:language" error
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		prefixes.put("zoo", "http://dbpedia.org/ontology/");
+		prefixes.put("z1", "http://dbpedia.org/ontology/");
+		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
+		prefixes.put("z3", "http://dbpedia.org/property/");
 		
-		prefixes.put("zoo1", "http://dbpedia.org/property/");
+		 
 		
 		
 		
@@ -528,14 +537,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 				}
 				
-				propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-				System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+//				propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+	//			System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
 
 			});
 
-			System.out.println("Here is the log propertyMap : " + propertyMap);
+//			System.out.println("Here is the log propertyMap : " + propertyMap);
 
-			resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
+	//		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
 			ResultSet results = qe.execSelect();
 			ResultSetFormatter.out(System.out, results);
 			System.out.println("after countEntityPredicate");
