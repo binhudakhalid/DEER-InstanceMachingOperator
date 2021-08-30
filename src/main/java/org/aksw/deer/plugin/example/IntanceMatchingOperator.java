@@ -54,6 +54,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
 	public HashMap<String, Double> coverageMap;
+	//public HashMap<String, String> propertiesPrefixesSource;
+	public List<PrefixEntity> propertiesPrefixesSource;
 	public int totalInstances;
 
 	public static Property Coverage = DEER.property("coverage");
@@ -71,7 +73,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		// commiting..
+		// commiting 123..
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
 		System.out.println(" drecipient-d coverage: " + coverage);
@@ -160,7 +162,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		//Setting properties or predicates
 		//http://dbpedia.org/ontology/abstract
 		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "rdfs:comment",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
-				"z3:name", "z1:abstract", 
+				//"z3:name", "z1:abstract", 
 			  })); 
 
 		//"z3:name ,  error
@@ -463,6 +465,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// Query returns the number of times every property is present in all records.
 		public void countEntityPredicateTarget() {
 
+			propertiesPrefixesSource = new ArrayList<PrefixEntity>();
 			propertyMap = new HashMap<String, Integer>();
 
 			QueryExecution qe = QueryExecutionFactory.sparqlService(
@@ -491,6 +494,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				URL aURL = null;
 				if (predicate.contains("#")) {
 					// http://www.w3.org/2002/07/owl#sameAs=903475
+					// abc
 					System.out.println("****************-URL with Hash********************");
 					System.out.println("predicate : " + predicate);
 
@@ -513,6 +517,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 					predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 					System.out.println("-------------------------------------------------");
+					
+					
+					PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
+					
+					propertiesPrefixesSource.add(prefix);
+				
+				
 				} else {
 					System.out.println("****************-URL without Hash********************");
 					System.out.println("predicate : " + predicate);
@@ -535,10 +546,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 					predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 					predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
+					System.out.println("predicatePrefixValue : " + predicatePrefixValue);
+					System.out.println("predicatePrefixValue2 : " + predicatePrefixValue2);
+					System.out.println("predicatePrefixKey : " + predicatePrefixKey);
+					PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
+					propertiesPrefixesSource.add(prefix);
+
 				}
 				
 //				propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
 	//			System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+				propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
+				System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+				System.out.println("propertiesPrefixesSource : " + propertiesPrefixesSource);
 
 			});
 
@@ -593,7 +613,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 	
 	// Finding total number of instances of an entity like Movie, Film, Book
-		public int totalInstanceTarget(String instanceType) {
+	public int totalInstanceTarget(String instanceType) {
 
 			QueryExecution qe = QueryExecutionFactory.sparqlService("https://yago-knowledge.org/sparql/query",
 					"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"

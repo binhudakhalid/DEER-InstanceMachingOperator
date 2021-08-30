@@ -7,6 +7,10 @@ public class PrefixEntity {
 	String Value2;
 	int Count;
 
+	public PrefixEntity()
+	{
+		
+	}
 	public PrefixEntity(String key, String value, String value2) {
 		super();
 		this.key = key;
