@@ -134,9 +134,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// This weeks task add prefix dynamically
 		dynamicPrefix();
+		
+	
 
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
 			String prefixName = entry.getKey();
+			System.out.println(" :look: " + prefixName);
 			String prefixValue = entry.getValue();
 			conf.addPrefix(prefixName, prefixValue);
 		}
@@ -160,8 +163,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		//Setting properties or predicates
 		//http://dbpedia.org/ontology/abstract  
 		// -"rdfs:comment", "rdfs:label"
-		src.setProperties(Arrays.asList(new String[] { "z3:country",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
-			 "z1:abstract", "rdfs:label"
+		src.setProperties(Arrays.asList(new String[] {"z1:abstract", "rdfs:label", "z3:country",  "z1:wikiPageLength", "z1:wikiPageID", //"z1:wikiPageRevisionID", 
+			  //"rdfs:comment"//, "z3:language "z1:abstract", "rdfs:label"
 			  })); 
 
 		//"z3:name ,  error
@@ -190,7 +193,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		src.setPrefixes(prefixes);
 
-		// src.setFunctions(functions);
+		//src.setFunctions(functions);
 
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
