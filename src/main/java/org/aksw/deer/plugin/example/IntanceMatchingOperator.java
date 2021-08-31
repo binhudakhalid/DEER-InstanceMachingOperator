@@ -149,22 +149,22 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		KBInfo src = new KBInfo();
 
-		src.setId("sourceId");
-		src.setEndpoint("http://dbpedia.org/sparql");
+		src.setId("sourceId");   
+		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
-
+		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
+		
 		Object[] property = propertyMap.keySet().toArray();
 		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
 
 
 		//Setting properties or predicates
 		//http://dbpedia.org/ontology/abstract
-		src.setProperties(Arrays.asList(new String[] { "rdfs:label", "rdfs:comment",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
+		src.setProperties(Arrays.asList(new String[] { "rdfs:label"//, "rdfs:comment",  "z1:wikiPageLength", "z1:wikiPageID", "z1:wikiPageRevisionID", 
 				//"z3:name", "z1:abstract", 
 			  })); 
-
+		src.setType("NT");
 		//"z3:name ,  error
 		//"rdfs:comment", error
 		//"z1:abstract" error
@@ -203,14 +203,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("https://yago-knowledge.org/sparql/query");
+		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
 		target.setVar("?t");
 		target.setPageSize(1000);
 		target.setRestrictions(new ArrayList<String>(
-				Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t  url:actor yago:Jennifer_Aniston" })));
+				Arrays.asList(new String[] { "" })));
 		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
+		target.setType("NT");
 		conf.setTargetInfo(target);
 
 		// Set either Metric or MLALGORITHM
