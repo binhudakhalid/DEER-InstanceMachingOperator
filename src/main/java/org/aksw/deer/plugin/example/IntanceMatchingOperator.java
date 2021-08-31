@@ -25,8 +25,10 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
@@ -38,6 +40,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.resultset.RDFOutput;
 import org.apache.jena.vocabulary.VCARD;
@@ -99,6 +102,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// -countEntityPredicate();
 
 		Model model = ModelFactory.createDefaultModel();
+		
+		String sourceTarget = "NT";
+		// sourceTarget is NT File
+		if(sourceTarget == "NT") {
+			
+			
+			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			
+		}
 		
 		//int abc = totalInstanceTarget("Movie");
 		//System.out.println("abcd : " + abc);
@@ -633,6 +645,54 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			return totalInstances;
 		}
+	
+	public void calculateCoverageForNTFile(String link){
+		long size;
+		
+		Model model = ModelFactory.createDefaultModel();
+		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt", Lang.NTRIPLES);
+		
+		
+		//RDFDataMgr.read(model, inputStream, ) ;
+
+		System.out.println(" meAtIt1 : " + model );
+		size = model.size();
+		System.out.println(" meAtIt1size  : " + size );
+		
+		String queryString = "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
+                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+                + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" + "PREFIX dc: <http://purl.org/dc/elements/1.1/>"
+                + "PREFIX dbr: <http://dbpedia.org/resource/>" + "PREFIX dbpedia2: <http://dbpedia.org/property/>"
+                + "PREFIX dbpedia: <http://dbpedia.org/>" + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>"
+                + "PREFIX dbo: <http://dbpedia.org/ontology/>" + "select distinct ?p ?o where {"
+                + "dbr:Cristiano_Ronaldo ?p ?o " + "filter(langMatches(lang(?o),'en'))" +
+
+        "}";
+		
+		
+		String queryString1 =	"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+		+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+		+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+		+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
+		+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+		//+ "  ?instance rdf:type url:Movie .\r\n" 
+		+ "  ?instance ?predicate ?o .\r\n"
+		+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
+		+ "order by desc ( ?count )\r\n" + "LIMIT 10";
+		
+		 Query query = QueryFactory.create(queryString1);
+		 QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		 ResultSet results = qexec.execSelect();
+		 System.out.println("result 007 : " + results);
+		 ResultSetFormatter.out(System.out, results);
+		//System.out.println(((Statement) model).getSubject());
+		 System.exit(0);
+		 
+		
+		
+	}
 
 	
 }
