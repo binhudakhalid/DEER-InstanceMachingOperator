@@ -3,7 +3,6 @@ package org.aksw.deer.plugin.example;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,13 +36,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.resultset.RDFOutput;
-import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,10 +103,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		String sourceTarget = "NT";
 		// sourceTarget is NT File
+
 		if (sourceTarget == "NT") {
-
 			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
-
+		}else {
+			
 		}
 
 		// int abc = totalInstanceTarget("Movie");
@@ -140,6 +135,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 * e.printStackTrace(); }
 		 */
 		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
+		
+		Model model1 = ModelFactory.createDefaultModel();
+		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
+//		System.out.println(" Model1a " + model1 );
 
 		return List.of(ourModel);
 	}
@@ -151,9 +150,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// This weeks task add prefix dynamically
 		dynamicPrefix();
-		
+
 		for (PropertyEntity list : propertiesList) {
-			//System.out.println(" ali 01 + "  + list.key+ "abv" + list.value);
+			// System.out.println(" ali 01 + " + list.key+ "abv" + list.value);
 			conf.addPrefix(list.key, list.value);
 			System.out.println();
 		}
@@ -193,9 +192,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		prefixes.put("z3", "http://dbpedia.org/property/");
 
 		System.out.println("prefixMap length : " + prefixMap.size());
-	
+
 		for (PropertyEntity list : propertiesList) {
-			//System.out.println(" ali 01 + "  + list.key+ "abv" + list.value);
+			// System.out.println(" ali 01 + " + list.key+ "abv" + list.value);
 			prefixes.put(list.key, list.value);
 			prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 			System.out.println();
@@ -638,15 +637,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt", Lang.NTRIPLES);
-
-		// RDFDataMgr.read(model, inputStream, ) ;
-
-		System.out.println(" meAtIt1 : " + model);
+		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ;
 		size = model.size();
-		System.out.println(" meAtIt1size  : " + size);
 
- 		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+		String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
@@ -655,8 +649,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
 				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 10";
 
-		Query query = QueryFactory.create(queryString1);
+		Query query = QueryFactory.create(queryString);
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+
 		/*
 		 * ResultSet results = qexec.execSelect(); System.out.println("result 007 : " +
 		 * results); ResultSetFormatter.out(System.out, results);
@@ -669,21 +664,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
 
-			// System.out.println(" mmeemee " + predicate );
-			// System.out.println(" mmeemee PredicateCount1 : " + PredicateCount );
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
-			//////////////////////////////////////////////////////////////
 
-			// public PrefixEntity(String key, String value, String name) {
-			// public PropertyEntity(String key, String value, String propertyName, int
-			// count) {
 			double coverage;
-			if(size > 0) {
+			if (size > 0) {
 				coverage = PredicateCount / size;
-			}else {
+			} else {
 				coverage = 0;
 			}
-				
+
 			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
 					PredicateCount, coverage);
 			propertiesList.add(p1);
@@ -692,11 +681,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
 		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
-
-	//	System.exit(0);
-
+		// System.exit(0);
 		// return resultsOne
-
 	}
 
 }
