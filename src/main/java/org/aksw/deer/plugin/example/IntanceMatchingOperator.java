@@ -136,8 +136,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 */
 		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 		
-		Model model1 = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
+//		Model model1 = ModelFactory.createDefaultModel();
+//		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
 //		System.out.println(" Model1a " + model1 );
 
 		return List.of(ourModel);
