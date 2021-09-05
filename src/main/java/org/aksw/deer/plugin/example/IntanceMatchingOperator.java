@@ -151,15 +151,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// This weeks task add prefix dynamically
 		dynamicPrefix();
-
-		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
-			String prefixName = entry.getKey();
-			String prefixValue = entry.getValue();
-			conf.addPrefix(prefixName, prefixValue);
+		
+		for (PropertyEntity list : propertiesList) {
+			//System.out.println(" ali 01 + "  + list.key+ "abv" + list.value);
+			conf.addPrefix(list.key, list.value);
+			System.out.println();
 		}
-
 		// adding prefix
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
+		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		// conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
 
 		KBInfo src = new KBInfo();
@@ -193,10 +193,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		prefixes.put("z3", "http://dbpedia.org/property/");
 
 		System.out.println("prefixMap length : " + prefixMap.size());
-		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
-			String prefixName = entry.getKey();
-			String prefixValue = entry.getValue();
-			prefixes.put(prefixName, prefixValue);
+	
+		for (PropertyEntity list : propertiesList) {
+			//System.out.println(" ali 01 + "  + list.key+ "abv" + list.value);
+			prefixes.put(list.key, list.value);
+			prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+			System.out.println();
 		}
 
 		src.setPrefixes(prefixes);
@@ -691,7 +693,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
 		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
 
-		System.exit(0);
+	//	System.exit(0);
 
 		// return resultsOne
 
