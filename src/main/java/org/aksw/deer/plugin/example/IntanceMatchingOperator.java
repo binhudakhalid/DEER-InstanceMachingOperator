@@ -633,7 +633,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		propertiesList = new ArrayList<PropertyEntity>();
 		propertiesPrefixesSource = new ArrayList<PrefixEntity>();
-		long size;
+		double size;
 
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt", Lang.NTRIPLES);
@@ -644,19 +644,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		size = model.size();
 		System.out.println(" meAtIt1size  : " + size);
 
-		String queryString = "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
-				+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-				+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" + "PREFIX dc: <http://purl.org/dc/elements/1.1/>"
-				+ "PREFIX dbr: <http://dbpedia.org/resource/>" + "PREFIX dbpedia2: <http://dbpedia.org/property/>"
-				+ "PREFIX dbpedia: <http://dbpedia.org/>" + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>"
-				+ "PREFIX dbo: <http://dbpedia.org/ontology/>" + "select distinct ?p ?o where {"
-				+ "dbr:Cristiano_Ronaldo ?p ?o " + "filter(langMatches(lang(?o),'en'))" +
-
-				"}";
-
-		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+ 		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
@@ -687,8 +675,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// public PrefixEntity(String key, String value, String name) {
 			// public PropertyEntity(String key, String value, String propertyName, int
 			// count) {
+			double coverage;
+			if(size > 0) {
+				coverage = PredicateCount / size;
+			}else {
+				coverage = 0;
+			}
+				
 			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
-					PredicateCount);
+					PredicateCount, coverage);
 			propertiesList.add(p1);
 
 		});

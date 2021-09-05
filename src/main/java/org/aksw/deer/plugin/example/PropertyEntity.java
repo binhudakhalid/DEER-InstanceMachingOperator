@@ -5,15 +5,26 @@ public class PropertyEntity {
 		String value;
 		String propertyName;
 		int count;
+		double coverage;
 		
 		
-		public PropertyEntity(String key, String value, String propertyName, int count) {
+		public PropertyEntity(String key, String value, String propertyName, int count, double coverage) {
 			super();
 			this.key = key;
 			this.value = value;
 			this.propertyName = propertyName;
 			this.count = count;
+			this.coverage = coverage;
 		}
+		
+		public double getCoverage() {
+			return coverage;
+		}
+
+		public void setCoverage(double coverage) {
+			this.coverage = coverage;
+		}
+
 		public String getKey() {
 			return key;
 		}
@@ -42,7 +53,7 @@ public class PropertyEntity {
 		@Override
 		public String toString() {
 			return "PropertyEntity [key=" + key + ", value=" + value + ", property=" + propertyName + ", count=" + count
-					+ "]";
+					+ "coverage " + coverage + "]";
 		}
 
 		 
