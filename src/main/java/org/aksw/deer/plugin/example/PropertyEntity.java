@@ -3,15 +3,15 @@ package org.aksw.deer.plugin.example;
 public class PropertyEntity {
 		String key;
 		String value;
-		String property;
+		String propertyName;
 		int count;
 		
 		
-		public PropertyEntity(String key, String value, String property, int count) {
+		public PropertyEntity(String key, String value, String propertyName, int count) {
 			super();
 			this.key = key;
 			this.value = value;
-			this.property = property;
+			this.propertyName = propertyName;
 			this.count = count;
 		}
 		public String getKey() {
@@ -26,11 +26,12 @@ public class PropertyEntity {
 		public void setValue(String value) {
 			this.value = value;
 		}
-		public String getProperty() {
-			return property;
+	 
+		public String getPropertyName() {
+			return propertyName;
 		}
-		public void setProperty(String property) {
-			this.property = property;
+		public void setPropertyName(String propertyName) {
+			this.propertyName = propertyName;
 		}
 		public int getCount() {
 			return count;
@@ -40,7 +41,7 @@ public class PropertyEntity {
 		}
 		@Override
 		public String toString() {
-			return "PropertyEntity [key=" + key + ", value=" + value + ", property=" + property + ", count=" + count
+			return "PropertyEntity [key=" + key + ", value=" + value + ", property=" + propertyName + ", count=" + count
 					+ "]";
 		}
 

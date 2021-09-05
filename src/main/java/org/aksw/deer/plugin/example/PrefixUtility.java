@@ -10,7 +10,7 @@ public class PrefixUtility {
 	
 	
 	
-	public PrefixEntity splitPreficFromProperty(String predicate){
+	public static PrefixEntity splitPreficFromProperty(String predicate){
 			String propertyKey, properyValue, propertyName;
 			URL aURL = null;
 	
@@ -65,9 +65,9 @@ public class PrefixUtility {
 				properyValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				propertyName = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-				System.out.println("properyValue  l2 : " + properyValue);
-				System.out.println("propertyName l2 : " + propertyName);
-				System.out.println("propertyKey l2: " + propertyKey);
+				System.out.println("properyValue  l22 : " + properyValue);
+				System.out.println("propertyName l22 : " + propertyName);
+				System.out.println("propertyKey l22: " + propertyKey);
 				PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
 				//propertiesPrefixesSource.add(prefix);
 
