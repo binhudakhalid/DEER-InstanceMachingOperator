@@ -652,6 +652,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public void calculateCoverageForNTFile(String link){
 		
 		propertiesList = new ArrayList<PropertyEntity>();
+		propertiesPrefixesSource = new ArrayList<PrefixEntity>();
 		long size;
 		
 		Model model = ModelFactory.createDefaultModel();
@@ -700,8 +701,85 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				String predicate = qsol.getResource("predicate").toString();
 				int PredicateCount = qsol.getLiteral("count").getInt();
 				
-				System.out.println(" mmeemee " + predicate );
-				System.out.println(" mmeemee PredicateCount1 : " + PredicateCount );
+				//System.out.println(" mmeemee " + predicate );
+				//System.out.println(" mmeemee PredicateCount1 : " + PredicateCount );
+		
+				
+				///////////should be moved to a function//////////////////////				
+				String propertyKey, properyValue, propertyName;
+				URL aURL = null;
+				if (predicate.contains("#")) {
+					// http://www.w3.org/2002/07/owl#sameAs=903475
+					// abc
+					System.out.println("****************-URL with Hash********************");
+					System.out.println("predicate : " + predicate);
+
+					propertyName = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
+
+					/// creating prefix key
+					aURL = null;
+					try {
+						aURL = new URL(predicate);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+
+					/// creating predicate Prefix Key
+					if (aURL.getHost().contains("www.")) {
+						propertyKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
+					} else {
+						propertyKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
+					}
+
+					properyValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
+					
+					
+					
+					System.out.println();
+					
+					System.out.println("properyValue  l20 : " + properyValue);
+					System.out.println("propertyName l20 : " + propertyName);
+					System.out.println("propertyKey l20: " + propertyKey);
+					
+					PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
+					
+					propertiesPrefixesSource.add(prefix);
+				
+				
+				} else {
+					System.out.println("****************-URL without Hash********************");
+					System.out.println("predicate : " + predicate);
+
+					// propertyKey, predicatePrefixValue, propertyName;
+
+					try {
+						aURL = new URL(predicate);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+					/// creating predicate Prefix Key
+					if (aURL.getHost().contains("www.")) {
+						propertyKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 3);
+					} else {
+						propertyKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 3);
+					}
+
+					String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+					properyValue = temp.substring(0, temp.lastIndexOf('/') + 1);
+					propertyName = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
+
+					System.out.println("properyValue  l2 : " + properyValue);
+					System.out.println("propertyName l2 : " + propertyName);
+					System.out.println("propertyKey l2: " + propertyKey);
+					PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
+					//propertiesPrefixesSource.add(prefix);
+
+				}
+
+				
+				
+				//////////////////////////////////////////////////////////////
+				
 				
 				
 				
@@ -712,10 +790,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 });
 		 
 		 
+		 
+		 
 		 System.out.println("propertiesList01 :" + propertiesList.get(0).toString());
 		 
 		 System.exit(0);
 		 
+		 //return resultsOne
 		
 		
 	}
