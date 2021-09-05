@@ -59,6 +59,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public HashMap<String, Double> coverageMap;
 	//public HashMap<String, String> propertiesPrefixesSource;
 	public List<PrefixEntity> propertiesPrefixesSource;
+	
+	public List<PropertyEntity> propertiesList;
+	
 	public int totalInstances;
 
 	public static Property Coverage = DEER.property("coverage");
@@ -647,6 +650,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		}
 	
 	public void calculateCoverageForNTFile(String link){
+		
+		propertiesList = new ArrayList<PropertyEntity>();
 		long size;
 		
 		Model model = ModelFactory.createDefaultModel();
@@ -684,10 +689,31 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		
 		 Query query = QueryFactory.create(queryString1);
 		 QueryExecution qexec = QueryExecutionFactory.create(query, model);
-		 ResultSet results = qexec.execSelect();
+		/* ResultSet results = qexec.execSelect();
 		 System.out.println("result 007 : " + results);
 		 ResultSetFormatter.out(System.out, results);
-		//System.out.println(((Statement) model).getSubject());
+		//System.out.println(((Statement) model).getSubject());*/
+		 
+		 ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+		 
+		 resultsOne.forEachRemaining(qsol -> {
+				String predicate = qsol.getResource("predicate").toString();
+				int PredicateCount = qsol.getLiteral("count").getInt();
+				
+				System.out.println(" mmeemee " + predicate );
+				System.out.println(" mmeemee PredicateCount1 : " + PredicateCount );
+				
+				
+				
+				PropertyEntity p1 = new PropertyEntity("a", "b", "c", PredicateCount);
+				propertiesList.add(p1);
+				
+				
+		 });
+		 
+		 
+		 System.out.println("propertiesList01 :" + propertiesList.get(0).toString());
+		 
 		 System.exit(0);
 		 
 		
