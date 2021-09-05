@@ -52,10 +52,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	private static final Logger logger = LoggerFactory.getLogger(IntanceMatchingOperator.class);
 	public HashMap<String, String> prefixMap;
+	public HashMap<String, String> necessaryPrefixMap;
 	public HashMap<String, Integer> propertyMap;
 	public HashMap<String, Double> coverageMap;
+	public HashMap<String, Double> newCoverageMap;
+
 	//public HashMap<String, String> propertiesPrefixesSource;
 	public List<PrefixEntity> propertiesPrefixesSource;
+	public List<PrefixEntity> propertiesPrefixesSource2;
 	public int totalInstances;
 
 	public static Property Coverage = DEER.property("coverage");
@@ -137,10 +141,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// This weeks task add prefix dynamically
 		dynamicPrefix();
 
+		// Code for only including the necessary prefixes.
+
+		System.out.println("Khan!!! propertyMap : " + propertyMap);
+		System.out.println("Khan!!! prefixMap : " + prefixMap);
 		for (Map.Entry<String, String> entry : prefixMap.entrySet()) {
+			
 			String prefixName = entry.getKey();
 			String prefixValue = entry.getValue();
-			conf.addPrefix(prefixName, prefixValue);
+			if(propertyMap.containsKey(prefixName)) // newCoverageMap
+				conf.addPrefix(prefixName, prefixValue);
 		}
 
 		// adding prefix
@@ -298,8 +308,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 					System.out.println("prefixValue:::: " + prefixValue);
 
 					prefixMap.put(prefix, prefixValue);
-				}
-			}
+				} 
+			} 
 
 			Scanner myReader2 = new Scanner(tempDataFile);
 
@@ -377,6 +387,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	// Query returns the number of times every property is present in all records.
 	public void countEntityPredicate() {
 
+		propertiesPrefixesSource2 = new ArrayList<PrefixEntity>();
 		propertyMap = new HashMap<String, Integer>();
 
 		QueryExecution qe = QueryExecutionFactory.sparqlService(
@@ -419,6 +430,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				} else {
 					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
 				}
+				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
+				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
+
+				PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
+				propertiesPrefixesSource2.add(prefix);
 
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 				System.out.println("-------------------------------------------------");
@@ -444,6 +460,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
+				PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
+				propertiesPrefixesSource2.add(prefix);
+				
+				System.out.println("Khan!!! propertiesPrefixesSource2 : " + propertiesPrefixesSource2);
+
 			}
 			
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
@@ -462,9 +483,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 	
 	// finding the number of records having the specific property
-		// save it to hashMap.
-		// Query returns the number of times every property is present in all records.
-		public void countEntityPredicateTarget() {
+	// save it to hashMap.
+	// Query returns the number of times every property is present in all records.
+	public void countEntityPredicateTarget() {
 
 			propertiesPrefixesSource = new ArrayList<PrefixEntity>();
 			propertyMap = new HashMap<String, Integer>();
@@ -523,6 +544,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 					PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
 					
 					propertiesPrefixesSource.add(prefix);
+					System.out.println("Khan!!! propertiesPrefixesSource : " + propertiesPrefixesSource);
 				
 				
 				} else {
@@ -591,8 +613,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// calculate coverage
 			Double tempCoverage = (double) prefixValue / tempTotal;
 			coverageMap.put(prefixName, tempCoverage);
+			//string[] tempStr = prefixName.substring(0, prefixName.lastIndexOf('/') + 1);
+			newCoverageMap.put(prefixName, tempCoverage);
 
 		}
+		System.out.println("Khan!!! coverageMap : " + coverageMap);
+
 
 	}
 
