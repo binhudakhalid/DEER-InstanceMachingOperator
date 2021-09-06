@@ -150,12 +150,25 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// This weeks task add prefix dynamically
 		dynamicPrefix();
+		
+		String[] sourcePropertyArray1 = new String[5];// { "rdfs:label", "pudc:description", "xmfo:name" };
+		//int[] intArray = new int[20]; 
+		List<String> sourcePropertylist = new ArrayList<String> (); 
 
+
+		// Setting Prefix and property
 		for (PropertyEntity list : propertiesList) {
 			// System.out.println(" ali 01 + " + list.key+ "abv" + list.value);
 			conf.addPrefix(list.key, list.value);
+			
+			// adding property in Array
+			sourcePropertylist.add(list.key + ":" + list.propertyName);
 			System.out.println();
 		}
+		
+		System.out.println(" rapid " + sourcePropertylist);
+		
+		//for(int i <)
 		// adding prefix
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -172,12 +185,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Object[] property = propertyMap.keySet().toArray();
 		String[] strArr = Arrays.stream(property).map(Object::toString).toArray(String[]::new);
 
+		
+		String[] strAB =new String[] { "rdfs:label", "pudc:description", "xmfo:name" };
 		// Setting properties or predicates
 		// http://dbpedia.org/ontology/abstract
-		src.setProperties(Arrays.asList(new String[] { "rdfs:label"// , "rdfs:comment", "z1:wikiPageLength",
+		src.setProperties(sourcePropertylist);// Arrays.asList( strAB
+				// , "rdfs:comment", "z1:wikiPageLength",
 																	// "z1:wikiPageID", "z1:wikiPageRevisionID",
 				// "z3:name", "z1:abstract",
-		}));
+		//));
 		src.setType("NT");
 		// "z3:name , error
 		// "rdfs:comment", error
@@ -218,7 +234,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setVar("?t");
 		target.setPageSize(1000);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
-		target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
+		target.setProperties(sourcePropertylist);
+				//Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name" 
+				
+		//})); //, "xmfo:name" 
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
 		target.setType("NT");
@@ -647,7 +666,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				+ "\r\n" + "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
 				// + " ?instance rdf:type url:Movie .\r\n"
 				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 10";
+				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
 
 		Query query = QueryFactory.create(queryString);
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
