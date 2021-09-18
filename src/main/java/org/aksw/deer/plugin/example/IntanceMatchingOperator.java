@@ -79,6 +79,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+	
+		/* from here
 		// commiting 123..
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
@@ -97,10 +99,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		calculateCoverage();
 		System.out.println(" coverageMap1 " + coverageMap);
 
-		/*
-		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
-		 * tempTotal); countEntityPredicate();
-		 */
+		
+		 // int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
+		 // tempTotal); countEntityPredicate();
+		 
 
 		dynamicPrefix();
 
@@ -144,17 +146,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// 002accepted.nt file contains the output of LIMES
 		// between movies from yago and films from Dbpedia
-		/*
-		 * String filename = "002accepted.nt"; File file = new File(filename); String
-		 * content = null; try { content = FileUtils.readFileToString(file, "UTF-8");
-		 * FileUtils.write(file, content, "UTF-8"); System.out.println(" a nc d a-2 ");
-		 * } catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
-		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 
-//		Model model1 = ModelFactory.createDefaultModel();
-//		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
+		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
+		until here*/
+		 Model ourModel = ModelFactory.createDefaultModel();
+		//		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
+		
+		Coverage coverageObj = new Coverage();
+		coverageObj.fileSparql();
 //		System.out.println(" Model1a " + model1 );
 
 		return List.of(ourModel);
