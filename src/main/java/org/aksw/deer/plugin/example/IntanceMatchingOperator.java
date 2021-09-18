@@ -24,20 +24,26 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
-import org.apache.jena.query.Query;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,11 +115,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// sourceTarget is NT File
 
 		if (sourceType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		} else if (sourceType == "SPARQL") {
 
 		}
-
+		System.out.println(" before exit");
+		System.exit(1);
 		if (targetType == "NT") {
 			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
 		} else if (targetType == "SPARQL") {
@@ -169,11 +176,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			sourcePropertylist.add(list.key + ":" + list.propertyName);
 			System.out.println();
 		}
-
-		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
-		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		// conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
-
+ 
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
@@ -188,11 +191,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Map<String, String> prefixes = new HashMap<String, String>();
 
-		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		prefixes.put("z1", "http://dbpedia.org/ontology/");
-		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
-		prefixes.put("z3", "http://dbpedia.org/property/");
-
+	 
 		System.out.println("prefixMap length : " + prefixMap.size());
 
 		for (PropertyEntity list : propertiesList) {
@@ -642,9 +641,93 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ;
+		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ;
 		size = model.size();
+		
+		System.out.println("size ::"  + size );
+		
+		 Property p = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type1");
+		//Property  predicate = ;
+		
+		 StmtIterator iter = model.listStatements();
+		// model.contains(null, p ,(RDFNode) null);
+		 
+		// System.out.println(" model.contains(null, p ,(RDFNode) null);" + model.contains(null, p ,(RDFNode) null));
+		 // affiche l'objet, le prédicat et le sujet de chaque déclaration
+		 while (iter.hasNext()) {
+		  Statement stmt      = iter.nextStatement();  // obtenir la prochaine     déclaration
+		Resource  subject   = stmt.getSubject();     // obtenir le sujet
+		Property  predicate = stmt.getPredicate();   // obtenir le prédicat
+		RDFNode   object    = stmt.getObject(); 
+	
+		//predicate = http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+		//enter into hashMap(entity);
+		
+		//get propeties of each entity
+		
+		
+			System.out.println("predicate : " + predicate);
+		  }
+	//	model.contains(null, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", null);
+		
+		// Listing all classes and instances in a Jena ontology model
 
+
+	    /*OntModel model = ModelFactory.createOntologyModel();
+	    model.read(link);
+	    double size = model.size();
+		
+		System.out.println("size :: "  + size );
+	    
+	    ExtendedIterator classes = model.listClasses();
+	  
+
+	    while (classes.hasNext())
+	    {
+	    	System.out.println("opo");
+	      OntClass thisClass = (OntClass) classes.next();
+	      System.out.println("Found class: " + thisClass.toString());
+
+	      ExtendedIterator instances = thisClass.listInstances();
+
+	      while (instances.hasNext())
+	      {
+	        Individual thisInstance = (Individual) instances.next();
+	        System.out.println("  Found instance: " + thisInstance.toString());
+	      }
+	    }
+		
+		
+		/*
+		NodeIterator abc = model.listObjects();
+		
+		while (abc.hasNext()) {
+	        OntClass ontclass = (OntClass) abc.next();
+	        System.out.println(ontclass.getLocalName());
+	    }
+		
+		// Listing all classes and instances in a Jena ontology model
+
+		/*StmtIterator iter = model.listStatements();
+		while (iter.hasNext()) {
+		Statement stmt = iter.nextStatement(); // get next statement
+		Resource subject = stmt.getSubject(); // get the subject
+		Property predicate = stmt.getPredicate(); // get the predicate
+		RDFNode object = stmt.getObject(); // get the object
+		System.out.print(subject.toString());
+		System.out.print(" " + predicate.toString() + " ");
+		if (object instanceof Resource) {
+		System.out.print(object.toString());
+		} else {
+		// object is a literal
+		System.out.print(" \"" + object.toString() + "\"");
+		}
+		System.out.println(" .");
+		}
+	   
+		/*
+		
+		
 		String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -663,7 +746,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 * //System.out.println(((Statement) model).getSubject());
 		 */
 
-		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+/*		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
 
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
@@ -686,8 +769,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
 		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
-		// System.exit(0);
+*/		// System.exit(0);
 		// return resultsOne
+		
 	}
 
 }
