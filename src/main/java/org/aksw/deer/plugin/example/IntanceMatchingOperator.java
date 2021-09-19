@@ -178,15 +178,31 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		for (PropertyEntity list : propertiesList) {
 			// adding Prefix
 			conf.addPrefix(list.key, list.value);
+			System.out.println("debug : + " + list.key + " " + list.value);
 			// adding property in List
 			sourcePropertylist.add(list.key + ":" + list.propertyName);
 			System.out.println();
 		}
+		
+		//setting prefix for source
+		for (PropertyEntity list : propertiesListSource) {
+			// adding Prefix
+			conf.addPrefix(list.key, list.value);
+			System.out.println("debug new : + " + list.key + " " + list.value);
+			// adding property in List
+			sourcePropertylist.add(list.key + ":" + list.propertyName);
+			System.out.println("debug new : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
+			System.out.println();
+		}
+		
+		
+		//System.exit(0);
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		// conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
 
+		
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
@@ -197,6 +213,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// src.addOptionalProperty(optionalProperty);
 
 		src.setProperties(sourcePropertylist);// Arrays.asList( strAB
+		//src.setOptionalProperties(sourcePropertylist);
 		src.setType("NT");
 
 		Map<String, String> prefixes = new HashMap<String, String>();
@@ -205,6 +222,17 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		prefixes.put("z1", "http://dbpedia.org/ontology/");
 		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
 		prefixes.put("z3", "http://dbpedia.org/property/");
+		
+		
+		//setting prefix for source
+				for (PropertyEntity list : propertiesListSource) {
+					// adding Prefix
+					prefixes.put(list.key, list.value);
+					System.out.println("debug new prefixes.put : + " + list.key + " " + list.value);
+					}
+				
+		
+		
 
 		System.out.println("prefixMap length : " + prefixMap.size());
 
