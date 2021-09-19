@@ -174,6 +174,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		dynamicPrefix();
 
 		List<String> sourcePropertylist = new ArrayList<String>();
+		List<String> srcPropertylist = new ArrayList<String>();
 
 		for (PropertyEntity list : propertiesList) {
 			// adding Prefix
@@ -190,12 +191,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			conf.addPrefix(list.key, list.value);
 			System.out.println("debug new : + " + list.key + " " + list.value);
 			// adding property in List
-			sourcePropertylist.add(list.key + ":" + list.propertyName);
+			srcPropertylist.add(list.key + ":" + list.propertyName);
 			System.out.println("debug new : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
 			System.out.println();
 		}
 		
-		
+		System.out.println("khalid : " + sourcePropertylist);
 		//System.exit(0);
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
@@ -206,13 +207,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
-		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
-		// src.addOptionalProperty(optionalProperty);
-
-		src.setProperties(sourcePropertylist);// Arrays.asList( strAB
+		//src.addOptionalProperty(sourcePropertylist);
+		//srcPropertylist
+		System.out.println(" BINHUDA : "  + srcPropertylist);
+		src.setProperties(srcPropertylist);// Arrays.asList( strAB
 		//src.setOptionalProperties(sourcePropertylist);
 		src.setType("NT");
 
