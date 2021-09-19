@@ -61,6 +61,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public List<PropertyEntity> propertiesList;
 	public List<PropertyEntity> propertiesListSource;
+	public List<PropertyEntity> propertiesListTarget;
 
 	public int totalInstances;
 
@@ -91,14 +92,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// PrefixUtility PrefixUtility = new PrefixUtility();
 
 		
-		List<PropertyEntity> propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		
-		List<PropertyEntity> propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		
 		System.out.println("alibaba propertiesListSource: " +  propertiesListSource);
 		
 		System.out.println("alibaba ---------\n : " +  propertiesListTarget);
-		System.exit(0);
+		//System.exit(0);
 		// getEntitiesFromFile("1");
 		
 		
@@ -190,6 +191,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		List<String> sourcePropertylist = new ArrayList<String>();
 		List<String> srcPropertylist = new ArrayList<String>();
+		List<String> targetPropertylist = new ArrayList<String>();
 
 		for (PropertyEntity list : propertiesList) {
 			// adding Prefix
@@ -279,13 +281,28 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("I out in :: size  aliS :" + propertiesList.size());
 
 		
+		
+		//sourcePropertylist asd
+		
+		//setting prefix for target
+				for (PropertyEntity list : propertiesListTarget) {
+					// adding Prefix
+					// teher   /conf.addPrefix(list.key, list.value);
+					//System.out.println("debug new : + " + list.key + " " + list.value);
+					// adding property in List
+					targetPropertylist.add(list.key + ":" + list.propertyName);
+					System.out.println("debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
+					System.out.println();
+				}
+		
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		target.setVar("?t");
 		target.setPageSize(1000);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
-		target.setProperties(sourcePropertylist);
+		
+		target.setProperties(targetPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
 		// })); //, "xmfo:name"
