@@ -96,20 +96,23 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// getEntitiesFromFile("1");
 		getPropertiesFromFile("2");
-		System.exit(0);
+		System.out.println("I out :: propertiesList00 :" + propertiesList.get(0).toString());
+		System.out.println("I out :: size  :" + propertiesList.size());
+		
+		//9/System.exit(0);
 		//
-		countEntityPredicate();
+		//9/countEntityPredicate();
 
 		// calculateCoverage
-		calculateCoverage();
-		System.out.println(" coverageMap1 " + coverageMap);
+		//9/calculateCoverage();
+		//9/System.out.println(" coverageMap1 " + coverageMap);
 
 		/*
 		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
 		 * tempTotal); countEntityPredicate();
 		 */
 
-		dynamicPrefix();
+		//9/dynamicPrefix();
 
 		// Querying through Sparql to count the number of predicate of the entity
 		// -countEntityPredicate();
@@ -122,14 +125,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// sourceTarget is NT File
 
 		if (sourceType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+			//9/calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		} else if (sourceType == "SPARQL") {
 
 		}
 		System.out.println(" before exit");
-		System.exit(1);
+		 
 		if (targetType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			//9/ calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
 		} else if (targetType == "SPARQL") {
 
 		}
@@ -200,6 +203,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		System.out.println("prefixMap length : " + prefixMap.size());
 
+		
 		for (PropertyEntity list : propertiesList) {
 			// System.out.println(" ali 01 + " + list.key+ "abv" + list.value);
 			prefixes.put(list.key, list.value);
@@ -228,6 +232,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setProperties(sourcePropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
+		
 		// })); //, "xmfo:name"
 		target.setPrefixes(prefixes);
 		target.setFunctions(functions);
@@ -242,7 +247,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		LearningParameter learningParameter = new LearningParameter();
 		learningParameter.setName("max execution time in minutes");
 		learningParameter.setValue(60);
-
+		
 		List<LearningParameter> mlAlgorithmParameters = new ArrayList<>();
 		mlAlgorithmParameters.add(learningParameter);
 
@@ -250,15 +255,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// Acceptance
 		conf.setAcceptanceThreshold(0.9);
-
+		System.out.println("It it 1");
 		conf.setAcceptanceFile("accepted.nt");
+		System.out.println("It it 2");
 		conf.setAcceptanceRelation("owl:sameAs");
-
+		System.out.println("It it 3");
 		// Review
 		conf.setVerificationThreshold(0.1);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
-
+		
 		// EXECUTION
 		conf.setExecutionRewriter("default");
 		conf.setExecutionPlanner("default");
@@ -266,6 +272,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// Output format CSV etc
 		conf.setOutputFormat("NT"); // NT or TTL
+		
+	
 
 		return conf;
 	}
@@ -866,7 +874,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
 		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
 
-		System.exit(0);
+		//System.exit(0);
 		return 3;
 	}
 
