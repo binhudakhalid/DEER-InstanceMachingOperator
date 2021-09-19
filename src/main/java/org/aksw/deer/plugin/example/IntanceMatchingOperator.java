@@ -7,11 +7,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
@@ -36,6 +38,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.pf4j.Extension;
@@ -57,6 +62,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public List<PropertyEntity> propertiesList;
 
 	public int totalInstances;
+
+	Set<String> entityListFile;
 
 	public static Property Coverage = DEER.property("coverage");
 	public static Property MaxLimit = DEER.property("maxLimit");
@@ -82,8 +89,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		// PrefixUtility PrefixUtility = new PrefixUtility();
 
-		
-		
+		// getEntitiesFromFile("1");
+		getPropertiesFromFile("2");
+		System.out.println("I out :: propertiesList00 :" + propertiesList.get(0).toString());
+		System.out.println("I out in :: size  :" + propertiesList.size());
+
+		// 9/
+		System.exit(0);
 		//
 		countEntityPredicate();
 
@@ -689,5 +701,115 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.exit(0);
 		// return resultsOne
 	}
+
+	public Set<String> getEntitiesFromFile(String link) {
+		entityListFile = new HashSet<String>();
+		double size = 0;
+
+		Model model = ModelFactory.createDefaultModel();
+		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+																									// //
+																									// inputStream,
+		size = model.size();
+		if (size < 1) {
+			System.out.println("File is empty. size :" + size);
+		}
+
+		Property predicateRDFType = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+
+		StmtIterator iter = model.listStatements();
+
+		while (iter.hasNext()) {
+			Statement stmt = iter.nextStatement(); // obtenir la prochaine déclaration
+			Resource subject = stmt.getSubject(); // obtenir le sujet
+			Property predicate = stmt.getPredicate(); // obtenir le prédicat
+			RDFNode object = stmt.getObject();
+
+			if (predicate.toString().equals(predicateRDFType.toString())) {
+				System.out.println("found enitity : ");
+				entityListFile.add(object.toString());
+			}
+			System.out.println("predicate : " + predicate);
+		}
+		System.out.println(" entity list : " + entityListFile);
+
+		return entityListFile;
+	}
+
+	/*
+	 * Takes entity as input return list of properties from file
+	 * 
+	 */
+	public int getPropertiesFromFile(String entity) {
+
+		// if (!checkFileExist(link)) {
+		// throw FileNotFoundException;
+		// }
+
+		long size = 0;
+		propertiesList = new ArrayList<PropertyEntity>();
+
+		Model model = ModelFactory.createDefaultModel();
+		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
+		// Lang.NTRIPLES);
+		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+
+		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
+				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+				+ "  ?instance rdf:type url1:Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
+				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n"
+				+ "LIMIT 10";
+
+		// JUST FOR DEBUG remove before commit
+		Query query1 = QueryFactory.create(queryString1);
+		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
+		ResultSet results = qexec1.execSelect();
+		System.out.println("result 009 : " + results);
+		ResultSetFormatter.out(System.out, results);
+		///
+
+		Query query = QueryFactory.create(queryString1);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		// ResultSet results = qexec.execSelect();
+		// System.out.println("result 009 : " + results);
+		// ResultSetFormatter.out(System.out, results);
+		// System.out.println(((Statement) model).getSubject());
+
+		// ADDING HERE
+		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+
+		resultsOne.forEachRemaining(qsol -> {
+			String predicate = qsol.getResource("predicate").toString();
+			int PredicateCount = qsol.getLiteral("count").getInt();
+
+			System.out.println(" lookit : " + predicate);
+			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+
+			double coverage;
+			if (size > 0) {
+				coverage = PredicateCount / size;
+			} else {
+				coverage = 0;
+			}
+
+			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
+					PredicateCount, coverage);
+			propertiesList.add(p1);
+
+		});
+
+		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
+		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+
+		// System.exit(0);
+		return 3;
+	}
+
+	// System.exit(0);
+	// return resultsOne
 
 }
