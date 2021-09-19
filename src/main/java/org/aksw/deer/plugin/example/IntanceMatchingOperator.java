@@ -91,16 +91,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		// PrefixUtility PrefixUtility = new PrefixUtility();
 
+		//
+//	    getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
+	//	System.exit(0);
 		
 		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		
-		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		
 		System.out.println("alibaba propertiesListSource: " +  propertiesListSource);
 		
 		System.out.println("alibaba ---------\n : " +  propertiesListTarget);
 		//System.exit(0);
 		// getEntitiesFromFile("1");
+		
 		
 		
 		
@@ -144,7 +148,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		}
 
 		if (targetType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		} else if (targetType == "SPARQL") {
 
 		}
@@ -300,16 +304,34 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		target.setVar("?t");
-		target.setPageSize(1000);
+		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type xmfo:Person" })));
-
+		
+		/*targetPropertylist.remove(1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);
+		targetPropertylist.remove(targetPropertylist.size() - 1);*/
+		
 		target.setProperties(targetPropertylist);
+		System.out.println("meme1 targetPropertylist : " + targetPropertylist);
+		System.out.println("meme1 srcPropertylist : " + srcPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
 		// })); //, "xmfo:name"
 		target.setPrefixes(targetPrefixesMap);
+		
+		//d 
+		System.out.println("meme1 targetPrefixesMap : " + targetPrefixesMap);
+		//System.out.println("meme1 targetPrefixesMap : " + srcPrefixesMap);
+
+		
 		target.setFunctions(functions);
 		target.setType("NT");
 		conf.setTargetInfo(target);
@@ -347,6 +369,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// Output format CSV etc
 		conf.setOutputFormat("NT"); // NT or TTL
 
+		
+		System.out.println("lool me conf " + conf);
 		return conf;
 	}
 
@@ -780,7 +804,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size = 0;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model,
 																									// //
 																									// inputStream,
 		size = model.size();
