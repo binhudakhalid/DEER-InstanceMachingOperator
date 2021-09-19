@@ -60,6 +60,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public List<PrefixEntity> propertiesPrefixesSource;
 
 	public List<PropertyEntity> propertiesList;
+	public List<PropertyEntity> propertiesListSource;
 
 	public int totalInstances;
 
@@ -91,11 +92,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// getEntitiesFromFile("1");
 		getPropertiesFromFile("2");
-		System.out.println("I out :: propertiesList00 :" + propertiesList.get(0).toString());
-		System.out.println("I out in :: size  :" + propertiesList.size());
+		System.out.println("I out in propertiesListSource:: propertiesList00 :" + propertiesListSource.get(0).toString());
+		System.out.println("I out in propertiesListSource:: size  :" + propertiesListSource.size());
 
 		// 9/
-		System.exit(0);
+		//System.exit(0);
 		//
 		countEntityPredicate();
 
@@ -226,6 +227,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		conf.setSourceInfo(src);
 
+		System.out.println("I out in :: size  aliS :" + propertiesList.size());
+
+		
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
 		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
@@ -747,7 +751,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// }
 
 		long size = 0;
-		propertiesList = new ArrayList<PropertyEntity>();
+		propertiesListSource = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
 		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
@@ -798,12 +802,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
 					PredicateCount, coverage);
-			propertiesList.add(p1);
+			propertiesListSource.add(p1);
 
 		});
 
-		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
-		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+		System.out.println("propertiesListSource :" + propertiesListSource.get(0).toString());
+		System.out.println("propertiesListSource :" + propertiesListSource.get(1).toString());
 
 		// System.exit(0);
 		return 3;
