@@ -284,10 +284,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		
 		//sourcePropertylist asd
 		
+		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
+		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		//setting prefix for target
 				for (PropertyEntity list : propertiesListTarget) {
 					// adding Prefix
 					// teher   /conf.addPrefix(list.key, list.value);
+					targetPrefixesMap.put(list.key, list.value);
 					//System.out.println("debug new : + " + list.key + " " + list.value);
 					// adding property in List
 					targetPropertylist.add(list.key + ":" + list.propertyName);
@@ -300,13 +303,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		target.setVar("?t");
 		target.setPageSize(1000);
-		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
-		
+		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type xmfo:Person" })));
+
 		target.setProperties(targetPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
 		// })); //, "xmfo:name"
-		target.setPrefixes(prefixes);
+		target.setPrefixes(targetPrefixesMap);
 		target.setFunctions(functions);
 		target.setType("NT");
 		conf.setTargetInfo(target);
