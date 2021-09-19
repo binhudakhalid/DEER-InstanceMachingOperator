@@ -90,8 +90,23 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		// PrefixUtility PrefixUtility = new PrefixUtility();
 
+		
+		List<PropertyEntity> propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		
+		List<PropertyEntity> propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		
+		System.out.println("alibaba propertiesListSource: " +  propertiesListSource);
+		
+		System.out.println("alibaba ---------\n : " +  propertiesListTarget);
+		System.exit(0);
 		// getEntitiesFromFile("1");
-		getPropertiesFromFile("2");
+		
+		
+		
+		//public List<PropertyEntity> getPropertiesFromFile(String entity) {
+
+		
+		
 		System.out.println("I out in propertiesListSource:: propertiesList00 :" + propertiesListSource.get(0).toString());
 		System.out.println("I out in propertiesListSource:: size  :" + propertiesListSource.size());
 
@@ -778,19 +793,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * Takes entity as input return list of properties from file
 	 * 
 	 */
-	public int getPropertiesFromFile(String entity) {
+	public List<PropertyEntity> getPropertiesFromFile(String entity) {
 
 		// if (!checkFileExist(link)) {
 		// throw FileNotFoundException;
 		// }
 
 		long size = 0;
-		propertiesListSource = new ArrayList<PropertyEntity>();
+		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
 		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
 		// Lang.NTRIPLES);
-		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+		RDFDataMgr.read(model, entity, Lang.NTRIPLES); // RDFDataMgr.read(model,
 
 		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
@@ -836,15 +851,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
 					PredicateCount, coverage);
-			propertiesListSource.add(p1);
+			propertiesListTemp.add(p1);
 
 		});
 
-		System.out.println("propertiesListSource :" + propertiesListSource.get(0).toString());
-		System.out.println("propertiesListSource :" + propertiesListSource.get(1).toString());
+		System.out.println("propertiesListTemp :" + propertiesListTemp.get(0).toString());
+		System.out.println("propertiesListTemp :" + propertiesListTemp.get(1).toString());
 
 		// System.exit(0);
-		return 3;
+		return propertiesListTemp;
 	}
 
 	// System.exit(0);
