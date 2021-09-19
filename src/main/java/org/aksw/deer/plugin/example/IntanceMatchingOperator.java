@@ -7,11 +7,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
@@ -62,6 +64,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public List<PropertyEntity> propertiesList;
 
+	Set<String> entityListFile;
+
 	public int totalInstances;
 
 	public static Property Coverage = DEER.property("coverage");
@@ -87,9 +91,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		// PrefixUtility PrefixUtility = new PrefixUtility();
-
 		
 		
+		
+		getEntitiesFromFile("1");
+		System.exit(0);
 		//
 		countEntityPredicate();
 
@@ -176,7 +182,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			sourcePropertylist.add(list.key + ":" + list.propertyName);
 			System.out.println();
 		}
- 
+
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
@@ -191,7 +197,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Map<String, String> prefixes = new HashMap<String, String>();
 
-	 
 		System.out.println("prefixMap length : " + prefixMap.size());
 
 		for (PropertyEntity list : propertiesList) {
@@ -641,137 +646,154 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ;
+		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+																										// inputStream,
+																										// ) ;
 		size = model.size();
-		
-		System.out.println("size ::"  + size );
-		
-		 Property p = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type1");
-		//Property  predicate = ;
-		
-		 StmtIterator iter = model.listStatements();
+
+		System.out.println("size ::" + size);
+
+		Property p = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type1");
+		// Property predicate = ;
+
+		StmtIterator iter = model.listStatements();
 		// model.contains(null, p ,(RDFNode) null);
-		 
-		// System.out.println(" model.contains(null, p ,(RDFNode) null);" + model.contains(null, p ,(RDFNode) null));
-		 // affiche l'objet, le prédicat et le sujet de chaque déclaration
-		 while (iter.hasNext()) {
-		  Statement stmt      = iter.nextStatement();  // obtenir la prochaine     déclaration
-		Resource  subject   = stmt.getSubject();     // obtenir le sujet
-		Property  predicate = stmt.getPredicate();   // obtenir le prédicat
-		RDFNode   object    = stmt.getObject(); 
-	
-		//predicate = http://www.w3.org/1999/02/22-rdf-syntax-ns#type
-		//enter into hashMap(entity);
-		
-		//get propeties of each entity
-		
-		
-			System.out.println("predicate : " + predicate);
-		  }
-	//	model.contains(null, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", null);
-		
-		// Listing all classes and instances in a Jena ontology model
 
-
-	    /*OntModel model = ModelFactory.createOntologyModel();
-	    model.read(link);
-	    double size = model.size();
-		
-		System.out.println("size :: "  + size );
-	    
-	    ExtendedIterator classes = model.listClasses();
-	  
-
-	    while (classes.hasNext())
-	    {
-	    	System.out.println("opo");
-	      OntClass thisClass = (OntClass) classes.next();
-	      System.out.println("Found class: " + thisClass.toString());
-
-	      ExtendedIterator instances = thisClass.listInstances();
-
-	      while (instances.hasNext())
-	      {
-	        Individual thisInstance = (Individual) instances.next();
-	        System.out.println("  Found instance: " + thisInstance.toString());
-	      }
-	    }
-		
-		
-		/*
-		NodeIterator abc = model.listObjects();
-		
-		while (abc.hasNext()) {
-	        OntClass ontclass = (OntClass) abc.next();
-	        System.out.println(ontclass.getLocalName());
-	    }
-		
-		// Listing all classes and instances in a Jena ontology model
-
-		/*StmtIterator iter = model.listStatements();
+		// System.out.println(" model.contains(null, p ,(RDFNode) null);" +
+		// model.contains(null, p ,(RDFNode) null));
+		// affiche l'objet, le prédicat et le sujet de chaque déclaration
 		while (iter.hasNext()) {
-		Statement stmt = iter.nextStatement(); // get next statement
-		Resource subject = stmt.getSubject(); // get the subject
-		Property predicate = stmt.getPredicate(); // get the predicate
-		RDFNode object = stmt.getObject(); // get the object
-		System.out.print(subject.toString());
-		System.out.print(" " + predicate.toString() + " ");
-		if (object instanceof Resource) {
-		System.out.print(object.toString());
-		} else {
-		// object is a literal
-		System.out.print(" \"" + object.toString() + "\"");
-		}
-		System.out.println(" .");
-		}
-	   
-		/*
-		
-		
-		String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n" + "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-				// + " ?instance rdf:type url:Movie .\r\n"
-				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
+			Statement stmt = iter.nextStatement(); // obtenir la prochaine déclaration
+			Resource subject = stmt.getSubject(); // obtenir le sujet
+			Property predicate = stmt.getPredicate(); // obtenir le prédicat
+			RDFNode object = stmt.getObject();
 
-		Query query = QueryFactory.create(queryString);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+			// predicate = http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+			// enter into hashMap(entity);
+
+			// get propeties of each entity
+
+			System.out.println("predicate : " + predicate);
+		}
+		// model.contains(null, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+		// null);
+
+		// Listing all classes and instances in a Jena ontology model
 
 		/*
-		 * ResultSet results = qexec.execSelect(); System.out.println("result 007 : " +
-		 * results); ResultSetFormatter.out(System.out, results);
+		 * OntModel model = ModelFactory.createOntologyModel(); model.read(link); double
+		 * size = model.size();
+		 * 
+		 * System.out.println("size :: " + size );
+		 * 
+		 * ExtendedIterator classes = model.listClasses();
+		 * 
+		 * 
+		 * while (classes.hasNext()) { System.out.println("opo"); OntClass thisClass =
+		 * (OntClass) classes.next(); System.out.println("Found class: " +
+		 * thisClass.toString());
+		 * 
+		 * ExtendedIterator instances = thisClass.listInstances();
+		 * 
+		 * while (instances.hasNext()) { Individual thisInstance = (Individual)
+		 * instances.next(); System.out.println("  Found instance: " +
+		 * thisInstance.toString()); } }
+		 * 
+		 * 
+		 * /* NodeIterator abc = model.listObjects();
+		 * 
+		 * while (abc.hasNext()) { OntClass ontclass = (OntClass) abc.next();
+		 * System.out.println(ontclass.getLocalName()); }
+		 * 
+		 * // Listing all classes and instances in a Jena ontology model
+		 * 
+		 * /*StmtIterator iter = model.listStatements(); while (iter.hasNext()) {
+		 * Statement stmt = iter.nextStatement(); // get next statement Resource subject
+		 * = stmt.getSubject(); // get the subject Property predicate =
+		 * stmt.getPredicate(); // get the predicate RDFNode object = stmt.getObject();
+		 * // get the object System.out.print(subject.toString()); System.out.print(" "
+		 * + predicate.toString() + " "); if (object instanceof Resource) {
+		 * System.out.print(object.toString()); } else { // object is a literal
+		 * System.out.print(" \"" + object.toString() + "\""); }
+		 * System.out.println(" ."); }
+		 * 
+		 * /*
+		 * 
+		 * 
+		 * String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" +
+		 * "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
+		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
+		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
+		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
+		 * "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n"
+		 * + "{\r\n" // + " ?instance rdf:type url:Movie .\r\n" +
+		 * "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
+		 * + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
+		 * 
+		 * Query query = QueryFactory.create(queryString); QueryExecution qexec =
+		 * QueryExecutionFactory.create(query, model);
+		 * 
+		 * /* ResultSet results = qexec.execSelect(); System.out.println("result 007 : "
+		 * + results); ResultSetFormatter.out(System.out, results);
 		 * //System.out.println(((Statement) model).getSubject());
 		 */
 
-/*		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+		/*
+		 * ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+		 * 
+		 * resultsOne.forEachRemaining(qsol -> { String predicate =
+		 * qsol.getResource("predicate").toString(); int PredicateCount =
+		 * qsol.getLiteral("count").getInt();
+		 * 
+		 * PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+		 * 
+		 * double coverage; if (size > 0) { coverage = PredicateCount / size; } else {
+		 * coverage = 0; }
+		 * 
+		 * PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value,
+		 * prefixEntity.name, PredicateCount, coverage); propertiesList.add(p1);
+		 * 
+		 * });
+		 * 
+		 * System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
+		 * System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+		 */ // System.exit(0);
+			// return resultsOne
 
-		resultsOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
+	}
 
-			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+	public Set<String> getEntitiesFromFile(String link) {
+		entityListFile = new HashSet<String>();
+		double size = 0;
 
-			double coverage;
-			if (size > 0) {
-				coverage = PredicateCount / size;
-			} else {
-				coverage = 0;
-			}
+		Model model = ModelFactory.createDefaultModel();
+		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+																										// //
+																										// inputStream,
+		size = model.size();
+		if (size < 1) {
+			System.out.println("File is empty. size :" + size);
+		}
 
-			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
-					PredicateCount, coverage);
-			propertiesList.add(p1);
-
-		});
-
-		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
-		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
-*/		// System.exit(0);
-		// return resultsOne
+		Property predicateRDFType = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 		
+		StmtIterator iter = model.listStatements();
+		
+		while (iter.hasNext()) {
+			Statement stmt = iter.nextStatement(); // obtenir la prochaine déclaration
+			Resource subject = stmt.getSubject(); // obtenir le sujet
+			Property predicate = stmt.getPredicate(); // obtenir le prédicat
+			RDFNode object = stmt.getObject();
+
+			if (predicate.toString().equals(predicateRDFType.toString())) {
+				System.out.println("found enitity : ");
+				entityListFile.add(object.toString());
+			}
+			System.out.println("predicate : " + predicate);
+		}
+		System.out.println(" entity list : " + entityListFile);
+		
+		return entityListFile;
 	}
 
 }
