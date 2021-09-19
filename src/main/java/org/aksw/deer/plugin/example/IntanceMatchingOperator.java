@@ -201,6 +201,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		//http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 		// conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
 
 		
@@ -210,7 +212,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "" })));
+		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {  "?s rdf:type xmfo:Person" })));
 		//src.addOptionalProperty(sourcePropertylist);
 		//srcPropertylist
 		System.out.println(" BINHUDA : "  + srcPropertylist);
@@ -224,6 +226,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		prefixes.put("z1", "http://dbpedia.org/ontology/");
 		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
 		prefixes.put("z3", "http://dbpedia.org/property/");
+		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		//http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 		
 		
 		//setting prefix for source
