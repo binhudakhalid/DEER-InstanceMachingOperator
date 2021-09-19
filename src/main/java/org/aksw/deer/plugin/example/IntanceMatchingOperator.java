@@ -93,10 +93,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		// PrefixUtility PrefixUtility = new PrefixUtility();
-		
-		
-		
-		//getEntitiesFromFile("1");
+
+		// getEntitiesFromFile("1");
 		getPropertiesFromFile("2");
 		System.exit(0);
 		//
@@ -771,17 +769,17 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
-																										// //
-																										// inputStream,
+																									// //
+																									// inputStream,
 		size = model.size();
 		if (size < 1) {
 			System.out.println("File is empty. size :" + size);
 		}
 
 		Property predicateRDFType = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-		
+
 		StmtIterator iter = model.listStatements();
-		
+
 		while (iter.hasNext()) {
 			Statement stmt = iter.nextStatement(); // obtenir la prochaine déclaration
 			Resource subject = stmt.getSubject(); // obtenir le sujet
@@ -795,59 +793,84 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println("predicate : " + predicate);
 		}
 		System.out.println(" entity list : " + entityListFile);
-		
+
 		return entityListFile;
 	}
-	
-	/*
-	 * Takes entity as input
-	 * return list of properties from file
-	 *  
-	*/
-		public int getPropertiesFromFile(String entity) {
-		
-		//if (!checkFileExist(link)) {
-			//throw FileNotFoundException; 
-		//}
 
-		long size;
+	/*
+	 * Takes entity as input return list of properties from file
+	 * 
+	 */
+	public int getPropertiesFromFile(String entity) {
+
+		// if (!checkFileExist(link)) {
+		// throw FileNotFoundException;
+		// }
+
+		long size = 0;
+		propertiesList = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES);
-		//RDFDataMgr.read(model, "/Users/khalidkhan/Documents/OurDeerPluginNewVersion/practiceFile.nt", Lang.NTRIPLES);
-		// RDFDataMgr.read(model, inputStream, ) ;
+		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
+		// Lang.NTRIPLES);
+		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
 
-
-		System.out.println(" meAtIt1 : " + model); 
-		size = model.size();
-		System.out.println(" meAtIt1size  : " + size);
-
-		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
-				+ "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
+				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
 				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
 				+ "  ?instance rdf:type url1:Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
-				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
-				+ "order by desc ( ?count )\r\n" + "LIMIT 10";
+				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n"
+				+ "LIMIT 10";
 
-		Query query = QueryFactory.create(queryString1);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model);
-		ResultSet results = qexec.execSelect();
+		//JUST FOR DEBUG 	remove before commit
+		Query query1 = QueryFactory.create(queryString1);
+		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
+		ResultSet results = qexec1.execSelect();
 		System.out.println("result 009 : " + results);
 		ResultSetFormatter.out(System.out, results);
+		///
+		
+		Query query = QueryFactory.create(queryString1);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		//ResultSet results = qexec.execSelect();
+		//System.out.println("result 009 : " + results);
+		//ResultSetFormatter.out(System.out, results);
 		// System.out.println(((Statement) model).getSubject());
+	
+		// ADDING HERE
+		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+
+		resultsOne.forEachRemaining(qsol -> {
+			String predicate = qsol.getResource("predicate").toString();
+			int PredicateCount = qsol.getLiteral("count").getInt();
+
+			System.out.println(" lookit : " + predicate);
+			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+
+			double coverage;
+			if (size > 0) {
+				coverage = PredicateCount / size;
+			} else {
+				coverage = 0;
+			}
+
+			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
+					PredicateCount, coverage);
+			propertiesList.add(p1);
+
+		});
+
+		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
+		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+
 		System.exit(0);
 		return 3;
 	}
 
-
-
-
+	// System.exit(0);
+	// return resultsOne
 
 }
-
-
-
-
