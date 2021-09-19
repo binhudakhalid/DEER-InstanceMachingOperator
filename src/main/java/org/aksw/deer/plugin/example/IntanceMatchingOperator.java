@@ -59,7 +59,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	// public HashMap<String, String> propertiesPrefixesSource;
 	public List<PrefixEntity> propertiesPrefixesSource;
 
-	public List<PropertyEntity> propertiesList;
+	// public List<PropertyEntity> propertiesList;
 	public List<PropertyEntity> propertiesListSource;
 	public List<PropertyEntity> propertiesListTarget;
 
@@ -93,30 +93,26 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		//
 //	    getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
-	//	System.exit(0);
-		
-		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
-		
-		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
-		
-		System.out.println("alibaba propertiesListSource: " +  propertiesListSource);
-		
-		System.out.println("alibaba ---------\n : " +  propertiesListTarget);
-		//System.exit(0);
-		// getEntitiesFromFile("1");
-		
-		
-		
-		
-		//public List<PropertyEntity> getPropertiesFromFile(String entity) {
+		// System.exit(0);
 
-		
-		
-		System.out.println("I out in propertiesListSource:: propertiesList00 :" + propertiesListSource.get(0).toString());
+		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+
+		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+
+		System.out.println("alibaba propertiesListSource: " + propertiesListSource);
+
+		System.out.println("alibaba ---------\n : " + propertiesListTarget);
+		// System.exit(0);
+		// getEntitiesFromFile("1");
+
+		// public List<PropertyEntity> getPropertiesFromFile(String entity) {
+
+		System.out
+				.println("I out in propertiesListSource:: propertiesList00 :" + propertiesListSource.get(0).toString());
 		System.out.println("I out in propertiesListSource:: size  :" + propertiesListSource.size());
 
 		// 9/
-		//System.exit(0);
+		// System.exit(0);
 		//
 		countEntityPredicate();
 
@@ -129,7 +125,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 * tempTotal); countEntityPredicate();
 		 */
 
-		dynamicPrefix();
+		// dynamicPrefix(); for sparlEndpoint
 
 		// Querying through Sparql to count the number of predicate of the entity
 		// -countEntityPredicate();
@@ -142,13 +138,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// sourceTarget is NT File
 
 		if (sourceType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			// calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
 		} else if (sourceType == "SPARQL") {
 
 		}
 
 		if (targetType == "NT") {
-			calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+			// calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		} else if (targetType == "SPARQL") {
 
 		}
@@ -197,48 +193,31 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
 
-		for (PropertyEntity list : propertiesList) {
-			// adding Prefix
+		for (PropertyEntity list : propertiesListSource) {
+
 			conf.addPrefix(list.key, list.value);
 			System.out.println("debug : + " + list.key + " " + list.value);
-			// adding property in List
-			sourcePropertylist.add(list.key + ":" + list.propertyName);
-			System.out.println();
-		}
-		
-		//setting prefix for source
-		for (PropertyEntity list : propertiesListSource) {
-			// adding Prefix
-			conf.addPrefix(list.key, list.value);
-			System.out.println("debug new : + " + list.key + " " + list.value);
-			// adding property in List
+
 			srcPropertylist.add(list.key + ":" + list.propertyName);
-			System.out.println("debug new : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
 			System.out.println();
 		}
-		
-		System.out.println("khalid : " + sourcePropertylist);
-		//System.exit(0);
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		//http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-		// conf.addPrefix("zoo", "http://dbpedia.org/ontology/");
 
-		
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
 		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {  "?s rdf:type xmfo:Person" })));
-		//src.addOptionalProperty(sourcePropertylist);
-		//srcPropertylist
-		System.out.println(" BINHUDA : "  + srcPropertylist);
+		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
+		// src.addOptionalProperty(sourcePropertylist);
+		// srcPropertylist
+		System.out.println(" BINHUDA : " + srcPropertylist);
 		src.setProperties(srcPropertylist);// Arrays.asList( strAB
-		//src.setOptionalProperties(sourcePropertylist);
+		// src.setOptionalProperties(sourcePropertylist);
 		src.setType("NT");
 
 		Map<String, String> prefixes = new HashMap<String, String>();
@@ -248,31 +227,18 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
 		prefixes.put("z3", "http://dbpedia.org/property/");
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		//http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-		
-		
-		//setting prefix for source
-				for (PropertyEntity list : propertiesListSource) {
-					// adding Prefix
-					prefixes.put(list.key, list.value);
-					System.out.println("debug new prefixes.put : + " + list.key + " " + list.value);
-					}
-				
-		
-		
+		// http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
-		System.out.println("prefixMap length : " + prefixMap.size());
-
-		for (PropertyEntity list : propertiesList) {
-			// System.out.println(" ali 01 + " + list.key+ "abv" + list.value);
+		// setting prefix for source
+		for (PropertyEntity list : propertiesListSource) {
+			// adding Prefix
 			prefixes.put(list.key, list.value);
-			prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-			System.out.println();
+			System.out.println("debug new prefixes.put : + " + list.key + " " + list.value);
 		}
+		System.out.println("prefixMap length : " + prefixMap.size());
+		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
 		src.setPrefixes(prefixes);
-
-		// src.setFunctions(functions);
 
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
@@ -282,43 +248,46 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		conf.setSourceInfo(src);
 
-		System.out.println("I out in :: size  aliS :" + propertiesList.size());
+		System.out.println("I out in :: size  aliS :" + propertiesListSource.size());
 
-		
-		
-		//sourcePropertylist asd
-		
+		// sourcePropertylist asd
+
 		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
+		targetPrefixesMap.put("owl", "http://www.w3.org/2002/07/owl#");
+		targetPrefixesMap.put("z1", "http://dbpedia.org/ontology/");
+		targetPrefixesMap.put("z2", "http://xmlns.com/foaf/0.1/");
+		targetPrefixesMap.put("z3", "http://dbpedia.org/property/");
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		//setting prefix for target
-				for (PropertyEntity list : propertiesListTarget) {
-					// adding Prefix
-					// teher   /conf.addPrefix(list.key, list.value);
-					targetPrefixesMap.put(list.key, list.value);
-					//System.out.println("debug new : + " + list.key + " " + list.value);
-					// adding property in List
-					targetPropertylist.add(list.key + ":" + list.propertyName);
-					System.out.println("debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
-					System.out.println();
-				}
-		
+
+		// setting prefix for target
+		for (PropertyEntity list : propertiesListTarget) {
+
+			targetPrefixesMap.put(list.key, list.value);
+
+			targetPropertylist.add(list.key + ":" + list.propertyName);
+			System.out.println(
+					"debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
+		}
+
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		target.setVar("?t");
 		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type xmfo:Person" })));
-		
-		/*targetPropertylist.remove(1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);
-		targetPropertylist.remove(targetPropertylist.size() - 1);*/
-		
+
+		/*
+		 * targetPropertylist.remove(1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 */
+
 		target.setProperties(targetPropertylist);
 		System.out.println("meme1 targetPropertylist : " + targetPropertylist);
 		System.out.println("meme1 srcPropertylist : " + srcPropertylist);
@@ -326,12 +295,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// })); //, "xmfo:name"
 		target.setPrefixes(targetPrefixesMap);
-		
-		//d 
-		System.out.println("meme1 targetPrefixesMap : " + targetPrefixesMap);
-		//System.out.println("meme1 targetPrefixesMap : " + srcPrefixesMap);
 
-		
+		// d
+		System.out.println("meme1 targetPrefixesMap : " + targetPrefixesMap);
+		// System.out.println("meme1 targetPrefixesMap : " + srcPrefixesMap);
+
 		target.setFunctions(functions);
 		target.setType("NT");
 		conf.setTargetInfo(target);
@@ -369,7 +337,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// Output format CSV etc
 		conf.setOutputFormat("NT"); // NT or TTL
 
-		
 		System.out.println("lool me conf " + conf);
 		return conf;
 	}
@@ -745,56 +712,52 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 
 	public void calculateCoverageForNTFile(String link) {
-
-		propertiesList = new ArrayList<PropertyEntity>();
-		propertiesPrefixesSource = new ArrayList<PrefixEntity>();
-		double size;
-
-		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ;
-		size = model.size();
-
-		String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n" + "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-				// + " ?instance rdf:type url:Movie .\r\n"
-				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
-
-		Query query = QueryFactory.create(queryString);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model);
-
 		/*
-		 * ResultSet results = qexec.execSelect(); System.out.println("result 007 : " +
-		 * results); ResultSetFormatter.out(System.out, results);
+		 * propertiesList = new ArrayList<PropertyEntity>(); propertiesPrefixesSource =
+		 * new ArrayList<PrefixEntity>(); double size;
+		 * 
+		 * Model model = ModelFactory.createDefaultModel(); RDFDataMgr.read(model, link,
+		 * Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ; size =
+		 * model.size();
+		 * 
+		 * String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" +
+		 * "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
+		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
+		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
+		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
+		 * "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n"
+		 * + "{\r\n" // + " ?instance rdf:type url:Movie .\r\n" +
+		 * "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
+		 * + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
+		 * 
+		 * Query query = QueryFactory.create(queryString); QueryExecution qexec =
+		 * QueryExecutionFactory.create(query, model);
+		 * 
+		 * /* ResultSet results = qexec.execSelect(); System.out.println("result 007 : "
+		 * + results); ResultSetFormatter.out(System.out, results);
 		 * //System.out.println(((Statement) model).getSubject());
 		 */
 
-		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
-
-		resultsOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
-
-			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
-
-			double coverage;
-			if (size > 0) {
-				coverage = PredicateCount / size;
-			} else {
-				coverage = 0;
-			}
-
-			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
-					PredicateCount, coverage);
-			propertiesList.add(p1);
-
-		});
-
-		System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
-		System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+		/*
+		 * ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+		 * 
+		 * resultsOne.forEachRemaining(qsol -> { String predicate =
+		 * qsol.getResource("predicate").toString(); int PredicateCount =
+		 * qsol.getLiteral("count").getInt();
+		 * 
+		 * PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+		 * 
+		 * double coverage; if (size > 0) { coverage = PredicateCount / size; } else {
+		 * coverage = 0; }
+		 * 
+		 * PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value,
+		 * prefixEntity.name, PredicateCount, coverage); propertiesList.add(p1);
+		 * 
+		 * });
+		 * 
+		 * System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
+		 * System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
+		 */
 		// System.exit(0);
 		// return resultsOne
 	}
@@ -805,8 +768,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model,
-																									// //
-																									// inputStream,
+														// //
+														// inputStream,
 		size = model.size();
 		if (size < 1) {
 			System.out.println("File is empty. size :" + size);
