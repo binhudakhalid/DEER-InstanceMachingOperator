@@ -29,8 +29,10 @@ import org.aksw.limes.core.ml.algorithm.MLImplementationType;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
@@ -94,7 +96,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		
 		
 		
-		getEntitiesFromFile("1");
+		//getEntitiesFromFile("1");
+		getPropertiesFromFile("2");
 		System.exit(0);
 		//
 		countEntityPredicate();
@@ -767,7 +770,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size = 0;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
+		RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
 																										// //
 																										// inputStream,
 		size = model.size();
@@ -795,5 +798,56 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		
 		return entityListFile;
 	}
+	
+	/*
+	 * Takes entity as input
+	 * return list of properties from file
+	 *  
+	*/
+		public int getPropertiesFromFile(String entity) {
+		
+		//if (!checkFileExist(link)) {
+			//throw FileNotFoundException; 
+		//}
+
+		long size;
+
+		Model model = ModelFactory.createDefaultModel();
+		RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt", Lang.NTRIPLES);
+		//RDFDataMgr.read(model, "/Users/khalidkhan/Documents/OurDeerPluginNewVersion/practiceFile.nt", Lang.NTRIPLES);
+		// RDFDataMgr.read(model, inputStream, ) ;
+
+
+		System.out.println(" meAtIt1 : " + model); 
+		size = model.size();
+		System.out.println(" meAtIt1size  : " + size);
+
+		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
+				+ "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+				+ "  ?instance rdf:type url1:Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
+				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
+				+ "order by desc ( ?count )\r\n" + "LIMIT 10";
+
+		Query query = QueryFactory.create(queryString1);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		ResultSet results = qexec.execSelect();
+		System.out.println("result 009 : " + results);
+		ResultSetFormatter.out(System.out, results);
+		// System.out.println(((Statement) model).getSubject());
+		System.exit(0);
+		return 3;
+	}
+
+
+
+
 
 }
+
+
+
+
