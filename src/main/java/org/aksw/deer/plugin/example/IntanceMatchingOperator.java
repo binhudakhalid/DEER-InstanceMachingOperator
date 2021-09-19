@@ -95,7 +95,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 //	    getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
 		// System.exit(0);
 
-		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 
 		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 
@@ -209,7 +209,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
-		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
@@ -262,6 +262,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// setting prefix for target
 		for (PropertyEntity list : propertiesListTarget) {
 
+			conf.addPrefix(list.key, list.value);
+
 			targetPrefixesMap.put(list.key, list.value);
 
 			targetPropertylist.add(list.key + ":" + list.propertyName);
@@ -272,9 +274,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
 		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
-		target.setVar("?t");
+		target.setVar("?z");
 		target.setPageSize(-1);
-		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?t rdf:type xmfo:Person" })));
+		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
 
 		/*
 		 * targetPropertylist.remove(1);
