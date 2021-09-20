@@ -94,14 +94,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		//
 		
 	    //getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
-		test("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
-		System.exit(0);
+	//	test("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+//		System.exit(0);
 	 //   getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
 		// System.exit(0);
 
-		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\abc.nt");
+		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 
-		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 
 		System.out.println("alibaba propertiesListSource: " + propertiesListSource);
 
@@ -214,7 +214,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
-		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\abc.nt");
+		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
@@ -278,7 +278,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
 		target.setVar("?z");
 		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
@@ -294,10 +294,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 * targetPropertylist.remove(targetPropertylist.size() - 1);
 		 * targetPropertylist.remove(targetPropertylist.size() - 1);
 		 */
-
-		target.setProperties(targetPropertylist);
-		System.out.println("meme1 targetPropertylist : " + targetPropertylist);
-		System.out.println("meme1 srcPropertylist : " + srcPropertylist);
+	       ArrayList<String> al1=new ArrayList<String>();
+	       al1.add("xmfo:name");
+		//target.setProperties(targetPropertylist);
+	       target.setProperties(al1);
+			
+	       System.out.println("meme12 targetPropertylist : " + targetPropertylist);
+	//	System.out.println("meme1 srcPropertylist : " + srcPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
 		// })); //, "xmfo:name"
