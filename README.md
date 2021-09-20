@@ -1,4 +1,18 @@
-# DEER Plugin Starter
+# Updated branch: inputFile
+
+# Parameters
+
+The deer:IntanceMatchingOperator has two paremeters (deer:coverage, deer:maxLimit ).
+
+**deer:maxLimit** can be use to set the level of Coverage of the Properties. Calulated by "propteryCount/TotalInstanceCount" 
+
+example: deer:coverage "8.66"; 
+
+**deer:maxLimit** will set the maximum number of Properties. 
+
+example: deer:maxLimit "10";
+
+# Instance Matching Operator
 
 Using `mvn clean package` in this folder will generate the plugin under
 `./target/plugin-starter-${version}-plugin.jar`.
