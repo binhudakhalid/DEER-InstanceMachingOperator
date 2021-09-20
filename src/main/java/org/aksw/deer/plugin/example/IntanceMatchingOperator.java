@@ -99,9 +99,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 //   getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
 		// System.exit(0);
 
-		propertiesListSource = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		propertiesListSource = getPropertiesFromFile("data/data_nobelprize_org.nt");
 
-		propertiesListTarget = getPropertiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+		propertiesListTarget = getPropertiesFromFile("data/lov_linkeddata_es_dataset_lov.nt");
 
 		System.out.println("alibaba propertiesListSource: " + propertiesListSource);
 
@@ -214,7 +214,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
-		src.setEndpoint("F:\\Newfolder\\LIMES\\t\\data_nobelprize_org.nt");
+		src.setEndpoint("data/data_nobelprize_org.nt");
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
@@ -278,7 +278,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+		target.setEndpoint("data/lov_linkeddata_es_dataset_lov.nt");
 		target.setVar("?z");
 		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
@@ -297,12 +297,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	       ArrayList<String> al1=new ArrayList<String>();
 	       al1.add("xmfo:name");
 	    //   al1.add("");
-		//target.setProperties(targetPropertylist);
-	     //  target.setProperties(al1);
-	       target.setOptionalProperties(targetPropertylist);
+		target.setProperties(al1);
+	    //  target.setProperties(al1);
+	    //   target.setOptionalProperties(targetPropertylist);
 		      
 	       
-	       System.out.println("meme12 targetPropertylist : " + targetPropertylist);
+	     //  System.out.println("meme12 targetPropertylist : " + targetPropertylist);
 	//	System.out.println("meme1 srcPropertylist : " + srcPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
 
@@ -724,65 +724,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return totalInstances;
 	}
 
-	public void calculateCoverageForNTFile(String link) {
-		/*
-		 * propertiesList = new ArrayList<PropertyEntity>(); propertiesPrefixesSource =
-		 * new ArrayList<PrefixEntity>(); double size;
-		 * 
-		 * Model model = ModelFactory.createDefaultModel(); RDFDataMgr.read(model, link,
-		 * Lang.NTRIPLES); // RDFDataMgr.read(model, inputStream, ) ; size =
-		 * model.size();
-		 * 
-		 * String queryString = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" +
-		 * "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
-		 * "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n"
-		 * + "{\r\n" // + " ?instance rdf:type url:Movie .\r\n" +
-		 * "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-		 * + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 4";
-		 * 
-		 * Query query = QueryFactory.create(queryString); QueryExecution qexec =
-		 * QueryExecutionFactory.create(query, model);
-		 * 
-		 * /* ResultSet results = qexec.execSelect(); System.out.println("result 007 : "
-		 * + results); ResultSetFormatter.out(System.out, results);
-		 * //System.out.println(((Statement) model).getSubject());
-		 */
-
-		/*
-		 * ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
-		 * 
-		 * resultsOne.forEachRemaining(qsol -> { String predicate =
-		 * qsol.getResource("predicate").toString(); int PredicateCount =
-		 * qsol.getLiteral("count").getInt();
-		 * 
-		 * PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
-		 * 
-		 * double coverage; if (size > 0) { coverage = PredicateCount / size; } else {
-		 * coverage = 0; }
-		 * 
-		 * PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value,
-		 * prefixEntity.name, PredicateCount, coverage); propertiesList.add(p1);
-		 * 
-		 * });
-		 * 
-		 * System.out.println("propertiesList00 :" + propertiesList.get(0).toString());
-		 * System.out.println("propertiesList01 :" + propertiesList.get(1).toString());
-		 */
-		// System.exit(0);
-		// return resultsOne
-	}
+ 
 
 	public Set<String> getEntitiesFromFile(String link) {
 		entityListFile = new HashSet<String>();
 		double size = 0;
 
 		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, link, Lang.NTRIPLES); // RDFDataMgr.read(model,
-														// //
-														// inputStream,
+		RDFDataMgr.read(model, link, Lang.NTRIPLES);  
+		
 		size = model.size();
 		System.out.println("size :::: " + size);
 		if (size < 1) {
@@ -794,9 +744,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		StmtIterator iter = model.listStatements();
 
 		while (iter.hasNext()) {
-			Statement stmt = iter.nextStatement(); // obtenir la prochaine déclaration
-			Resource subject = stmt.getSubject(); // obtenir le sujet
-			Property predicate = stmt.getPredicate(); // obtenir le prédicat
+			Statement stmt = iter.nextStatement();  
+			Resource subject = stmt.getSubject();  
+			Property predicate = stmt.getPredicate(); 
 			RDFNode object = stmt.getObject();
 
 			if (predicate.toString().equals(predicateRDFType.toString())) {
@@ -824,10 +774,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
-		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
-		// Lang.NTRIPLES);
-		RDFDataMgr.read(model, entity, Lang.NTRIPLES); // RDFDataMgr.read(model,
-
+		
+		RDFDataMgr.read(model, entity, Lang.NTRIPLES); 
+		
 		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -860,7 +809,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
 
-			System.out.println(" lookit : " + predicate);
+			// System.out.println(" lookit : " + predicate);
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
@@ -875,107 +824,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			propertiesListTemp.add(p1);
 
 		});
-
-		System.out.println("propertiesListTemp :" + propertiesListTemp.get(0).toString());
-		System.out.println("propertiesListTemp :" + propertiesListTemp.get(1).toString());
-
-		// System.exit(0);
 		return propertiesListTemp;
 	}
-
-	// System.exit(0);
-	// return resultsOne
-
-	public void test (String entity) {
-		
-		entityListFile = new HashSet<String>();
-		double size = 0;
-
-		Model model1 = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model1, entity, Lang.NTRIPLES); // RDFDataMgr.read(model,
-														// //
-														// inputStream,
-		size = model1.size();
-		System.out.println("size m :::: " + size);
-	 
-			
-
-		// if (!checkFileExist(link)) {
-		// throw FileNotFoundException;
-		// }
-
-	//	double size = 0;
-
-		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
-
-		Model model = ModelFactory.createDefaultModel();
-		// RDFDataMgr.read(model, "F:\\Newfolder\\deer-plugin-starter\\practiceFile.nt",
-		// Lang.NTRIPLES);data_nobelprize_org.nt
-		//RDFDataMgr.read(model, "F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt", Lang.NTRIPLES); // RDFDataMgr.read(model,
-		RDFDataMgr.read(model, entity, Lang.NTRIPLES); // RDFDataMgr.read(model,
-
-		System.out.println("The size is :: " + size);
-		String queryString1 =  "PREFIX w3200: <http://www.w3.org/2003/06/sw-vocab-status/ns#>\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX z1: <http://dbpedia.org/ontology/>\r\n"
-				+ "PREFIX z2: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX z3: <http://dbpedia.org/property/>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX dbpr: <http://dbpedia.org/property/>\r\n"
-				+ "SELECT DISTINCT ?s ?v1 \r\n"
-				+ "WHERE {\r\n"
-				+ "?s rdf:type xmfo:Person .\r\n"
-				+ "?s xmfo:name ?v1 .\r\n"
-			   // + "?s w3200:label ?v1 .\r\n"
-			  //  + "?s xmfo:givenName ?v3 .\r\n"
-			/*	+ "?s xmfo:gender ?v2 .\r\n"
-				
-				+ "?s xmfo:name ?v4 .\r\n"
-				+ "?s dbpr:dateOfBirth ?v5 .\r\n"
-				+ "?s xmfo:birthday ?v6 .\r\n"
-				+ "?s xmfo:familyName ?v7 .\r\n"
-				+ "?s dbpr:dateOfDeath ?v8 .\r\n"*/
-				+ "}";
-
-		// JUST FOR DEBUG remove before commit
-		Query query1 = QueryFactory.create(queryString1);
-		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model1);
-		ResultSet results = qexec1.execSelect();
-		System.out.println("result 019 : " + results);
-		ResultSetFormatter.out(System.out, results);
-		///
-
-		Query query = QueryFactory.create(queryString1);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model1);
-		// ResultSet results = qexec.execSelect();
-		// System.out.println("result 009 : " + results);
-		// ResultSetFormatter.out(System.out, results);
-		// System.out.println(((Statement) model).getSubject());
-
-		// ADDING HERE
-		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
-
-		resultsOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
-
-			System.out.println(" lookit : " + predicate);
-			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
-
-			double coverage;
-			 
-			 
-
-		});
-
-	 
-	
-	}
-
-	// System.exit(0);
-	// return resultsOne
-
+ 
 }
 
