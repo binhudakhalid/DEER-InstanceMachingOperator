@@ -296,9 +296,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 */
 	       ArrayList<String> al1=new ArrayList<String>();
 	       al1.add("xmfo:name");
+	    //   al1.add("");
 		//target.setProperties(targetPropertylist);
-	       target.setProperties(al1);
-			
+	     //  target.setProperties(al1);
+	       target.setOptionalProperties(targetPropertylist);
+		      
+	       
 	       System.out.println("meme12 targetPropertylist : " + targetPropertylist);
 	//	System.out.println("meme1 srcPropertylist : " + srcPropertylist);
 		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
