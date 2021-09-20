@@ -89,35 +89,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
-		// PrefixUtility PrefixUtility = new PrefixUtility();
-
-		//
-
-		// getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
-		// test("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
-//		System.exit(0);
-		// getEntitiesFromFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_bbc_peel_sparql.nt");
-		// System.exit(0);
-
+		 
 		propertiesListSource = getPropertiesFromFile("data/data_nobelprize_org.nt");
 
 		propertiesListTarget = getPropertiesFromFile("data/lov_linkeddata_es_dataset_lov.nt");
-
-		System.out.println("alibaba propertiesListSource: " + propertiesListSource);
-
-		System.out.println("alibaba ---------\n : " + propertiesListTarget);
-
-		// getEntitiesFromFile("1");
-
-		// public List<PropertyEntity> getPropertiesFromFile(String entity) {
-
-		System.out
-				.println("I out in propertiesListSource:: propertiesList00 :" + propertiesListSource.get(0).toString());
-		System.out.println("I out in propertiesListSource:: size  :" + propertiesListSource.size());
-
-		// 9/
-		// System.exit(0);
-		//
+ 
+//		 
+		 
 		countEntityPredicate();
 
 		// calculateCoverage
@@ -142,13 +120,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// sourceTarget is NT File
 
 		if (sourceType == "NT") {
-			// calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\dbtune_org_magnatune_sparqlCut1.nt");
+			// calculateCoverageForNTFile("data/dbtune_org_magnatune_sparqlCut1.nt");
 		} else if (sourceType == "SPARQL") {
 
 		}
 
 		if (targetType == "NT") {
-			// calculateCoverageForNTFile("F:\\Newfolder\\LIMES\\t\\lov_linkeddata_es_dataset_lov.nt");
+			// calculateCoverageForNTFile("data/lov_linkeddata_es_dataset_lov.nt");
 		} else if (targetType == "SPARQL") {
 
 		}
@@ -157,11 +135,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.out.println("abcd : " + abc);
 
 		// countEntityPredicateTarget();
-
-		// DOn't need to uncomment these line as you don't want
-		// to run as the output is already is saved in 002accepted.nt
-		// and it takes atleast 1 hour to execute.
-
+ 
 		Configuration con = createLimeConfigurationFile();
 		callLimes(con);
 
@@ -188,22 +162,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public Configuration createLimeConfigurationFile() {
 
-		// Creating Limes configuration Object
 		Configuration conf = new Configuration();
 
 		dynamicPrefix();
 
-		List<String> sourcePropertylist = new ArrayList<String>();
-		List<String> srcPropertylist = new ArrayList<String>();
+ 		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
 
 		for (PropertyEntity list : propertiesListSource) {
-
 			conf.addPrefix(list.key, list.value);
-			System.out.println("debug : + " + list.key + " " + list.value);
-
 			srcPropertylist.add(list.key + ":" + list.propertyName);
-			System.out.println();
 		}
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
@@ -217,21 +185,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setVar("?s");
 		src.setPageSize(-1);
 		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
-		// src.addOptionalProperty(sourcePropertylist);
-		// srcPropertylist
-		System.out.println(" BINHUDA : " + srcPropertylist);
-		src.setProperties(srcPropertylist);// Arrays.asList( strAB
-		// src.setOptionalProperties(sourcePropertylist);
+
+		src.setProperties(srcPropertylist);
 		src.setType("NT");
 
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-		prefixes.put("z1", "http://dbpedia.org/ontology/");
-		prefixes.put("z2", "http://xmlns.com/foaf/0.1/");
-		prefixes.put("z3", "http://dbpedia.org/property/");
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		// http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 		// setting prefix for source
 		for (PropertyEntity list : propertiesListSource) {
@@ -251,16 +212,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setFunctions(functions);
 
 		conf.setSourceInfo(src);
-
-		System.out.println("I out in :: size  aliS :" + propertiesListSource.size());
-
-		// sourcePropertylist asd
-
+ 
 		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
 		targetPrefixesMap.put("owl", "http://www.w3.org/2002/07/owl#");
-		targetPrefixesMap.put("z1", "http://dbpedia.org/ontology/");
-		targetPrefixesMap.put("z2", "http://xmlns.com/foaf/0.1/");
-		targetPrefixesMap.put("z3", "http://dbpedia.org/property/");
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
 		// setting prefix for target
@@ -281,18 +235,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setVar("?z");
 		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
-
+ 
 		/*
-		 * targetPropertylist.remove(1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
-		 * targetPropertylist.remove(targetPropertylist.size() - 1);
+		 * There is a problem when we have an entity has lot of properties but all
+		 * instances don't have all those properties then the Sparql query return 0
+		 * instance.
+		 * 
+		 * By reading the LIMES documentation we came to know that we can use optional
+		 * for properties but the method "target.setOptionalProperties(list)" is not
+		 * working either.
+		 * 
+		 * For now we have hard coded the one property "xmfo:name"
 		 */
+
 		ArrayList<String> al1 = new ArrayList<String>();
 		al1.add("xmfo:name");
 		// al1.add("");
@@ -300,16 +255,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// target.setProperties(al1);
 		// target.setOptionalProperties(targetPropertylist);
 
-		// System.out.println("meme12 targetPropertylist : " + targetPropertylist);
-		// System.out.println("meme1 srcPropertylist : " + srcPropertylist);
-		// Arrays.asList(new String[] { "rdfs:label", "pudc:description","xmfo:name"
-
-		// })); //, "xmfo:name"
 		target.setPrefixes(targetPrefixesMap);
-
-		// d
-		System.out.println("meme1 targetPrefixesMap : " + targetPrefixesMap);
-		// System.out.println("meme1 targetPrefixesMap : " + srcPrefixesMap);
 
 		target.setFunctions(functions);
 		target.setType("NT");
@@ -372,7 +318,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
 	}
-
 
 	public void dynamicPrefix() {
 
