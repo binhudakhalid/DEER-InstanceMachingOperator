@@ -82,7 +82,41 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		// commiting 123..
+		
+		// Getting  input from previous operator
+		// There parameter will be set by the output from previous operator
+		// Setting the parameter manually until the ontology operator is integrated with it. 
+		
+		String inputEndpoint = "fileType"; 
+		String sourceFilePath = "data/data_nobelprize_org.nt";
+		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
+		String sourceRestrictions = "xmfo:Person";
+		String targetRestrictions = "xmfo:Person";
+		
+		
+		
+		//if the endpoint is filetype
+		if(inputEndpoint == "fileType" ) {
+	
+			propertiesListSource = getPropertiesFromFile(sourceFilePath);
+			propertiesListTarget = getPropertiesFromFile(targetFilePath);
+			
+		}// if the endpoint is url
+		else if(inputEndpoint == "url"){
+		
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// Setting DEER Parameters
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
 		System.out.println(" drecipient-d coverage: " + coverage);
@@ -90,10 +124,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 		 
-		propertiesListSource = getPropertiesFromFile("data/data_nobelprize_org.nt");
-
-		propertiesListTarget = getPropertiesFromFile("data/lov_linkeddata_es_dataset_lov.nt");
- 
+		 
 //		 
 		 
 		countEntityPredicate();
@@ -684,19 +715,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * Takes entity as input return list of properties from file
 	 * 
 	 */
-	public List<PropertyEntity> getPropertiesFromFile(String entity) {
-
-		// if (!checkFileExist(link)) {
-		// throw FileNotFoundException;
-		// }
-
+	public List<PropertyEntity> getPropertiesFromFile(String path) {
+System.out.println("H:1S");
 		long size = 0;
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
 
-		RDFDataMgr.read(model, entity, Lang.NTRIPLES);
-
+		RDFDataMgr.read(model, path, Lang.NTRIPLES);
 		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -744,6 +770,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			propertiesListTemp.add(p1);
 
 		});
+	
+		System.out.println("propertiesListTemp ali: " + propertiesListTemp);
+		System.exit(1);
 		return propertiesListTemp;
 	}
 
