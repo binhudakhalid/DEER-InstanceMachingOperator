@@ -82,40 +82,29 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		// Getting  input from previous operator
+
+		// Getting input from previous operator
 		// There parameter will be set by the output from previous operator
-		// Setting the parameter manually until the ontology operator is integrated with it. 
-		
-		String inputEndpoint = "fileType"; 
+		// Setting the parameter manually until the ontology operator is integrated with
+		// it.
+
+		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
 		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
 		String sourceRestrictions = "xmfo:Person";
 		String targetRestrictions = "xmfo:Person";
-		
-		
-		
-		//if the endpoint is filetype
-		if(inputEndpoint == "fileType" ) {
-	
+
+		// if the endpoint is filetype
+		if (inputEndpoint == "fileType") {
+
 			propertiesListSource = getPropertiesFromFile(sourceFilePath, "http://xmlns.com/foaf/0.1/Person");
 			propertiesListTarget = getPropertiesFromFile(targetFilePath, "http://xmlns.com/foaf/0.1/Person");
-			
-		}// if the endpoint is url
-		else if(inputEndpoint == "url"){
-		
+
+		} // if the endpoint is url
+		else if (inputEndpoint == "url") {
+
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		// Setting DEER Parameters
 		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
@@ -123,10 +112,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
-		 
-		 
+
 //		 
-		 
+
 		countEntityPredicate();
 
 		// calculateCoverage
@@ -166,7 +154,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.out.println("abcd : " + abc);
 
 		// countEntityPredicateTarget();
- 
+
 		Configuration con = createLimeConfigurationFile();
 		callLimes(con);
 
@@ -197,7 +185,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		dynamicPrefix();
 
- 		List<String> srcPropertylist = new ArrayList<String>();
+		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
 
 		for (PropertyEntity list : propertiesListSource) {
@@ -243,7 +231,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setFunctions(functions);
 
 		conf.setSourceInfo(src);
- 
+
 		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
 		targetPrefixesMap.put("owl", "http://www.w3.org/2002/07/owl#");
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -266,7 +254,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setVar("?z");
 		target.setPageSize(-1);
 		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
- 
+
 		/*
 		 * There is a problem when we have an entity has lot of properties but all
 		 * instances don't have all those properties then the Sparql query return 0
@@ -716,31 +704,37 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * 
 	 */
 	public List<PropertyEntity> getPropertiesFromFile(String path, String restriction) {
-		
+
 		restriction = "http://xmlns.com/foaf/0.1/Person";
+
+		PrefixEntity restrictionPrefixEntity = PrefixUtility
+				.splitPreficFromProperty("http://xmlns.com/foaf/0.1/Person");
+		System.out.println("restrictionPrefixEntity " + restrictionPrefixEntity);
+
+		InstanceCount instanceCount = new InstanceCount();
+		double size = instanceCount.countInstanceFromFile(path  , restrictionPrefixEntity);
 		
-	PrefixEntity restrictionPrefixEntity =	PrefixUtility.splitPreficFromProperty("http://xmlns.com/foaf/0.1/Person");
-	System.out.println("restrictionPrefixEntity " + restrictionPrefixEntity);
-	System.exit(0);
-			System.out.println("H:1S");
-		long size = 10;
+		System.out.println("The instance is : "  + size);
+	
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
 
 		RDFDataMgr.read(model, path, Lang.NTRIPLES);
-		String queryString1 = "PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n"
+		String queryString1 = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
 				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
 				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
 				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-				+ "  ?instance rdf:type http://xmlns.com/foaf/0.1/Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
-				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n"
-				+ "LIMIT 10";
-	//	url1:Person
+				+ "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" + restrictionPrefixEntity.name + " .\r\n"
+				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
+				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 10";
+
+		System.out.println("queryString112" + queryString1);
+		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
-		
+
 		// JUST FOR DEBUG remove before commit
 		Query query1 = QueryFactory.create(queryString1);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
@@ -762,7 +756,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-			System.out.println(" Iam here " +  PredicateCount);
+			System.out.println(" Iam here " + PredicateCount);
 
 			// System.out.println(" lookit : " + predicate);
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
@@ -772,9 +766,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			if (size > 0) {
 				coverage = PredicateCount / size;
-				System.out.println("predicate pppa :" + PredicateCount);
+				
+				System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
 
-				System.out.println("PredicateCount ppp :" + PredicateCount);
+				System.out.println(" ckcpppa size :" + size);
+				System.out.println(" ckcpppa coverage :" + coverage);
+				System.out.println(" ckcpppa check :" + PredicateCount / size);
+
 			} else {
 				coverage = 0;
 			}
@@ -784,7 +782,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			propertiesListTemp.add(p1);
 
 		});
-	
+
 		System.out.println("propertiesListTemp ali: " + propertiesListTemp);
 		System.exit(1);
 		return propertiesListTemp;

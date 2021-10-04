@@ -22,7 +22,7 @@ public class PrefixEntity {
 
 	@Override
 	public String toString() {
-		return "PrefixEntity [key=" + key + ", Value=" + value + ", Value2=" + name + "]";
+		return "PrefixEntity [key=" + key + ", Value=" + value + ", Name=" + name + "]";
 	}
 
 	public String getKey() {
