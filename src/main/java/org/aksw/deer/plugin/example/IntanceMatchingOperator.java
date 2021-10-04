@@ -83,6 +83,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
+		// Setting DEER Parameters
+		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("did not able to find coverage");
+		System.out.println(" drecipient-d coverage: " + coverage);
+		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("did not able to find maxLimit param ");
+		System.out.println(" drecipient-d maxLimit: " + maxLimit);
+
+		
+		
 		// Getting input from previous operator
 		// There parameter will be set by the output from previous operator
 		// Setting the parameter manually until the ontology operator is integrated with
@@ -91,27 +101,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
 		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
-		String sourceRestrictions = "xmfo:Person";
-		String targetRestrictions = "xmfo:Person";
+		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
 		// if the endpoint is filetype
 		if (inputEndpoint == "fileType") {
 
-			propertiesListSource = getPropertiesFromFile(sourceFilePath, "http://xmlns.com/foaf/0.1/Person");
-			propertiesListTarget = getPropertiesFromFile(targetFilePath, "http://xmlns.com/foaf/0.1/Person");
+			propertiesListSource = getPropertiesFromFile(sourceFilePath, sourceRestrictions, Integer.parseInt(maxLimit));
+			propertiesListTarget = getPropertiesFromFile(targetFilePath, targetRestrictions, Integer.parseInt(maxLimit));
 
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
 
 		}
 
-		// Setting DEER Parameters
-		String coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("did not able to find coverage");
-		System.out.println(" drecipient-d coverage: " + coverage);
-		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("did not able to find maxLimit param ");
-		System.out.println(" drecipient-d maxLimit: " + maxLimit);
 
 //		 
 
@@ -703,7 +706,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * Takes entity as input return list of properties from file
 	 * 
 	 */
-	public List<PropertyEntity> getPropertiesFromFile(String path, String restriction) {
+	public List<PropertyEntity> getPropertiesFromFile(String path, String restriction, int maximumProperties) {
 
 		restriction = "http://xmlns.com/foaf/0.1/Person";
 
@@ -729,7 +732,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
 				+ "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" + restrictionPrefixEntity.name + " .\r\n"
 				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT 10";
+				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
 
 		System.out.println("queryString112" + queryString1);
 		// url1:Person
