@@ -9,6 +9,22 @@ public class InstanceCount {
 	
 	private int totalInstances;
 	
+		public int countInstanceFromFile(String instanceType) {
+
+			QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
+					"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+							+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+							+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+							+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+							+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
+
+			ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+			resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
+			qe.close();
+
+			return totalInstances;
+		}
+	
 	
 	public long instanceCount(String instanceType, String knowledgeGraphName) {
 		long count = 0; 

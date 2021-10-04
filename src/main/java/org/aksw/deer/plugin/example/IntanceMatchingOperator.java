@@ -98,8 +98,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		//if the endpoint is filetype
 		if(inputEndpoint == "fileType" ) {
 	
-			propertiesListSource = getPropertiesFromFile(sourceFilePath);
-			propertiesListTarget = getPropertiesFromFile(targetFilePath);
+			propertiesListSource = getPropertiesFromFile(sourceFilePath, "http://xmlns.com/foaf/0.1/Person");
+			propertiesListTarget = getPropertiesFromFile(targetFilePath, "http://xmlns.com/foaf/0.1/Person");
 			
 		}// if the endpoint is url
 		else if(inputEndpoint == "url"){
@@ -715,9 +715,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * Takes entity as input return list of properties from file
 	 * 
 	 */
-	public List<PropertyEntity> getPropertiesFromFile(String path) {
-System.out.println("H:1S");
-		long size = 0;
+	public List<PropertyEntity> getPropertiesFromFile(String path, String restriction) {
+		
+		restriction = "http://xmlns.com/foaf/0.1/Person";
+		
+	PrefixEntity restrictionPrefixEntity =	PrefixUtility.splitPreficFromProperty("http://xmlns.com/foaf/0.1/Person");
+	System.out.println("restrictionPrefixEntity " + restrictionPrefixEntity);
+	System.exit(0);
+			System.out.println("H:1S");
+		long size = 10;
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
@@ -729,10 +735,12 @@ System.out.println("H:1S");
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
 				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
 				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-				+ "  ?instance rdf:type url1:Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
+				+ "  ?instance rdf:type http://xmlns.com/foaf/0.1/Person .\r\n" + "  ?instance ?predicate ?o .\r\n"
 				+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n"
 				+ "LIMIT 10";
-
+	//	url1:Person
+//		http://xmlns.com/foaf/0.1/Person
+		
 		// JUST FOR DEBUG remove before commit
 		Query query1 = QueryFactory.create(queryString1);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
@@ -754,13 +762,19 @@ System.out.println("H:1S");
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
+			System.out.println(" Iam here " +  PredicateCount);
 
 			// System.out.println(" lookit : " + predicate);
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
+			System.out.println("predicate pppap :" + size);
+
 			if (size > 0) {
 				coverage = PredicateCount / size;
+				System.out.println("predicate pppa :" + PredicateCount);
+
+				System.out.println("PredicateCount ppp :" + PredicateCount);
 			} else {
 				coverage = 0;
 			}
