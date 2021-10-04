@@ -1,6 +1,6 @@
 # Updated branch: inputFile
 
-# Parameters
+# DEER Parameters
 
 The deer:IntanceMatchingOperator has two paremeters (deer:coverage, deer:maxLimit ).
 
@@ -11,6 +11,22 @@ example: deer:coverage "8.66";
 **deer:maxLimit** will set the maximum number of Properties. 
 
 example: deer:maxLimit "10";
+
+# Input From Ontology Operator
+
+<source, enpointType, file>                 // <source, enpointType, url>
+
+<source, endpoint, www.abc.com/fileOne>     
+
+<source, restriction, www.abc.com/Person>   
+
+
+<target, enpointType, file>
+
+<target, endpoint, www.abc.com/fileTwo>
+
+<target, restriction, www.abc.com/Actor>
+
 
 # Instance Matching Operator
 
