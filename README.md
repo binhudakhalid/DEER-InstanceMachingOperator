@@ -4,7 +4,7 @@
 
 The deer:IntanceMatchingOperator has two paremeters (deer:coverage, deer:maxLimit ).
 
-**deer:maxLimit** can be use to set the level of Coverage of the Properties. Calulated by "propteryCount/TotalInstanceCount" 
+**deer:coverage** can be use to set the level of Coverage of the Properties. Calulated by "propteryCount/TotalInstanceCount" 
 
 example: deer:coverage "8.66"; 
 
