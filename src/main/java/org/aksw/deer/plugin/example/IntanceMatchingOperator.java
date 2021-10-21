@@ -135,7 +135,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 		
 			
-			Configuration con = createLimeConfigurationFile();
+			
+			 
+			
+			Configuration con = createLimeConfigurationFile("data/data_nobelprize_org.nt","http://xmlns.com/foaf/0.1/Person",
+					"data/lov_linkeddata_es_dataset_lov.nt", "http://xmlns.com/foaf/0.1/Person");
+			
 			callLimes(con);
 			
 			
@@ -186,8 +191,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// countEntityPredicateTarget();
 
-		Configuration con = createLimeConfigurationFile();
-		callLimes(con);
+		//Configuration con = createLimeConfigurationFile();
+		//callLimes(con);
 
 		// File initialFile = new File("001accepted.nt");
 		// InputStream targetStream = null;
@@ -245,7 +250,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	}
 
-	public Configuration createLimeConfigurationFile() {
+	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions,
+			String targetEndpoint, String targetRestrictions) {
 
 		Configuration conf = new Configuration();
 
@@ -266,10 +272,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		KBInfo src = new KBInfo();
 
 		src.setId("sourceId");
-		src.setEndpoint("data/data_nobelprize_org.nt");
+		src.setEndpoint(srcEndpoint);
 		src.setVar("?s");
 		src.setPageSize(-1);
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type xmfo:Person" })));
+		
+		PrefixEntity srcRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(srcRestrictions);
+		
+		System.out.println(" srcRestrictionPrefixEntity1 " + srcRestrictionPrefixEntity);
+		//System.out.println("?s rdf:type " + srcRestrictionPrefixEntity.key +":"+srcRestrictionPrefixEntity.name);
+		//System.exit(1);
+		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type " + srcRestrictionPrefixEntity.key +":"+srcRestrictionPrefixEntity.name })));
 
 		src.setProperties(srcPropertylist);
 		src.setType("NT");
