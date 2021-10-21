@@ -333,10 +333,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
-		target.setEndpoint("data/lov_linkeddata_es_dataset_lov.nt");
+		target.setEndpoint(targetEndpoint);
 		target.setVar("?z");
 		target.setPageSize(-1);
-		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type xmfo:Person" })));
+		
+		
+		PrefixEntity targetRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(targetRestrictions);
+		 
+		
+		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type " +  targetRestrictionPrefixEntity.key +":"+ targetRestrictionPrefixEntity.name })));
 
 		/*
 		 * There is a problem when we have an entity has lot of properties but all
