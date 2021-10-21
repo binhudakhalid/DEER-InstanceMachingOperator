@@ -44,6 +44,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.vocabulary.VCARD;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public static Property Coverage = DEER.property("coverage");
 	public static Property MaxLimit = DEER.property("maxLimit");
-
+	List<Model> outputList = new ArrayList<>();;
+	
 	public IntanceMatchingOperator() {
 		super();
 	}
@@ -86,7 +88,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-
+		
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
@@ -134,28 +136,63 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
 		
-			
-			
-			 
-			
-			Configuration con = createLimeConfigurationFile("data/data_nobelprize_org.nt","http://xmlns.com/foaf/0.1/Person",
-					"data/lov_linkeddata_es_dataset_lov.nt", "http://xmlns.com/foaf/0.1/Person");
+			Configuration con = createLimeConfigurationFile(sourceFilePath,sourceRestrictions,
+					targetFilePath, targetRestrictions);
 			
 			callLimes(con);
 			
+			List<Model> InstanceMatcherOutputList = new ArrayList<>();
 			
-			System.exit(0);
+			// load accepted.nt into Jena model
+			Model limesOutputModel = ModelFactory.createDefaultModel() ;
+			limesOutputModel.read("accepted.nt") ;
+			
+			// load source data into Jena model
+			Model sourceData = ModelFactory.createDefaultModel() ;
+			sourceData.read(sourceFilePath) ;
+			System.out.println("sourceData" + sourceData.size());
+			//System.out.println(" sourceFilePath reham : "  + sourceData);
+ 			
+			//load target data into Jena model
+			Model targetData = ModelFactory.createDefaultModel() ;
+			targetData.read(targetFilePath) ;
+			System.out.println("targetFilePath: " + targetData.size());
+
+			
+			
+ 			//ArrayList<Model> cars = new ArrayList<Model>();
+			//-------------------------
+ 
+			//---------------------------
+			models.clear();
+			models.add(limesOutputModel);
+			System.out.println("shah" + models.size());
+			//modelLists.add(model1);
+
+			//InstanceMatcherOutputList.add(e);
+			InstanceMatcherOutputList.add(sourceData);
+			InstanceMatcherOutputList.add(limesOutputModel);
+			
+			InstanceMatcherOutputList.add(targetData);
+			
+			//return box;
+			//System.out.println("model : "+ model);
+//			model.read("data.foo", "TURTLE") ;
+			return InstanceMatcherOutputList;
+			
+			
+			//System.exit(0);
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
 
 		}
 //		 
 
-		countEntityPredicate();
+	//	countEntityPredicate();
 
 		// calculateCoverage
-		calculateCoverage();
-		System.out.println(" coverageMap1 " + coverageMap);
+//		calculateCoverage();
+//		System.out.println(" coverageMap1 " + coverageMap);
 
 		/*
 		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
@@ -173,7 +210,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetType = "NT";
 
 		// sourceTarget is NT File
-
+/*
 		if (sourceType == "NT") {
 			// calculateCoverageForNTFile("data/dbtune_org_magnatune_sparqlCut1.nt");
 		} else if (sourceType == "SPARQL") {
@@ -200,19 +237,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// 002accepted.nt file contains the output of LIMES
 		// between movies from yago and films from Dbpedia
 		/*
-		 * String filename = "002accepted.nt"; File file = new File(filename); String
-		 * content = null; try { content = FileUtils.readFileToString(file, "UTF-8");
+		 * String filename = "002accepted.nt"; File file = new File(filename);
+		 *  String content = null; 
+		 *  try { content = FileUtils.readFileToString(file, "UTF-8");
 		 * FileUtils.write(file, content, "UTF-8"); System.out.println(" a nc d a-2 ");
 		 * } catch (IOException e) { // TODO Auto-generated catch block
 		 * e.printStackTrace(); }
 		 */
-		Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
+		//Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 
 //		Model model1 = ModelFactory.createDefaultModel();
 //		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
 //		System.out.println(" Model1a " + model1 );
 
-		return List.of(ourModel);
+		return outputList;
 	}
 
 	/*
