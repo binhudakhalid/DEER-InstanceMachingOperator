@@ -122,16 +122,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
-			
 
 			// If no property have the coverage than the coverage parameter(Set in
 			// configuration.ttl)
 			// then it thought a exception
-			//propertiesListTarget1.remove(0);
+			// propertiesListTarget1.remove(0);
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
-				System.out.println(" Can not proceed because " + "propertiesListSource`s size= "
-						+ propertiesListSource1.size() + " propertiesListTarget`s size=  " + propertiesListTarget1.size());
+				System.out.println(
+						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
+								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
 			System.exit(0);
 
@@ -761,21 +761,21 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 
 	/*
-	 * Takes entity as input return list of properties from file
-	 * 
+	 * Takes entity as input return list of properties from file. Listing properties
+	 * with their counts
 	 */
 	public List<PropertyEntity> getPropertiesFromFile(String path, String restriction, int maximumProperties) {
 
-		restriction = "http://xmlns.com/foaf/0.1/Person";
+		// restriction = "http://xmlns.com/foaf/0.1/Person";
 
 		PrefixEntity restrictionPrefixEntity = PrefixUtility
-				.splitPreficFromProperty("http://xmlns.com/foaf/0.1/Person");
-		System.out.println("restrictionPrefixEntity " + restrictionPrefixEntity);
+				.splitPreficFromProperty(restriction);
+		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromFile(path, restrictionPrefixEntity);
 
-		System.out.println("The instance is : " + size);
+		System.out.println("getPropertiesFromFile -> Total instance of '"+ restriction + "' is : " + size);
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
