@@ -61,8 +61,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public List<PrefixEntity> propertiesPrefixesSource;
 
 	// public List<PropertyEntity> propertiesList;
-	public List<PropertyEntity> propertiesListSource;
-	public List<PropertyEntity> propertiesListTarget;
+	//public List<PropertyEntity> propertiesListSource;
+	// public List<PropertyEntity> propertiesListTarget;
 
 	public List<PropertyEntity> propertiesListSource1;
 	public List<PropertyEntity> propertiesListTarget1;
@@ -249,12 +249,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		Configuration conf = new Configuration();
 
-		dynamicPrefix();
+		//dynamicPrefix();
 
 		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
 
-		for (PropertyEntity list : propertiesListSource) {
+		for (PropertyEntity list : propertiesListSource1) {
 			conf.addPrefix(list.key, list.value);
 			srcPropertylist.add(list.key + ":" + list.propertyName);
 		}
@@ -274,22 +274,27 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setProperties(srcPropertylist);
 		src.setType("NT");
 
+		
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
 		// setting prefix for source
-		for (PropertyEntity list : propertiesListSource) {
+		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
 			prefixes.put(list.key, list.value);
-			System.out.println("debug new prefixes.put : + " + list.key + " " + list.value);
+			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
-		System.out.println("prefixMap length : " + prefixMap.size());
+		
+		System.out.println(" polp ");
+//		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
 		src.setPrefixes(prefixes);
 
+		
+		
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
 		LinkedHashMap<String, Map<String, String>> functions = new LinkedHashMap<String, Map<String, String>>();
@@ -303,7 +308,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
 		// setting prefix for target
-		for (PropertyEntity list : propertiesListTarget) {
+		for (PropertyEntity list : propertiesListTarget1) {
 
 			conf.addPrefix(list.key, list.value);
 
@@ -361,7 +366,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.9);
+		conf.setAcceptanceThreshold(0.8);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
