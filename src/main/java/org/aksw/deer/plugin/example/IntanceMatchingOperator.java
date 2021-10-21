@@ -114,8 +114,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		else if (inputEndpoint == "url") {
 
 		}
-
-
 //		 
 
 		countEntityPredicate();
