@@ -133,8 +133,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
+		
+			
+			Configuration con = createLimeConfigurationFile();
+			callLimes(con);
+			
+			
 			System.exit(0);
-
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
 
