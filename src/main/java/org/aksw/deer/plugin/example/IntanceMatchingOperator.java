@@ -63,7 +63,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	// public List<PropertyEntity> propertiesList;
 	public List<PropertyEntity> propertiesListSource;
 	public List<PropertyEntity> propertiesListTarget;
-	
+
 	public List<PropertyEntity> propertiesListSource1;
 	public List<PropertyEntity> propertiesListTarget1;
 
@@ -94,11 +94,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find maxLimit param ");
 		System.out.println(" drecipient-d maxLimit: " + maxLimit);
-		
-		 double coverage = Double.valueOf(coverageString);
 
-		
-		
+		double coverage = Double.valueOf(coverageString);
+
 		// Getting input from previous operator
 		// There parameter will be set by the output from previous operator
 		// Setting the parameter manually until the ontology operator is integrated with
@@ -113,15 +111,30 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// if the endpoint is filetype
 		if (inputEndpoint == "fileType") {
 
-			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, Integer.parseInt(maxLimit));
-			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, Integer.parseInt(maxLimit));
+			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
+					Integer.parseInt(maxLimit));
+			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions,
+					Integer.parseInt(maxLimit));
 			System.out.println("propertiesListSource ahmed s:" + propertiesListSource1);
 			System.out.println("propertiesListTarget ahmed t:" + propertiesListTarget1);
-			
-			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
-			System.out.println("rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size() ); 
 
+			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
+			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
+			System.out.println(
+					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
+			
+
+			// If no property have the coverage than the coverage parameter(Set in
+			// configuration.ttl)
+			// then it thought a exception
+			//propertiesListTarget1.remove(0);
+			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
+
+				System.out.println(" Can not proceed because " + "propertiesListSource`s size= "
+						+ propertiesListSource1.size() + " propertiesListTarget`s size=  " + propertiesListTarget1.size());
+			}
 			System.exit(0);
+
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
 
@@ -193,37 +206,38 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 
 	/*
-	 * remove properties that have lower coverage 
-	 * than Coverage parameter (the Parameter set from Configura.ttl file)
-	 * */
+	 * remove properties that have lower coverage than Coverage parameter (the
+	 * Parameter set from Configura.ttl file)
+	 */
 	private void removePropertiesHavingLowerCoverage(double coverage, List<PropertyEntity> tempPropertiesListSource) {
-		System.out.println(" ahsan tempCoverage = "+ coverage  + " ++ \n " + tempPropertiesListSource);
+		System.out.println(" ahsan tempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
 
-		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties before comparing with Coverage: " + tempPropertiesListSource.size() ); 
-		 Iterator itr = tempPropertiesListSource.iterator();
-		 
-	        // Holds true till there is sibgle element
-	        // remaining in the object
-	        while (itr.hasNext()) {
-	 
-	            // Remove elements smaller than 10 using
-	            // Iterator.remove()
-	            PropertyEntity propertyEntity =  (PropertyEntity) itr.next();
-	            if (propertyEntity.coverage < coverage) {
-	            	
-	         //   	System.out.println(" propertyEntity.coverage : " + propertyEntity.coverage );
-	         //   	System.out.println(" coverage : " + coverage );
-	         //   	System.out.println("----------------------------------");
+		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties before comparing with Coverage: "
+				+ tempPropertiesListSource.size());
+		Iterator itr = tempPropertiesListSource.iterator();
 
-	            	itr.remove();
-	            }
-	               
-	        }
-	        
-			System.out.println(" ahsan tempCoverage after = " + tempPropertiesListSource);
-			System.out.println("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: " + tempPropertiesListSource.size() ); 
+		// Holds true till there is sibgle element
+		// remaining in the object
+		while (itr.hasNext()) {
 
-		
+			// Remove elements smaller than 10 using
+			// Iterator.remove()
+			PropertyEntity propertyEntity = (PropertyEntity) itr.next();
+			if (propertyEntity.coverage < coverage) {
+
+				// System.out.println(" propertyEntity.coverage : " + propertyEntity.coverage );
+				// System.out.println(" coverage : " + coverage );
+				// System.out.println("----------------------------------");
+
+				itr.remove();
+			}
+
+		}
+
+		System.out.println(" ahsan tempCoverage after = " + tempPropertiesListSource);
+		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: "
+				+ tempPropertiesListSource.size());
+
 	}
 
 	public Configuration createLimeConfigurationFile() {
@@ -759,10 +773,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("restrictionPrefixEntity " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
-		double size = instanceCount.countInstanceFromFile(path  , restrictionPrefixEntity);
-		
-		System.out.println("The instance is : "  + size);
-	
+		double size = instanceCount.countInstanceFromFile(path, restrictionPrefixEntity);
+
+		System.out.println("The instance is : " + size);
+
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
@@ -813,7 +827,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			if (size > 0) {
 				coverage = PredicateCount / size;
-				
+
 				System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
 
 				System.out.println(" ckcpppa size :" + size);
