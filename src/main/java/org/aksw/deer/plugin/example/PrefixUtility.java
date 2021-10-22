@@ -16,8 +16,8 @@ public class PrefixUtility {
 	
 			// http://www.w3.org/2002/07/owl#sameAs=903475
 			if (predicate.contains("#")) {
-				System.out.println("****************-URL0 with Hash********************");
-				System.out.println("predicate : " + predicate);
+				//System.out.println("****************-URL0 with Hash********************");
+				//System.out.println("predicate : " + predicate);
 
 				propertyName = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
 
@@ -36,16 +36,16 @@ public class PrefixUtility {
 				}
 				properyValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 
-				System.out.println("properyValue  l20 : " + properyValue);
-				System.out.println("propertyName l20 : " + propertyName);
-				System.out.println("propertyKey l20: " + propertyKey);
+				//System.out.println("properyValue  l20 : " + properyValue);
+				//System.out.println("propertyName l20 : " + propertyName);
+				//System.out.println("propertyKey l20: " + propertyKey);
 				
 				PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
 				return prefix;
 			
 			} else {
-				System.out.println("****************-URL without Hash********************");
-				System.out.println("predicate : " + predicate);
+				//System.out.println("****************-URL without Hash********************");
+				//System.out.println("predicate : " + predicate);
 
 				// propertyKey, predicatePrefixValue, propertyName;
 
@@ -65,9 +65,9 @@ public class PrefixUtility {
 				properyValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				propertyName = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-				System.out.println("properyValue  l22 : " + properyValue);
-				System.out.println("propertyName l22 : " + propertyName);
-				System.out.println("propertyKey l22: " + propertyKey);
+				//System.out.println("properyValue  l22 : " + properyValue);
+				//System.out.println("propertyName l22 : " + propertyName);
+				//System.out.println("propertyKey l22: " + propertyKey);
 				PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
 				//propertiesPrefixesSource.add(prefix);
 

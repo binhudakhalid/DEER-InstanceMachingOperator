@@ -157,7 +157,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			addStatement("DEER:targetDataSource", "DEER:is",  "4",  info);
 			
 			System.out.println("The info is "+ info);
-			System.exit(1);
+			
 			
 			// load accepted.nt into Jena model
 			Model limesOutputModel = ModelFactory.createDefaultModel() ;
@@ -182,6 +182,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			//return box;
 			//System.out.println("model : "+ model);
 //			model.read("data.foo", "TURTLE") ;
+			
+			System.out.print("check");
 			return InstanceMatcherOutputList;
 			
 			
@@ -592,8 +594,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			URL aURL = null;
 			if (predicate.contains("#")) {
 				// http://www.w3.org/2002/07/owl#sameAs=903475
-				System.out.println("****************-URL with Hash********************");
-				System.out.println("predicate : " + predicate);
+			//	System.out.println("****************-URL with Hash********************");
+			//	System.out.println("predicate : " + predicate);
 
 				predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
 
@@ -615,8 +617,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 				System.out.println("-------------------------------------------------");
 			} else {
-				System.out.println("****************-URL without Hash********************");
-				System.out.println("predicate : " + predicate);
+			//	System.out.println("****************-URL without Hash********************");
+			//	System.out.println("predicate : " + predicate);
 
 				// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
 
@@ -639,7 +641,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-			System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+			//System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
 
 		});
 
@@ -648,7 +650,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
-		System.out.println("after countEntityPredicate");
 		qe.close();
 
 	}
@@ -861,7 +862,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
 				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
 
-		System.out.println("queryString112" + queryString1);
 		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
 
@@ -869,8 +869,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Query query1 = QueryFactory.create(queryString1);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
 		ResultSet results = qexec1.execSelect();
-		System.out.println("result 009 : " + results);
-		ResultSetFormatter.out(System.out, results);
+		//System.out.println("result 009 : " + results);
+		//ResultSetFormatter.out(System.out, results);
 		///
 
 		Query query = QueryFactory.create(queryString1);
@@ -886,22 +886,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-			System.out.println(" Iam here " + PredicateCount);
 
 			// System.out.println(" lookit : " + predicate);
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
-			System.out.println("predicate pppap :" + size);
 
 			if (size > 0) {
 				coverage = PredicateCount / size;
 
-				System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
+				//System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
 
-				System.out.println(" ckcpppa size :" + size);
-				System.out.println(" ckcpppa coverage :" + coverage);
-				System.out.println(" ckcpppa check :" + PredicateCount / size);
+				//System.out.println(" ckcpppa size :" + size);
+				//System.out.println(" ckcpppa coverage :" + coverage);
+				//System.out.println(" ckcpppa check :" + PredicateCount / size);
 
 			} else {
 				coverage = 0;
@@ -913,7 +911,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 
-		System.out.println("propertiesListTemp ali: " + propertiesListTemp);
+		System.out.println("propertiesListTemp: " + propertiesListTemp);
 		return propertiesListTemp;
 	}
 	
