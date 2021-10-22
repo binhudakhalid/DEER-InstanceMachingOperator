@@ -35,8 +35,8 @@ Model at index 0 contains the input from previous operator(Ontology operator).
 
 Model at index 1 contains the ouput of LIMES that has been processed.
 
-Model at index 2 contains the information about the result like which entites/classes has been campapred through LIMES and
-what were the enpoint of data sources.
+Model at index 2 contains the information about the result like which entities/classes has been compared through LIMES and
+what were the endpoint of data sources.
 example:
 
 If data Source is File
