@@ -143,6 +143,22 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			
 			List<Model> InstanceMatcherOutputList = new ArrayList<>();
 			
+			
+			//output from Ontology
+			InstanceMatcherOutputList.add(models.get(0));
+			
+			////information about entities and class
+			Model info = ModelFactory.createDefaultModel();
+			addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions,    info);
+			addStatement("DEER:targetClass", "DEER:is",  targetRestrictions,  info);
+			
+			addStatement("DEER:dataSourceType", "DEER:is",  "File",  info);
+			addStatement("DEER:sourceDataSource", "DEER:is",  "3",  info);
+			addStatement("DEER:targetDataSource", "DEER:is",  "4",  info);
+			
+			System.out.println("The info is "+ info);
+			System.exit(1);
+			
 			// load accepted.nt into Jena model
 			Model limesOutputModel = ModelFactory.createDefaultModel() ;
 			limesOutputModel.read("accepted.nt") ;
@@ -150,24 +166,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// load source data into Jena model
 			Model sourceData = ModelFactory.createDefaultModel() ;
 			sourceData.read(sourceFilePath) ;
-			System.out.println("sourceData" + sourceData.size());
-			//System.out.println(" sourceFilePath reham : "  + sourceData);
  			
 			//load target data into Jena model
 			Model targetData = ModelFactory.createDefaultModel() ;
 			targetData.read(targetFilePath) ;
-			System.out.println("targetFilePath: " + targetData.size());
-
 			
-			
- 			//ArrayList<Model> cars = new ArrayList<Model>();
-			//-------------------------
- 
-			//---------------------------
-			models.clear();
-			models.add(limesOutputModel);
-			System.out.println("shah" + models.size());
-			//modelLists.add(model1);
+ 			 
 
 			//InstanceMatcherOutputList.add(e);
 			InstanceMatcherOutputList.add(sourceData);
@@ -912,5 +916,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("propertiesListTemp ali: " + propertiesListTemp);
 		return propertiesListTemp;
 	}
+	
+	public void addStatement(String s, String p, String o, Model model){
+		Resource subject = model.createResource(s);
+		Property predicate = model.createProperty(p);
+		RDFNode object = model.createResource(o);
+		Statement stmt = model.createStatement(subject, predicate, object);
+		model.add(stmt);
+		}
+
 
 }
