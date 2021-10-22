@@ -1,4 +1,4 @@
-# Updated branch: inputFile
+# Updated branch: integrate
 
 # DEER Parameters
 
@@ -12,7 +12,7 @@ example: deer:coverage "8.66";
 
 example: deer:maxLimit "10";
 
-# Input From Ontology Operator
+# Input reguired from Ontology Operator
 
 <source, enpointType, file>                 // <source, enpointType, url>
 
@@ -26,6 +26,41 @@ example: deer:maxLimit "10";
 <target, endpoint, www.abc.com/fileTwo>
 
 <target, restriction, www.abc.com/Actor>
+
+# Ouput from Ontology Operator
+
+The output contains 4 Jena model.
+
+Model at index 0 contains the input from previous operator(Ontology operator).
+
+Model at index 1 contains the ouput of LIMES that has been processed.
+
+Model at index 2 contains the information about the result like which entites/classes has been campapred through LIMES and
+what were the enpoint of data sources.
+example:
+
+If data Source is File
+```{
+[DEER:dataSourceType, DEER:is, File]
+[DEER:sourceClass, DEER:is, http://xmlns.com/foaf/0.1/Person]  # Restriction / Class / Entity
+[DEER:targetClass, DEER:is, http://xmlns.com/foaf/0.1/Person]  # Restriction / Class / Entity
+[DEER:sourceDataSource, DEER:is, 3] 
+[DEER:targetDataSource, DEER:is, 4] 
+```
+
+If data Source is SparqlEndpoint
+Now model at index 3 and 4 contains sparql endpoints instead of data  
+```{
+[DEER:dataSourceType, DEER:is, sparqlEpoint]
+[DEER:sourceClass, DEER:is, http://xmlns.com/foaf/0.1/Person]   # Restriction / Class / Entity
+[DEER:targetClass, DEER:is, http://xmlns.com/foaf/0.1/Person]   # Restriction / Class / Entity
+[DEER:sourceDataSource, DEER:is, https://es.dbpedia.org/sparql] # Now instead of dataset it only contains url, so you have to query data yourself
+[DEER:targetDataSource, DEER:is, https://es.dbpedia.org/sparql] # Now instead of dataset it only contains url, so you have to query data yourself
+```
+
+Model at index 3 contains the source dataset
+
+Model at index 4 contains the target dataset
 
 
 # Instance Matching Operator
