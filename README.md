@@ -44,8 +44,8 @@ If data Source is File
 [DEER:dataSourceType, DEER:is, File]
 [DEER:sourceClass, DEER:is, http://xmlns.com/foaf/0.1/Person]  # Restriction / Class / Entity
 [DEER:targetClass, DEER:is, http://xmlns.com/foaf/0.1/Person]  # Restriction / Class / Entity
-[DEER:sourceDataSource, DEER:is, 3] 
-[DEER:targetDataSource, DEER:is, 4] 
+[DEER:sourceDataSource, DEER:is, sourceDataFile] 
+[DEER:targetDataSource, DEER:is, targetDataFile] 
 ```
 
 If data Source is SparqlEndpoint
