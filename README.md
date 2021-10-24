@@ -27,7 +27,7 @@ example: deer:maxLimit "10";
 
 <target, restriction, www.abc.com/Actor>
 
-# Ouput from Ontology Operator
+# Ouput from Intance Matching Operator
 
 The output contains 4 Jena model.
 
