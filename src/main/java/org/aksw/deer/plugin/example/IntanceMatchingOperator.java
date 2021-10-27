@@ -62,7 +62,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public List<PrefixEntity> propertiesPrefixesSource;
 
 	// public List<PropertyEntity> propertiesList;
-	//public List<PropertyEntity> propertiesListSource;
+	// public List<PropertyEntity> propertiesListSource;
 	// public List<PropertyEntity> propertiesListTarget;
 
 	public List<PropertyEntity> propertiesListSource1;
@@ -75,7 +75,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property Coverage = DEER.property("coverage");
 	public static Property MaxLimit = DEER.property("maxLimit");
 	List<Model> outputList = new ArrayList<>();;
-	
+
 	public IntanceMatchingOperator() {
 		super();
 	}
@@ -88,59 +88,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		String sourceRestrictions1 = "http://xmlns.com/foaf/0.1/Person";
-		String targetRestrictions2 = "http://xmlns.com/foaf/0.1/Person";
 
-		// load accepted.nt into Jena model
-					Model limesOutputModel1 = ModelFactory.createDefaultModel() ;
-					limesOutputModel1.read("accepted.nt") ;
-					
-					Model limesOutputModel2 = ModelFactory.createDefaultModel() ;
-					limesOutputModel2.add(limesOutputModel1);
-					
-					System.out.println("me limesOutputModel : " + limesOutputModel1);
-					System.out.println("me limesOutputModel : " + limesOutputModel1);
-					System.out.println("");
-					System.out.println("me limesOutputModel : " + limesOutputModel1);
-					
-					String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-					StmtIterator it =  limesOutputModel2.listStatements();
-					while (it.hasNext()) {
-					     Statement stmt = it.next();
-					     System.out.println("Ma1,a getSubject" + stmt.getSubject());
-					     System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
-					     System.out.println("Ma3,a getObject" + stmt.getObject());
-
-					     
-						//Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type, sourceRestrictions1);
- 
-					     //adding statement in to model
-					     //adding restriction for Source entity
-					     addStatement(stmt.getSubject().toString(), type, sourceRestrictions1,    limesOutputModel1);
-					    
-					   //adding restriction for target entity
-					     addStatement(stmt.getObject().toString(), type, targetRestrictions2,    limesOutputModel1);
-					    
-					     
-					     // System.out.println("dekh " + limesOutputModel1 );
-					     
-					     // do your stuff with the Statement (which is a triple)
-					}
-					String sourceFilePath1 = "data/data_nobelprize_org.nt";
-					String targetFilePath1 = "data/lov_linkeddata_es_dataset_lov.nt";
-				
-					//Adding source dataset 
-				     addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath1,    limesOutputModel1);
-					
-				     //Adding target dataset 
-				     addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath1,    limesOutputModel1);
-
-					
-					System.out.println("\n\n\n");
-					System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel1);
-		System.exit(1);
-		
+	 
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
@@ -187,66 +136,100 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
-		
-			Configuration con = createLimeConfigurationFile(sourceFilePath,sourceRestrictions,
-					targetFilePath, targetRestrictions);
-			
-			callLimes(con);
-			
-			List<Model> InstanceMatcherOutputList = new ArrayList<>();
-			
-			
-			//output from Ontology
-			//InstanceMatcherOutputList.add(models.get(0));
-			
-			////information about entities and class
-			Model info = ModelFactory.createDefaultModel();
-			addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions,    info);
-			addStatement("DEER:targetClass", "DEER:is",  targetRestrictions,  info);
-			
-			addStatement("DEER:dataSourceType", "DEER:is",  "File",  info);
-			addStatement("DEER:sourceDataSource", "DEER:is",  "3",  info);
-			addStatement("DEER:targetDataSource", "DEER:is",  "4",  info);
-			
-			System.out.println("The info is "+ info);
-			
-			
-			// load accepted.nt into Jena model
-			Model limesOutputModel = ModelFactory.createDefaultModel() ;
-			limesOutputModel.read("accepted.nt") ;
-			
-			// load source data into Jena model
-		/*	Model sourceData = ModelFactory.createDefaultModel() ;
-			sourceData.read(sourceFilePath) ;*/
- 			
-			//load target data into Jena model
-		/*	Model targetData = ModelFactory.createDefaultModel() ;
-			targetData.read(targetFilePath) ;*/
-			
- 			 
 
-			//InstanceMatcherOutputList.add(e);
-			//InstanceMatcherOutputList.add(sourceData);
+			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
+					targetRestrictions);
+
+			callLimes(con);
+
+			List<Model> InstanceMatcherOutputList = new ArrayList<>();
+
+			// output from Ontology
+			// InstanceMatcherOutputList.add(models.get(0));
+
+			//// information about entities and class
+			Model info = ModelFactory.createDefaultModel();
+			addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions, info);
+			addStatement("DEER:targetClass", "DEER:is", targetRestrictions, info);
+
+			addStatement("DEER:dataSourceType", "DEER:is", "File", info);
+			addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
+			addStatement("DEER:targetDataSource", "DEER:is", "4", info);
+
+			System.out.println("The info is " + info);
+
+			// load accepted.nt into Jena model
+			Model limesOutputModel = ModelFactory.createDefaultModel();
+			limesOutputModel.read("accepted.nt");
+
+			// load source data into Jena model
+			/*
+			 * Model sourceData = ModelFactory.createDefaultModel() ;
+			 * sourceData.read(sourceFilePath) ;
+			 */
+
+			// load target data into Jena model
+			/*
+			 * Model targetData = ModelFactory.createDefaultModel() ;
+			 * targetData.read(targetFilePath) ;
+			 */
+
+			// InstanceMatcherOutputList.add(e);
+			// InstanceMatcherOutputList.add(sourceData);
 			InstanceMatcherOutputList.add(limesOutputModel);
-			
-			//InstanceMatcherOutputList.add(targetData);
-			
-			//return box;
-			//System.out.println("model : "+ model);
+
+			// InstanceMatcherOutputList.add(targetData);
+
+			// return box;
+			// System.out.println("model : "+ model);
 //			model.read("data.foo", "TURTLE") ;
-			
-			System.out.print("check");
+
+			// Setting the output
+
+			Model limesOutputModel2 = ModelFactory.createDefaultModel();
+			limesOutputModel2.add(limesOutputModel);
+
+			String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+			StmtIterator it = limesOutputModel2.listStatements();
+			while (it.hasNext()) {
+				Statement stmt = it.next();
+				/*System.out.println("Ma1,a getSubject" + stmt.getSubject());
+				System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
+				System.out.println("Ma3,a getObject" + stmt.getObject());*/
+
+				// Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type,
+				// sourceRestrictions1);
+
+				// adding statement in to model
+				// adding restriction for Source entity
+				addStatement(stmt.getSubject().toString(), type, sourceRestrictions, limesOutputModel);
+
+				// adding restriction for target entity
+				addStatement(stmt.getObject().toString(), type, targetRestrictions, limesOutputModel);
+			}
+
+			// Adding source data set
+			addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
+					limesOutputModel);
+
+			// Adding target data set
+			addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
+					limesOutputModel);
+
+			System.out.println("\n\n\n");
+			//System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel);
+
+			//System.out.print("check");
 			return InstanceMatcherOutputList;
-			
-			
-			//System.exit(0);
+
+			// System.exit(0);
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
 
 		}
 //		 
 
-	//	countEntityPredicate();
+		// countEntityPredicate();
 
 		// calculateCoverage
 //		calculateCoverage();
@@ -268,41 +251,37 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetType = "NT";
 
 		// sourceTarget is NT File
-/*
-		if (sourceType == "NT") {
-			// calculateCoverageForNTFile("data/dbtune_org_magnatune_sparqlCut1.nt");
-		} else if (sourceType == "SPARQL") {
-
-		}
-
-		if (targetType == "NT") {
-			// calculateCoverageForNTFile("data/lov_linkeddata_es_dataset_lov.nt");
-		} else if (targetType == "SPARQL") {
-
-		}
-
-		// int abc = totalInstanceTarget("Movie");
-		// System.out.println("abcd : " + abc);
-
-		// countEntityPredicateTarget();
-
-		//Configuration con = createLimeConfigurationFile();
-		//callLimes(con);
-
-		// File initialFile = new File("001accepted.nt");
-		// InputStream targetStream = null;
-
-		// 002accepted.nt file contains the output of LIMES
-		// between movies from yago and films from Dbpedia
 		/*
-		 * String filename = "002accepted.nt"; File file = new File(filename);
-		 *  String content = null; 
-		 *  try { content = FileUtils.readFileToString(file, "UTF-8");
-		 * FileUtils.write(file, content, "UTF-8"); System.out.println(" a nc d a-2 ");
-		 * } catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
+		 * if (sourceType == "NT") { //
+		 * calculateCoverageForNTFile("data/dbtune_org_magnatune_sparqlCut1.nt"); } else
+		 * if (sourceType == "SPARQL") {
+		 * 
+		 * }
+		 * 
+		 * if (targetType == "NT") { //
+		 * calculateCoverageForNTFile("data/lov_linkeddata_es_dataset_lov.nt"); } else
+		 * if (targetType == "SPARQL") {
+		 * 
+		 * }
+		 * 
+		 * // int abc = totalInstanceTarget("Movie"); // System.out.println("abcd : " +
+		 * abc);
+		 * 
+		 * // countEntityPredicateTarget();
+		 * 
+		 * //Configuration con = createLimeConfigurationFile(); //callLimes(con);
+		 * 
+		 * // File initialFile = new File("001accepted.nt"); // InputStream targetStream
+		 * = null;
+		 * 
+		 * // 002accepted.nt file contains the output of LIMES // between movies from
+		 * yago and films from Dbpedia /* String filename = "002accepted.nt"; File file
+		 * = new File(filename); String content = null; try { content =
+		 * FileUtils.readFileToString(file, "UTF-8"); FileUtils.write(file, content,
+		 * "UTF-8"); System.out.println(" a nc d a-2 "); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-		//Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
+		// Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
 
 //		Model model1 = ModelFactory.createDefaultModel();
 //		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
@@ -346,12 +325,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	}
 
-	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions,
-			String targetEndpoint, String targetRestrictions) {
+	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
+			String targetRestrictions) {
 
 		Configuration conf = new Configuration();
 
-		//dynamicPrefix();
+		// dynamicPrefix();
 
 		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
@@ -371,18 +350,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		src.setEndpoint(srcEndpoint);
 		src.setVar("?s");
 		src.setPageSize(-1);
-		
+
 		PrefixEntity srcRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(srcRestrictions);
-		
+
 		System.out.println(" srcRestrictionPrefixEntity1 " + srcRestrictionPrefixEntity);
-		//System.out.println("?s rdf:type " + srcRestrictionPrefixEntity.key +":"+srcRestrictionPrefixEntity.name);
-		//System.exit(1);
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type " + srcRestrictionPrefixEntity.key +":"+srcRestrictionPrefixEntity.name })));
+		// System.out.println("?s rdf:type " + srcRestrictionPrefixEntity.key
+		// +":"+srcRestrictionPrefixEntity.name);
+		// System.exit(1);
+		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
+				"?s rdf:type " + srcRestrictionPrefixEntity.key + ":" + srcRestrictionPrefixEntity.name })));
 
 		src.setProperties(srcPropertylist);
 		src.setType("NT");
 
-		
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
@@ -394,15 +374,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			prefixes.put(list.key, list.value);
 			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
-		
+
 		System.out.println(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
 		src.setPrefixes(prefixes);
 
-		
-		
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
 		LinkedHashMap<String, Map<String, String>> functions = new LinkedHashMap<String, Map<String, String>>();
@@ -432,12 +410,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setEndpoint(targetEndpoint);
 		target.setVar("?z");
 		target.setPageSize(-1);
-		
-		
+
 		PrefixEntity targetRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(targetRestrictions);
-		 
-		
-		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?z rdf:type " +  targetRestrictionPrefixEntity.key +":"+ targetRestrictionPrefixEntity.name })));
+
+		target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
+				"?z rdf:type " + targetRestrictionPrefixEntity.key + ":" + targetRestrictionPrefixEntity.name })));
 
 		/*
 		 * There is a problem when we have an entity has lot of properties but all
@@ -646,8 +623,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			URL aURL = null;
 			if (predicate.contains("#")) {
 				// http://www.w3.org/2002/07/owl#sameAs=903475
-			//	System.out.println("****************-URL with Hash********************");
-			//	System.out.println("predicate : " + predicate);
+				// System.out.println("****************-URL with Hash********************");
+				// System.out.println("predicate : " + predicate);
 
 				predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
 
@@ -669,8 +646,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 				System.out.println("-------------------------------------------------");
 			} else {
-			//	System.out.println("****************-URL without Hash********************");
-			//	System.out.println("predicate : " + predicate);
+				// System.out.println("****************-URL without Hash********************");
+				// System.out.println("predicate : " + predicate);
 
 				// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
 
@@ -693,7 +670,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-			//System.out.println("propertyMap10 : " + qsol.getResource("predicate").toString());
+			// System.out.println("propertyMap10 : " +
+			// qsol.getResource("predicate").toString());
 
 		});
 
@@ -890,14 +868,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// restriction = "http://xmlns.com/foaf/0.1/Person";
 
-		PrefixEntity restrictionPrefixEntity = PrefixUtility
-				.splitPreficFromProperty(restriction);
+		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromFile(path, restrictionPrefixEntity);
 
-		System.out.println("getPropertiesFromFile -> Total instance of '"+ restriction + "' is : " + size);
+		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
@@ -921,8 +898,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Query query1 = QueryFactory.create(queryString1);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
 		ResultSet results = qexec1.execSelect();
-		//System.out.println("result 009 : " + results);
-		//ResultSetFormatter.out(System.out, results);
+		// System.out.println("result 009 : " + results);
+		// ResultSetFormatter.out(System.out, results);
 		///
 
 		Query query = QueryFactory.create(queryString1);
@@ -947,11 +924,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			if (size > 0) {
 				coverage = PredicateCount / size;
 
-				//System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
+				// System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
 
-				//System.out.println(" ckcpppa size :" + size);
-				//System.out.println(" ckcpppa coverage :" + coverage);
-				//System.out.println(" ckcpppa check :" + PredicateCount / size);
+				// System.out.println(" ckcpppa size :" + size);
+				// System.out.println(" ckcpppa coverage :" + coverage);
+				// System.out.println(" ckcpppa check :" + PredicateCount / size);
 
 			} else {
 				coverage = 0;
@@ -966,14 +943,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("propertiesListTemp: " + propertiesListTemp);
 		return propertiesListTemp;
 	}
-	
-	public void addStatement(String s, String p, String o, Model model){
+
+	public void addStatement(String s, String p, String o, Model model) {
 		Resource subject = model.createResource(s);
 		Property predicate = model.createProperty(p);
 		RDFNode object = model.createResource(o);
 		Statement stmt = model.createStatement(subject, predicate, object);
 		model.add(stmt);
-		}
-
+	}
 
 }
