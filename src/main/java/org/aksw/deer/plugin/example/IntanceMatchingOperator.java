@@ -89,6 +89,58 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 		
+		String sourceRestrictions1 = "http://xmlns.com/foaf/0.1/Person";
+		String targetRestrictions2 = "http://xmlns.com/foaf/0.1/Person";
+
+		// load accepted.nt into Jena model
+					Model limesOutputModel1 = ModelFactory.createDefaultModel() ;
+					limesOutputModel1.read("accepted.nt") ;
+					
+					Model limesOutputModel2 = ModelFactory.createDefaultModel() ;
+					limesOutputModel2.add(limesOutputModel1);
+					
+					System.out.println("me limesOutputModel : " + limesOutputModel1);
+					System.out.println("me limesOutputModel : " + limesOutputModel1);
+					System.out.println("");
+					System.out.println("me limesOutputModel : " + limesOutputModel1);
+					
+					String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+					StmtIterator it =  limesOutputModel2.listStatements();
+					while (it.hasNext()) {
+					     Statement stmt = it.next();
+					     System.out.println("Ma1,a getSubject" + stmt.getSubject());
+					     System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
+					     System.out.println("Ma3,a getObject" + stmt.getObject());
+
+					     
+						//Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type, sourceRestrictions1);
+ 
+					     //adding statement in to model
+					     //adding restriction for Source entity
+					     addStatement(stmt.getSubject().toString(), type, sourceRestrictions1,    limesOutputModel1);
+					    
+					   //adding restriction for target entity
+					     addStatement(stmt.getObject().toString(), type, targetRestrictions2,    limesOutputModel1);
+					    
+					     
+					     // System.out.println("dekh " + limesOutputModel1 );
+					     
+					     // do your stuff with the Statement (which is a triple)
+					}
+					String sourceFilePath1 = "data/data_nobelprize_org.nt";
+					String targetFilePath1 = "data/lov_linkeddata_es_dataset_lov.nt";
+				
+					//Adding source dataset 
+				     addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath1,    limesOutputModel1);
+					
+				     //Adding target dataset 
+				     addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath1,    limesOutputModel1);
+
+					
+					System.out.println("\n\n\n");
+					System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel1);
+		System.exit(1);
+		
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
