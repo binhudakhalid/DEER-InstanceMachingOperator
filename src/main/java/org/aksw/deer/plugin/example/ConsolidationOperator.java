@@ -37,7 +37,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	//	System.out.println("shah" + "The output from Instance Matching Operator models.get(0) " + models.size() ); 
 
 //		System.out.println("The output from Instance Matching Operator models.get(0) " + models.get(0).size() ); 
-		System.out.println(" aop The output from Instance Matching Operator models.get(0) " + models ); 
+		System.out.println(" aop The output from Instance Matching Operator models " + models ); 
 		System.out.println(" end aop "); 
 		
 

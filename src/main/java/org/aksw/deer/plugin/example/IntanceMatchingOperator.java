@@ -145,7 +145,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			
 			
 			//output from Ontology
-			InstanceMatcherOutputList.add(models.get(0));
+			//InstanceMatcherOutputList.add(models.get(0));
 			
 			////information about entities and class
 			Model info = ModelFactory.createDefaultModel();
@@ -164,20 +164,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			limesOutputModel.read("accepted.nt") ;
 			
 			// load source data into Jena model
-			Model sourceData = ModelFactory.createDefaultModel() ;
-			sourceData.read(sourceFilePath) ;
+		/*	Model sourceData = ModelFactory.createDefaultModel() ;
+			sourceData.read(sourceFilePath) ;*/
  			
 			//load target data into Jena model
-			Model targetData = ModelFactory.createDefaultModel() ;
-			targetData.read(targetFilePath) ;
+		/*	Model targetData = ModelFactory.createDefaultModel() ;
+			targetData.read(targetFilePath) ;*/
 			
  			 
 
 			//InstanceMatcherOutputList.add(e);
-			InstanceMatcherOutputList.add(sourceData);
+			//InstanceMatcherOutputList.add(sourceData);
 			InstanceMatcherOutputList.add(limesOutputModel);
 			
-			InstanceMatcherOutputList.add(targetData);
+			//InstanceMatcherOutputList.add(targetData);
 			
 			//return box;
 			//System.out.println("model : "+ model);
