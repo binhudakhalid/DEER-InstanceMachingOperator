@@ -14,18 +14,21 @@ example: deer:maxLimit "10";
 
 # Input From Ontology Operator
 
-<source, enpointType, file>                 // <source, enpointType, url>
+In N-triple format
 
-<source, endpoint, www.abc.com/fileOne>     
+```
+<http://data.nobelprize.org/resource/laureate/958> <http://www.w3.org/2002/07/owl#sameAs> <http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0>.
 
-<source, restriction, www.abc.com/Person>   
+<http://data.nobelprize.org/resource/laureate/448> <http://www.w3.org/2002/07/owl#sameAs> <http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef> .
+```
 
+In Jena Model
 
-<target, enpointType, file>
-
-<target, endpoint, www.abc.com/fileTwo>
-
-<target, restriction, www.abc.com/Actor>
+```
+[<ModelCom   
+{http://data.nobelprize.org/resource/laureate/448 @http://www.w3.org/2002/07/owl#sameAs http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef; http://data.nobelprize.org/resource/laureate/958 @http://www.w3.org/2002/07/owl#sameAs http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0} |  
+[http://data.nobelprize.org/resource/laureate/448, http://www.w3.org/2002/07/owl#sameAs, http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef] [http://data.nobelprize.org/resource/laureate/958, http://www.w3.org/2002/07/owl#sameAs, http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0]>]
+```
 
 
 # Instance Matching Operator
