@@ -53,7 +53,7 @@ The line 1 and 2 is telling about the path of source and target datasets. Here <
 
 Line 3, 4, 5 and 6 is telling the *rdf type* of entities.
 
-Line 7 and 8 is telling which entities are similar/sameAs.
+Line 7 and 8 is telling which entities are similar/sameAs. Also subject belong to "datasetSource" and object belong to "datasetTarget".
 
 For the above example you can find the source and target dataset in project folder called "data".
 
