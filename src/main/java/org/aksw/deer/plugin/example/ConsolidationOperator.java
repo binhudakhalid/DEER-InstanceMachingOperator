@@ -28,8 +28,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   private static final Resource TARGET_NAME = DEER.resource("targetName");
 
   // data sources
-  private static Statement sourceStatement;
-  private static Statement targetStatement;
+  private static Statement dataSourceStatement;
+  private static Statement dataTargetStatement;
   private static Model entities;
   private static Model matches;
 
@@ -205,10 +205,10 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       }
       else{
         if(statement.getSubject().toString().equals("https://w3id.org/deer/datasetSource")){
-          this.sourceStatement = statement;
+          dataSourceStatement = statement;
         }
         else{ // should be target, we could try it out
-          this.targetStatement = statement;
+          dataTargetStatement = statement;
         }
       }
   }
@@ -219,13 +219,61 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       Model source = constructModel(statement.getSubject().toString(), true);
       Model target = constructModel(statement.getObject().toString(), true);
       sourceTargetMap.putAll(getStatementsFromModel(source,true));
+      for(StmtIterator targetIt = target.listStatements(); targetIt.hasNext();){
+        Statement targetStatement = targetIt.nextStatement();
+        if(sourceTargetMap.containsKey(targetStatement.getPredicate())){
+          SourceTargetMatch tmp = sourceTargetMap.get(targetStatement.getPredicate());
+          tmp.endpointTarget = dataTargetStatement.getObject().toString(); // todo think about it
+          tmp.target = targetStatement;
+          try{
+            tmp.result = executeFusion(tmp.getAlternatives());
+            sourceTargetMap.put(targetStatement.getPredicate(), tmp);
+          }
+          catch (LiteralRequiredException e){
+            // no literal found
+            e.printStackTrace();
+          }
+        }
+        else{ // not found
+          SourceTargetMatch tmp = new SourceTargetMatch(statement, dataTargetStatement.getObject().toString(), "" );
+          try{
+            tmp.setResult(tmp.source.getLiteral());
+            sourceTargetMap.put(targetStatement.getPredicate(), tmp);
+          }
+          catch (LiteralRequiredException e){
+            // no literal found
+            e.printStackTrace();
+          }
+        }
+      }
+      // after done. go through map and do the real
+      // Todo: loop through source target map: add statement / change statement of source
 
 
     }
   }
 
-  private Map<? extends Property,? extends SourceTargetMatch> getStatementsFromModel(Model source, boolean b) {
-    return null;
+  private Map<Property,SourceTargetMatch> getStatementsFromModel(Model model, boolean source) {
+    StmtIterator stmtIterator = model.listStatements();
+    Map<Property,SourceTargetMatch> sourceTargetMatches = new HashMap<>();
+    while(stmtIterator.hasNext()){
+      Statement statement = stmtIterator.nextStatement();
+      try{
+        SourceTargetMatch sourceTargetMatch;
+        if(source){
+          sourceTargetMatch = new SourceTargetMatch(statement, dataSourceStatement.getObject().toString());
+
+        }
+        else{
+          //where do i get the namespace from?
+          sourceTargetMatch = new SourceTargetMatch(statement,dataTargetStatement.getObject().toString(),"");
+        }
+        sourceTargetMatches.put(statement.getPredicate(),sourceTargetMatch);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return sourceTargetMatches;
   }
 
   private Model constructModel(String subject, boolean source){
