@@ -7,6 +7,8 @@ import de.vandermeer.asciitable.CWC_FixedWidth;
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.*;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -39,7 +41,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
      */
     dispatchMap.put(
       "http://www.w3.org/2001/XMLSchema#string",
-      ConsolidationOperator::computeFusionForString
+      ConsolidationOperator::computeFusionForString //
     );
     dispatchMap.put(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
@@ -163,7 +165,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	protected List<Model> safeApply(List<Model> models) { // 3
     System.out.println("\n\n ---- Consolidation Operator started ---- \n\n");
     // Here parameter mapping
-
+    // auswahl der eigentlihcen Implementierung meiner Fusion Strategie
     // get Model
     Model model = models.get(0);
     // pick the data into usable form:
@@ -207,8 +209,11 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         if(statement.getSubject().toString().equals("https://w3id.org/deer/datasetSource")){
           dataSourceStatement = statement;
         }
-        else{ // should be target, we could try it out
+        else if(statement.getSubject().toString().equals("https://w3id.org/deer/datasetTarget")){ // should be target, we could try it out
           dataTargetStatement = statement;
+        }
+        else {
+          //todo throw error
         }
       }
   }
@@ -277,8 +282,24 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
   private Model constructModel(String subject, boolean source){
+    //todo : take statement
     return null;
   }
 
+  private Model constructModelBefore( String subject, String endpoint){
+    String queryString =
+      "CONSTRUCT { <" +
+        subject+
+        "> ?p ?o}\n" +
+        "WHERE {\n<" +
+        subject+
+        ">  ?p ?o.\n" +
+        "\n" +
+        "}";
 
+    QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint,queryString);
+    Model result = qexec.execConstruct();
+    qexec.close();
+    return result;
+  }
 }
