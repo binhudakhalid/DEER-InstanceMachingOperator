@@ -21,13 +21,14 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   private static final List<String> results = new ArrayList<>();
   private static final Map<String, Function<List<Literal>, Literal>> dispatchMap = new HashMap<>();
   private static final Map<Property,SourceTargetMatch> sourceTargetMap = new HashMap<>();
-  private static final boolean addTarget = true;
 
   // Controller for this
   private static final Property SAME_AS = DEER.property("sameAs");
   private static final Property ENTITY_NAME = DEER.property("entityName");
   private static final Resource SOURCE_NAME = DEER.resource("sourceName");
   private static final Resource TARGET_NAME = DEER.resource("targetName");
+
+  private static final boolean addTarget = true;
 
   // data sources
   private static Statement dataSourceStatement;
@@ -150,10 +151,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       ConsolidationOperator::fallBackFusion
     ).apply(alternatives);
   }
-	public ConsolidationOperator() {
-
-		super();
-	}
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
@@ -283,7 +280,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 
   private Model constructModel(String subject, boolean source){
     //todo : take statement
-    return null;
+    //  before i did a query on the sparql service, now i dont know what i have , so how do you query the given dataset?
+     return null;
   }
 
   private Model constructModelBefore( String subject, String endpoint){
