@@ -21,10 +21,13 @@
  fcage:hasInput :reader ;
 .
 
-:writer2
-  a deer:StdOutModelWriter ;
-  fcage:hasInput :matcher ; ##test if that builds me an output
-.
+### Just for output so i dont have to run everything
+#:writer2
+ #a deer:FileModelWriter ;
+ # deer:outputFile "data/instanceMatchingOutput.ttl";
+ # deer:outputFormat "turtle";
+ # fcage:hasInput :matcher ; ##test if that builds me an output
+#.
  
 :consolidation
  a deer:ConsolidationOperator ;
@@ -35,7 +38,7 @@
  deer:addTarget "true"; # integrate unmatched from the target dataset
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
  ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
- deer:provedenceProperty "https://w3id.org/deer/provedence";
+ deer:provenanceProperty "https://w3id.org/deer/provenance";
 
  deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file

@@ -1,0 +1,21 @@
+<http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0>
+        a       <http://xmlns.com/foaf/0.1/Person> .
+
+<http://data.nobelprize.org/resource/laureate/448>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://www.w3.org/2002/07/owl#sameAs>
+                <http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef> .
+
+<http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef>
+        a       <http://xmlns.com/foaf/0.1/Person> .
+
+<https://w3id.org/deer/datasetTarget>
+        <https://w3id.org/deer/path>  <data/lov_linkeddata_es_dataset_lov.nt> .
+
+<http://data.nobelprize.org/resource/laureate/958>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://www.w3.org/2002/07/owl#sameAs>
+                <http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0> .
+
+<https://w3id.org/deer/datasetSource>
+        <https://w3id.org/deer/path>  <data/data_nobelprize_org.nt> .

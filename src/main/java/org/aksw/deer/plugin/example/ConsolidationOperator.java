@@ -69,9 +69,9 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private static final Property NAMESPACE_INTEGRATION = DEER.property("namespaceIntegration");
   /**
-   * The constant PROVEDENCE.
+   * The constant provenance.
    */
-  private static final Property PROVEDENCE = DEER.property("provedenceProperty");
+  private static final Property PROVENANCE = DEER.property("provenanceProperty");
   /**
    * The constant addTarget.
    */
@@ -98,9 +98,9 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private String namespaceIntegration;
   /**
-   * The Provedence property.
+   * The provenance property.
    */
-  private String provedenceProperty;
+  private String provenanceProperty;
 
 
   /**
@@ -313,10 +313,10 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         getOptional(NAMESPACE_INTEGRATION).
         map(RDFNode::asLiteral).map(Literal::getString).
         orElse("https://w3id.org/deer/datasetTarget");
-    provedenceProperty = getParameterMap().
-      getOptional(PROVEDENCE).
+    provenanceProperty = getParameterMap().
+      getOptional(PROVENANCE).
       map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("https://w3id.org/deer/provedence");
+      orElse("https://w3id.org/deer/provenance");
 
     // auswahl der eigentlihcen Implementierung meiner Fusion Strategie
     // get Model
@@ -330,7 +330,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     buildMatchablePropertys();
     //   consolidateModelOld();
     consolidateModel();
-    printSourceTargetMap();
     System.out.println("\n\n---- Consolidation Operator stopped ---- ");
     //System.out.println("The output from Instance Matching Operator models.get(1) " + models.get(1) );
 
@@ -355,23 +354,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     matchablePropertys.add(name);
   }
 
-  /**
-   * Print source target map.
-   */
-  private void printSourceTargetMap() {
-
-    for (Property p : sourceTargetMap.keySet()) {
-      SourceTargetMatch smt = sourceTargetMap.get(p);
-      try {
-        System.out.println(smt.toString());
-      } catch (LiteralRequiredException e) {
-        //
-        logger.info("Property " + p + " no target");
-      }
-    }
-
-
-  }
 
   /**
    * Gets data out of model.
@@ -426,7 +408,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 
       }
     }
-
+    System.out.println("\n PRINT THE MATCHING \n ");
     // execute fusion
     for (var sstm : statementSourceTargetMap.entrySet()){
       for (var stm:  sstm.getValue().matchingMap.entrySet()){
@@ -434,8 +416,10 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         System.out.println(stm.getValue().toString());
         SourceTargetMatch tmp = stm.getValue();
         //change
+        /* instead of matches => source
         StmtIterator stmtIterator =matches.listStatements(tmp.source.getResource(),tmp.source.getPredicate(),(RDFNode) null);
         stmtIterator.nextStatement().changeObject(tmp.result); // change it
+        */
         // add provedence
       }
     }
