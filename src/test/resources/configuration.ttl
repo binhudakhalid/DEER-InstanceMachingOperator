@@ -35,14 +35,13 @@
  deer:entityName "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"; #predicate describes the given entitys
  deer:sourceName "https://w3id.org/deer/datasetSource"; # predicate of the data Source
  deer:targetName "https://w3id.org/deer/datasetTarget"; # predicate of the data Target
- deer:addTarget "true"; # integrate unmatched from the target dataset
+ deer:addTarget "true"^^xsd:boolean ;; # integrate unmatched from the target dataset
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
  ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
  deer:provenanceProperty "https://w3id.org/deer/provenance";
 
  deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file
- deer:expertise "source"; # source or target
  #fcage:hasInput :matcher ;
  fcage:hasInput :writer2 ;
 .

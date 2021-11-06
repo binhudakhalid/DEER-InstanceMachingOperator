@@ -72,6 +72,9 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant provenance.
    */
   private static final Property PROVENANCE = DEER.property("provenanceProperty");
+  private static final Property FUSION_STRATEGY =  DEER.property("fusionStrategy");
+  private static final Property OUTPUT_VARIANT = DEER.property("outputVariant");
+  private static final Property ADD_TARGET = DEER.property("addTarget");
   /**
    * The constant addTarget.
    */
@@ -121,6 +124,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   private static Model matches;
   private static Model source;
   private static Model target;
+
 
   static {
     /*
@@ -221,6 +225,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
 
+
   //https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html
 
   /**
@@ -276,9 +281,22 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     ).apply(alternatives);
   }
 
+  public enum FusionStrategy {
+    standard, expertiseSource, expertiseTarget, voting,
+    precise
+  }
+
   @Override
   public ValidatableParameterMap createParameterMap() { // 2
     return ValidatableParameterMap.builder()
+      .declareProperty(SAME_AS)
+      .declareProperty(ENTITY_NAME)
+      .declareProperty(PROVENANCE)
+      .declareProperty(TARGET_NAME)
+      .declareProperty(SOURCE_NAME)
+      .declareProperty(FUSION_STRATEGY)
+      .declareProperty(OUTPUT_VARIANT)
+      .declareProperty(ADD_TARGET)
       .declareValidationShape(getValidationModelFor(ConsolidationOperator.class)).build();
   }
 
@@ -311,11 +329,21 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     namespaceIntegration = getParameterMap().
         getOptional(NAMESPACE_INTEGRATION).
         map(RDFNode::asLiteral).map(Literal::getString).
-        orElse("https://w3id.org/deer/datasetTarget");
+       orElse("https://w3id.org/deer/testName");
     provenanceProperty = getParameterMap().
       getOptional(PROVENANCE).
       map(RDFNode::asLiteral).map(Literal::getString).
       orElse("https://w3id.org/deer/provenance");
+    /*
+    final FusionStrategy fusionStrategy = FusionStrategy.valueOf(
+      getParameterMap().get(FUSION_STRATEGY).asLiteral().getString()
+    );
+     */
+    final String outputVariant = getParameterMap().getOptional(OUTPUT_VARIANT)
+      .map(RDFNode::asLiteral).map(Literal::getString).orElse("ttl");
+    final boolean addTarget = getParameterMap().getOptional(ADD_TARGET)
+      .map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
+
 
     // auswahl der eigentlihcen Implementierung meiner Fusion Strategie
     // get Model
