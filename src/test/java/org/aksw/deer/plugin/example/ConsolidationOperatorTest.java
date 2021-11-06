@@ -21,5 +21,6 @@ public class ConsolidationOperatorTest extends TestCase {
     Model input = RDFDataMgr.loadModel("instanceMatchingOutput.ttl");
 
     List<Model> res = co.safeApply(List.of(input));
+  //  System.out.println(res.get(0));
   }
 }
