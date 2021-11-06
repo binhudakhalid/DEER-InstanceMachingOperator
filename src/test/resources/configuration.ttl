@@ -20,7 +20,11 @@
  deer:test "true";
  fcage:hasInput :reader ;
 .
- 
+
+:writer2
+  a deer:StdOutModelWriter ;
+  fcage:hasInput :matcher ; ##test if that builds me an output
+.
  
 :consolidation
  a deer:ConsolidationOperator ;
@@ -30,10 +34,14 @@
  deer:targetName "https://w3id.org/deer/datasetTarget"; # predicate of the data Target
  deer:addTarget "true"; # integrate unmatched from the target dataset
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
+ ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
+ deer:provedenceProperty "https://w3id.org/deer/provedence";
+
  deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file
  deer:expertise "source"; # source or target
- fcage:hasInput :matcher ;
+ #fcage:hasInput :matcher ;
+ fcage:hasInput :writer2 ;
 .
   
 

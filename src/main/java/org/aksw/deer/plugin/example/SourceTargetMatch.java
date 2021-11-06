@@ -82,4 +82,23 @@ public class SourceTargetMatch {
   public boolean isMatched(){
     return source != null && target != null;
   }
+
+
+  public String toString(){
+    return "source=" + source +
+      ", target=" + target +
+      ", result=" + result;
+  }
+  public String toStringComplete() {
+    return "SourceTargetMatch{" +
+      "source=" + source +
+      ", target=" + target +
+      ", namespace='" + namespace + '\'' +
+      ", endpointSource='" + endpointSource + '\'' +
+      ", endpointTarget='" + endpointTarget + '\'' +
+      ", result=" + result +
+      '}';
+  }
+
+
 }
