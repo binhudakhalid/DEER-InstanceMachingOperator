@@ -79,7 +79,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * The Same as.
    */
-//
   private String sameAs;
   /**
    * The Entity name.
@@ -106,7 +105,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * The constant dataSourceStatement.
    */
-// data sources
+
   private static Statement dataSourceStatement;
   /**
    * The constant dataTargetStatement.
@@ -120,6 +119,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant matches.
    */
   private static Model matches;
+  private static Model source;
+  private static Model target;
 
   static {
     /*
@@ -187,8 +188,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * @param literals the literals
    * @return the literal
    */
-// as Data return ?
-  // does this makes sense?
   private static Literal computeFusionForDate(List<Literal> literals) {
     return ResourceFactory.createTypedLiteral(
       literals.stream().mapToLong(Literal::getLong).average()
@@ -325,16 +324,21 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     entities = ModelFactory.createDefaultModel();
     matches = ModelFactory.createDefaultModel();
     getDataOutOfModel(model);
-
+    buildSourceAndTarget();
     // do the consolidation!!
     buildMatchablePropertys();
     //   consolidateModelOld();
-    consolidateModel();
+    consolidateModel(); //functionin
     System.out.println("\n\n---- Consolidation Operator stopped ---- ");
-    //System.out.println("The output from Instance Matching Operator models.get(1) " + models.get(1) );
 
+    // Source (answer set), targetset, read from instance, matches, entities
+    return List.of(source, target, model, matches, entities);
+  }
 
-    return List.of(model, matches, entities);
+  private void buildSourceAndTarget() {
+    target = RDFDataMgr.loadModel(dataTargetStatement.getObject().toString());
+    source = RDFDataMgr.loadModel(dataSourceStatement.getObject().toString());
+
   }
 
   /**
@@ -408,7 +412,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 
       }
     }
-    System.out.println("\n PRINT THE MATCHING \n ");
     // execute fusion
     for (var sstm : statementSourceTargetMap.entrySet()){
       for (var stm:  sstm.getValue().matchingMap.entrySet()){
@@ -416,16 +419,13 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         System.out.println(stm.getValue().toString());
         SourceTargetMatch tmp = stm.getValue();
         //change
-        /* instead of matches => source
-        StmtIterator stmtIterator =matches.listStatements(tmp.source.getResource(),tmp.source.getPredicate(),(RDFNode) null);
+        StmtIterator stmtIterator = source.listStatements(tmp.source.getSubject(),tmp.source.getPredicate(),(RDFNode) null);
         stmtIterator.nextStatement().changeObject(tmp.result); // change it
-        */
         // add provedence
       }
     }
 
   }
-
 
   /**
    * Add provedence.
@@ -438,46 +438,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
 
-  /**
-   * Consolidate model old.
-   */
-  private void consolidateModelOld() {
-    StmtIterator matchedIterator = matches.listStatements();
-    while (matchedIterator.hasNext()) {
-      Statement statement = matchedIterator.nextStatement();
-      Model source = constructModel(statement.getSubject().toString(), true);
-      Model target = constructModel(statement.getObject().toString(), false);
-      sourceTargetMap.putAll(getStatementsFromModel(source, true));
-      for (StmtIterator targetIt = target.listStatements(); targetIt.hasNext(); ) {
-        Statement targetStatement = targetIt.nextStatement();
-        if (sourceTargetMap.containsKey(targetStatement.getPredicate())) { // found
-          SourceTargetMatch tmp = sourceTargetMap.get(targetStatement.getPredicate());
-          tmp.endpointTarget = dataTargetStatement.getObject().toString(); // todo think about it
-          tmp.target = targetStatement;
-          try {
-            tmp.result = executeFusion(tmp.getAlternatives());
-            sourceTargetMap.put(targetStatement.getPredicate(), tmp);
-          } catch (LiteralRequiredException e) {
-            e.printStackTrace();
-            // no literal found
-          }
-        } else { // not found
-          SourceTargetMatch tmp = new SourceTargetMatch(statement, dataTargetStatement.getObject().toString(), "");
-          try {
-            tmp.setResult(tmp.source.getLiteral());
-            sourceTargetMap.put(targetStatement.getPredicate(), tmp);
-          } catch (LiteralRequiredException e) {
-            // no literal found
-            e.printStackTrace();
-          }
-        }
-      }
-      // after done. go through map and do the real
-      // Todo: loop through source target map: add statement / change statement of source
-      System.out.println("jump point for us");
-
-    }
-  }
 
   /**
    * Add to source target map.
@@ -591,17 +551,4 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     return result;
   }
 
-  /**
-   *
-   * todo: use similar sparqlquery for building the hashmap and than build the models for source and target that could
-   * fill that : predicate is the wrong metric : should be
-   * Source Subject as key
-   *  and sourcetargetmap different approach
-   *
-   *  list of similar propertys
-   *  statement source/target
-   *  result
-   *  history maybe?
-   *
-   */
 }
