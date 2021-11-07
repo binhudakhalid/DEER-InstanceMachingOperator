@@ -72,8 +72,17 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant provenance.
    */
   private static final Property PROVENANCE = DEER.property("provenanceProperty");
+  /**
+   * The constant FUSION_STRATEGY.
+   */
   private static final Property FUSION_STRATEGY =  DEER.property("fusionStrategy");
+  /**
+   * The constant OUTPUT_VARIANT.
+   */
   private static final Property OUTPUT_VARIANT = DEER.property("outputVariant");
+  /**
+   * The constant ADD_TARGET.
+   */
   private static final Property ADD_TARGET = DEER.property("addTarget");
   /**
    * The constant addTarget.
@@ -108,7 +117,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * The constant dataSourceStatement.
    */
-
   private static Statement dataSourceStatement;
   /**
    * The constant dataTargetStatement.
@@ -122,7 +130,13 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant matches.
    */
   private static Model matches;
+  /**
+   * The constant source.
+   */
   private static Model source;
+  /**
+   * The constant target.
+   */
   private static Model target;
 
 
@@ -281,8 +295,29 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     ).apply(alternatives);
   }
 
+  /**
+   * The enum Fusion strategy.
+   */
   public enum FusionStrategy {
-    standard, expertiseSource, expertiseTarget, voting,
+    /**
+     * Standard fusion strategy.
+     */
+    standard,
+    /**
+     * Expertise source fusion strategy.
+     */
+    expertiseSource,
+    /**
+     * Expertise target fusion strategy.
+     */
+    expertiseTarget,
+    /**
+     * Voting fusion strategy.
+     */
+    voting,
+    /**
+     * Precise fusion strategy.
+     */
     precise
   }
 
@@ -363,6 +398,9 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     return List.of(source, target, model, matches, entities);
   }
 
+  /**
+   * Build source and target.
+   */
   private void buildSourceAndTarget() {
     target = RDFDataMgr.loadModel(dataTargetStatement.getObject().toString());
     source = RDFDataMgr.loadModel(dataSourceStatement.getObject().toString());
@@ -464,7 +502,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   public void addProvedence(Model model, SourceTargetMatch stm){
     // model.add()
   }
-
 
 
   /**

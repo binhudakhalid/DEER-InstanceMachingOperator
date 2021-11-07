@@ -5,6 +5,7 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix geos: <http://www.opengis.net/ont/geosparql#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :reader                #will be replaced with the output of ontology operator
   a deer:SparqlModelReader ;
@@ -35,19 +36,19 @@
  deer:entityName "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"; #predicate describes the given entitys
  deer:sourceName "https://w3id.org/deer/datasetSource"; # predicate of the data Source
  deer:targetName "https://w3id.org/deer/datasetTarget"; # predicate of the data Target
- deer:addTarget "true"^^xsd:boolean ;; # integrate unmatched from the target dataset
+ deer:addTarget "true"^^xsd:boolean ; # integrate unmatched from the target dataset
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
  ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
  deer:provenanceProperty "https://w3id.org/deer/provenance";
 
  deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file
- #fcage:hasInput :matcher ;
- fcage:hasInput :writer2 ;
-.
-  
-
+ fcage:hasInput :matcher ;
+ #fcage:hasInput :writer2 ;
+ .
 :writer
-  a deer:StdOutModelWriter ;
+  a deer:FileModelWriter ;
+  deer:outputFile "output_consolidation.ttl";
+  deer:outputFormat "turtle";
   fcage:hasInput :consolidation ;
 .
