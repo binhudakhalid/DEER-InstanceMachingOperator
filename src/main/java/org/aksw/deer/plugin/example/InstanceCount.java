@@ -42,70 +42,20 @@ public class InstanceCount {
 		return totalInstances;
 	}
 
-	public int countInstanceFromURL(String url, PrefixEntity prefixEntity){
-
-		/*
-		 * System.out.println(" He02 "); QueryExecution qe =
-		 * QueryExecutionFactory.sparqlService(url,
-		 * 
-		 * "select distinct * where {?s ?p ?o} LIMIT 100"); /*"PREFIX " +
-		 * prefixEntity.key + ": <" + prefixEntity.value + ">\r\n" +
-		 * "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
-		 * "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { ?s rdf:type " +
-		 * prefixEntity.key + ":" + prefixEntity.name + ". } ");
-		 */
-
-		/*
-		 * String a = "PREFIX " + prefixEntity.key + ": <" + prefixEntity.value +
-		 * ">\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
-		 * "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { ?s rdf:type " +
-		 * prefixEntity.key + ":" + prefixEntity.name + ". } ";
-		 * 
-		 * System.out.println(" He02-url " + url);
-		 * 
-		 * System.out.println(" He02 " + a);
-		 * 
-		 * 
-		 * ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		 * System.out.println(" He03 ");
-		 * 
-		 * resultOne.forEachRemaining(qsol -> totalInstances =
-		 * qsol.getLiteral("totalInstances").getInt()); qe.close(); return
-		 * totalInstances;
-		 */
-		System.out.println("URL dekh " + url);
-		try {
-			System.out.println("URL dekh1 " + 	getRedirectedUrl(url));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		
+	public int countInstanceFromURL(String url, PrefixEntity prefixEntity) {
+ 
 		QueryExecution qe = null;
-		try {
-			qe = QueryExecutionFactory.sparqlService(getRedirectedUrl(url),
-					"PREFIX " + prefixEntity.key + ": <" + prefixEntity.value + ">\r\n"
-							+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-							+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-							+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-							+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { ?s rdf:type " + prefixEntity.key + ":"
-							+ prefixEntity.name + ". } ");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		qe = QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url),
+				"PREFIX " + prefixEntity.key + ": <" + prefixEntity.value + ">\r\n"
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
+						+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { ?s rdf:type " + prefixEntity.key
+						+ ":" + prefixEntity.name + ". } ");
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
 		qe.close();
-		
-		System.out.println("URL dekh3 " + totalInstances);
+
 		return totalInstances;
 	}
 
@@ -160,5 +110,36 @@ public class InstanceCount {
 		return headerField == null ? url : headerField;
 
 	}
+	
+	
+	public static String getFinalRedirectedUrl(String url)  {       
+        String finalRedirectedUrl = url;
+        try {
+            HttpURLConnection connection;
+            do {
+                    connection = (HttpURLConnection) new URL(finalRedirectedUrl).openConnection();
+                    connection.setInstanceFollowRedirects(false);
+                    connection.setUseCaches(false);
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode >=300 && responseCode <400)
+                    {
+                        String redirectedUrl = connection.getHeaderField("Location");
+                        if(null== redirectedUrl) {
+                            break;
+                        }
+                        finalRedirectedUrl =redirectedUrl;
+                    }
+                    else
+                        break;
+            } while (connection.getResponseCode() != HttpURLConnection.HTTP_OK);
+            connection.disconnect();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return finalRedirectedUrl;  }
 
 }

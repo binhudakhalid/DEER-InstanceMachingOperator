@@ -238,6 +238,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
+			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions,
+					Integer.parseInt(maxLimit));
+	
+			
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions,
 					Integer.parseInt(maxLimit));
 
@@ -972,10 +976,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
 
-		System.exit(0);
+		
 
 		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
-
+		System.exit(0);
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		Model model = ModelFactory.createDefaultModel();
