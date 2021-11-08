@@ -89,7 +89,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-	 
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("did not able to find coverage");
@@ -193,9 +192,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			StmtIterator it = limesOutputModel2.listStatements();
 			while (it.hasNext()) {
 				Statement stmt = it.next();
-				/*System.out.println("Ma1,a getSubject" + stmt.getSubject());
-				System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
-				System.out.println("Ma3,a getObject" + stmt.getObject());*/
+				/*
+				 * System.out.println("Ma1,a getSubject" + stmt.getSubject());
+				 * System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
+				 * System.out.println("Ma3,a getObject" + stmt.getObject());
+				 */
 
 				// Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type,
 				// sourceRestrictions1);
@@ -217,14 +218,28 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 					limesOutputModel);
 
 			System.out.println("\n\n\n");
-			//System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel);
+			// System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel);
 
-			//System.out.print("check");
+			// System.out.print("check");
 			return InstanceMatcherOutputList;
 
 			// System.exit(0);
 		} // if the endpoint is url
 		else if (inputEndpoint == "url") {
+
+			String sourceEndpoint = "http://sparql.contextdatacloud.org";
+			String targetEndpoint = "http://vocab.getty.edu/sparql";
+			sourceRestrictions = "http://www.contextdatacloud.org/cmo/ontology/MajorConcept";
+			targetRestrictions = "http://vocab.getty.edu/ontology#GroupConcept";
+
+			// String inputEndpoint = "fileType";
+			// String sourceFilePath = "data/data_nobelprize_org.nt";
+			// String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
+			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
+			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+
+			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
+					Integer.parseInt(maxLimit));
 
 		}
 //		 
@@ -873,6 +888,90 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromFile(path, restrictionPrefixEntity);
+
+		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
+
+		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
+
+		Model model = ModelFactory.createDefaultModel();
+
+		RDFDataMgr.read(model, path, Lang.NTRIPLES);
+		String queryString1 = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
+				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
+				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+				+ "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" + restrictionPrefixEntity.name + " .\r\n"
+				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
+				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
+
+		// url1:Person
+//		http://xmlns.com/foaf/0.1/Person
+
+		// JUST FOR DEBUG remove before commit
+		Query query1 = QueryFactory.create(queryString1);
+		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
+		ResultSet results = qexec1.execSelect();
+		// System.out.println("result 009 : " + results);
+		// ResultSetFormatter.out(System.out, results);
+		///
+
+		Query query = QueryFactory.create(queryString1);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		// ResultSet results = qexec.execSelect();
+		// System.out.println("result 009 : " + results);
+		// ResultSetFormatter.out(System.out, results);
+		// System.out.println(((Statement) model).getSubject());
+
+		// ADDING HERE
+		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
+
+		resultsOne.forEachRemaining(qsol -> {
+			String predicate = qsol.getResource("predicate").toString();
+			int PredicateCount = qsol.getLiteral("count").getInt();
+
+			// System.out.println(" lookit : " + predicate);
+			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
+
+			double coverage;
+
+			if (size > 0) {
+				coverage = PredicateCount / size;
+
+				// System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
+
+				// System.out.println(" ckcpppa size :" + size);
+				// System.out.println(" ckcpppa coverage :" + coverage);
+				// System.out.println(" ckcpppa check :" + PredicateCount / size);
+
+			} else {
+				coverage = 0;
+			}
+
+			PropertyEntity p1 = new PropertyEntity(prefixEntity.key, prefixEntity.value, prefixEntity.name,
+					PredicateCount, coverage);
+			propertiesListTemp.add(p1);
+
+		});
+
+		System.out.println("propertiesListTemp: " + propertiesListTemp);
+		return propertiesListTemp;
+	}
+
+	/*
+	 * Takes entity as input return list of properties from file. Listing properties
+	 * with their counts
+	 */
+	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
+
+		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
+		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
+
+		InstanceCount instanceCount = new InstanceCount();
+		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
+
+		System.exit(0);
 
 		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
 
