@@ -256,7 +256,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			// Check if the data is available, if we query it with following properties
-			checkDataIsAvalable(propertiesListTarget1, propertiesListSource1);
+			isDataAvailable(targetEndpoint, targetRestrictions, propertiesListTarget1 );
 
 		}
 //		 
@@ -1050,10 +1050,18 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Statement stmt = model.createStatement(subject, predicate, object);
 		model.add(stmt);
 	}
+	
 
-	private void checkDataIsAvalable(List<PropertyEntity> propertiesListTarget12,
+	private void isDataAvailable(String targetEndpoint, String targetRestrictions, List<PropertyEntity> propertiesListTarget12,
 			List<PropertyEntity> propertiesListSource12) {
+		
+		
+		
 		// TODO Auto-generated method stub
+		
+		
+		
+		
 
 	}
 
