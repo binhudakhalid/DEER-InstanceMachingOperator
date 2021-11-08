@@ -225,7 +225,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			// System.exit(0);
 		} // if the endpoint is url
-		else { //if (inputEndpoint == "url") {
+		else { // if (inputEndpoint == "url") {
 
 			String sourceEndpoint = "http://sparql.contextdatacloud.org";
 			String targetEndpoint = "http://vocab.getty.edu/sparql";
@@ -240,8 +240,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions,
 					Integer.parseInt(maxLimit));
-	
-			
+
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions,
 					Integer.parseInt(maxLimit));
 
@@ -969,54 +968,36 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
-		
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
 
-		
-
 		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
-		System.exit(0);
+		
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
-		Model model = ModelFactory.createDefaultModel();
-
-		RDFDataMgr.read(model, path, Lang.NTRIPLES);
-		String queryString1 = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n" + "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-				+ "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" + restrictionPrefixEntity.name + " .\r\n"
-				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
+		QueryExecution qe = null;
+		qe = QueryExecutionFactory.sparqlService(InstanceCount.getFinalRedirectedUrl(path),
+				"PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
+						+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
+						+ "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n"
+						+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
+						+ "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" + restrictionPrefixEntity.name
+						+ " .\r\n" + "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
+						+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties);
 
 		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
-
-		// JUST FOR DEBUG remove before commit
-		Query query1 = QueryFactory.create(queryString1);
-		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
-		ResultSet results = qexec1.execSelect();
-		// System.out.println("result 009 : " + results);
-		// ResultSetFormatter.out(System.out, results);
-		///
-
-		Query query = QueryFactory.create(queryString1);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model);
-		// ResultSet results = qexec.execSelect();
-		// System.out.println("result 009 : " + results);
-		// ResultSetFormatter.out(System.out, results);
-		// System.out.println(((Statement) model).getSubject());
-
-		// ADDING HERE
-		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
-
-		resultsOne.forEachRemaining(qsol -> {
+		
+		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+ 
+		
+		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
 
@@ -1044,7 +1025,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 
-		System.out.println("propertiesListTemp: " + propertiesListTemp);
+		System.out.println("propertiesListTemp url: " + propertiesListTemp);
+		
+		System.out.println(" 909 ");
+		System.exit(0);
+		
 		return propertiesListTemp;
 	}
 
