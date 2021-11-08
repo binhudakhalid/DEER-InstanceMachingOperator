@@ -29,7 +29,10 @@
  # deer:outputFormat "turtle";
  # fcage:hasInput :matcher ; ##test if that builds me an output
 #.
- 
+
+
+### Configuration should be more precise
+### Fusionstrategy by Type/Predicate
 :consolidation
  a deer:ConsolidationOperator ;
  deer:sameAs "http://www.w3.org/2002/07/owl#sameAs"; # predicate that symbolizes equality
@@ -40,7 +43,6 @@
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
  ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
  deer:provenanceProperty "https://w3id.org/deer/provenance";
-
  deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file
  fcage:hasInput :matcher ;

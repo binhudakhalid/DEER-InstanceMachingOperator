@@ -395,7 +395,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     System.out.println("\n\n---- Consolidation Operator stopped ---- ");
 
     // Source (answer set), targetset, read from instance, matches, entities
-    return List.of(source, target, model, matches, entities);
+    return List.of(source);//, target, model, matches, entities);
   }
 
   /**
