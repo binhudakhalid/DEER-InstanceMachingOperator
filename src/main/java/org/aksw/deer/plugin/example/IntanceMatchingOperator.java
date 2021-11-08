@@ -244,6 +244,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions,
 					Integer.parseInt(maxLimit));
 
+			// If no property have the coverage than the coverage parameter(Set in
+			// configuration.ttl)
+			// then it thought a exception
+			// propertiesListTarget1.remove(0);
+			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
+
+				System.out.println(
+						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
+								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
+			}
+
+			// Check if the data is available, if we query it with following properties
+			checkDataIsAvalable(propertiesListTarget1, propertiesListSource1);
+
 		}
 //		 
 
@@ -975,7 +989,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
 
 		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
-		
+
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
 		QueryExecution qe = null;
@@ -993,10 +1007,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
-		
+
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
- 
-		
+
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
@@ -1026,10 +1039,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		});
 
 		System.out.println("propertiesListTemp url: " + propertiesListTemp);
-		
-		System.out.println(" 909 ");
-		System.exit(0);
-		
+
 		return propertiesListTemp;
 	}
 
@@ -1039,6 +1049,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		RDFNode object = model.createResource(o);
 		Statement stmt = model.createStatement(subject, predicate, object);
 		model.add(stmt);
+	}
+
+	private void checkDataIsAvalable(List<PropertyEntity> propertiesListTarget12,
+			List<PropertyEntity> propertiesListSource12) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
