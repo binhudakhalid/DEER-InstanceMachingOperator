@@ -111,7 +111,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "fileType") {
+		if (inputEndpoint == "fileType1") {
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
 					Integer.parseInt(maxLimit));
@@ -225,7 +225,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			// System.exit(0);
 		} // if the endpoint is url
-		else if (inputEndpoint == "url") {
+		else { //if (inputEndpoint == "url") {
 
 			String sourceEndpoint = "http://sparql.contextdatacloud.org";
 			String targetEndpoint = "http://vocab.getty.edu/sparql";
@@ -238,7 +238,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
-			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
+			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions,
 					Integer.parseInt(maxLimit));
 
 		}
@@ -965,6 +965,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
+		
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
