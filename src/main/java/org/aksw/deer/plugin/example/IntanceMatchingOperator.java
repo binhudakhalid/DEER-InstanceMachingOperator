@@ -1052,8 +1052,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 	
 
-	private void isDataAvailable(String targetEndpoint, String targetRestrictions, List<PropertyEntity> propertiesListTarget12,
-			List<PropertyEntity> propertiesListSource12) {
+	private void isDataAvailable(String targetEndpoint, String targetRestrictions, List<PropertyEntity> tempPropertiesListTarget) {
+		
+		
+		
+		
+		
 		
 		
 		
