@@ -493,7 +493,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         //change
         StmtIterator stmtIterator = source.listStatements(tmp.source.getSubject(),tmp.source.getPredicate(),(RDFNode) null);
         stmtIterator.nextStatement().changeObject(tmp.result); // change it
-        // add provedence
+        // add provenance
       }
     }
 
