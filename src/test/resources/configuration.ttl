@@ -43,8 +43,14 @@
  deer:namespaceForIntegration "https://w3id.org/deer/nameprefix/"; # prefix for integration of unmatched from target to source
  ## Throw it in https://dice-group.github.io/deer/#/nodes?id=authority-conformation-enrichment-operator-deerauthorityconformationenrichmentoperator
  deer:provenanceProperty "https://w3id.org/deer/provenance";
- deer:fusionStrategy "standard"; # standard, precise, expertise, [...]
+ deer:globalFusionStrategy "standard"; # standard, precise, expertise, [...]
  deer:outputVariant "ttl"; # output file
+ deer:propertyFusion [ # Strategy by Propertys, if not defined use globalFusion
+    deer:propertyValue "http://xmlns.com/foaf/0.1/name"; ##property of the source Dataset
+    deer:fusionStrategy "expertiseTarget"; ## same as globalstrategy
+                    ];
+
+
  fcage:hasInput :matcher ;
  #fcage:hasInput :writer2 ;
  .

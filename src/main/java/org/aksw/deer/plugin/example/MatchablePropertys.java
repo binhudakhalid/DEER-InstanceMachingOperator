@@ -9,6 +9,7 @@ public class MatchablePropertys {
   String label  ;
   Property targetProperty;
   Property sourceProperty;
+  FusionStrategy fusionStrategy;
   public MatchablePropertys(String label){
     this.label = label;
   }
@@ -27,6 +28,14 @@ public class MatchablePropertys {
 
   public void setTargetProperty(Property targetProperty) {
     this.targetProperty = targetProperty;
+  }
+
+  public FusionStrategy getFusionStrategy() {
+    return fusionStrategy;
+  }
+
+  public void setFusionStrategy(FusionStrategy fusionStrategy) {
+    this.fusionStrategy = fusionStrategy;
   }
 
   public Property getSourceProperty() {

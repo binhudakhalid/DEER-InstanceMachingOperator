@@ -24,17 +24,8 @@ Questions:
 
 Todos:
 
-- [x] Config
-  - added parameters for testing (orElse)
-
-- [x] Generate Model output out of instance matching
-- [x] write tests for just consolidation with given output 
-- [x]  constructModel runnable
-
 - [ ]  export fusion/consolidation and use it as class !
-- [x] export as TTL file
-- [x] 
-- [ ] Timing ~ 36 secs atm
+- [ ] Timing Test
 - [ ] Add Endpoints (atm just file) (should be via config)
 - [ ] config runnable & maybe control if different plugins are used
   - (output file)
@@ -42,4 +33,19 @@ Todos:
 - [ ] Different inputs (waiting for other groups to provide smth)
   - Endpoints and Data 
 - [ ] Property matching (onto)
-- [ ] ask kevin how to map in config source - property 
+- [x] ask kevin how to map in config source - property 
+- [x] User Able to choose fusionstrategy by sourceproperty 
+- [x] Before Setup of common testings
+- [ ] Data Write back 
+- [ ] Provenance - ProveO
+- 
+- 
+
+oldTodos
+
+- [x] Config
+  - added parameters for testing (orElse)
+- [x] Generate Model output out of instance matching
+- [x] write tests for just consolidation with given output
+- [x]  constructModel runnable
+- [x] export as TTL file

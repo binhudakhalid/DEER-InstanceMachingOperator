@@ -47,6 +47,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private static final List<MatchablePropertys> matchablePropertys = new ArrayList<>();
 
+  private static final Map<String,FusionStrategy> propertyFusionMatching = new HashMap<>();
   /**
    * The constant SAME_AS.
    */
@@ -75,7 +76,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * The constant FUSION_STRATEGY.
    */
-  private static final Property FUSION_STRATEGY =  DEER.property("fusionStrategy");
+  private static final Property FUSION_STRATEGY =  DEER.property("globalFusionStrategy");
   /**
    * The constant OUTPUT_VARIANT.
    */
@@ -84,6 +85,13 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant ADD_TARGET.
    */
   private static final Property ADD_TARGET = DEER.property("addTarget");
+
+  private static final Property PROPERTY_FUSION_MAPPING = DEER.property("propertyFusion");
+
+  private static final Property PROPERTY_VALUE = DEER.property("propertyValue");
+
+  private static final Property FUSION_VALUE = DEER.property("fusionStrategy");
+
   /**
    * The constant addTarget.
    */
@@ -295,31 +303,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     ).apply(alternatives);
   }
 
-  /**
-   * The enum Fusion strategy.
-   */
-  public enum FusionStrategy {
-    /**
-     * Standard fusion strategy.
-     */
-    standard,
-    /**
-     * Expertise source fusion strategy.
-     */
-    expertiseSource,
-    /**
-     * Expertise target fusion strategy.
-     */
-    expertiseTarget,
-    /**
-     * Voting fusion strategy.
-     */
-    voting,
-    /**
-     * Precise fusion strategy.
-     */
-    precise
-  }
 
   @Override
   public ValidatableParameterMap createParameterMap() { // 2
@@ -341,43 +324,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     // Here parameter mapping
     // todo: ask if String or better Ressources
 
-    sameAs = getParameterMap().
-      getOptional(SAME_AS).
-      map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("http://www.w3.org/2002/07/owl#sameAs");
-
-    entityName = getParameterMap().
-      getOptional(ENTITY_NAME).
-      map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-    sourceName = getParameterMap().
-      getOptional(SOURCE_NAME).
-      map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("https://w3id.org/deer/datasetSource");
-      //orElse("https://w3id.org/deer/datasetSource");
-    targetName = getParameterMap().
-      getOptional(TARGET_NAME).
-      map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("https://w3id.org/deer/datasetTarget");
-
-
-    namespaceIntegration = getParameterMap().
-        getOptional(NAMESPACE_INTEGRATION).
-        map(RDFNode::asLiteral).map(Literal::getString).
-       orElse("https://w3id.org/deer/testName");
-    provenanceProperty = getParameterMap().
-      getOptional(PROVENANCE).
-      map(RDFNode::asLiteral).map(Literal::getString).
-      orElse("https://w3id.org/deer/provenance");
-    /*
-    final FusionStrategy fusionStrategy = FusionStrategy.valueOf(
-      getParameterMap().get(FUSION_STRATEGY).asLiteral().getString()
-    );
-     */
-    final String outputVariant = getParameterMap().getOptional(OUTPUT_VARIANT)
-      .map(RDFNode::asLiteral).map(Literal::getString).orElse("ttl");
-    final boolean addTarget = getParameterMap().getOptional(ADD_TARGET)
-      .map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
+    fillParameterFromConfig();
 
 
     // auswahl der eigentlihcen Implementierung meiner Fusion Strategie
@@ -398,6 +345,61 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     return List.of(source);//, target, model, matches, entities);
   }
 
+  private void fillParameterFromConfig() {
+    sameAs = getParameterMap().
+      getOptional(SAME_AS).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("http://www.w3.org/2002/07/owl#sameAs");
+
+    entityName = getParameterMap().
+      getOptional(ENTITY_NAME).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+    sourceName = getParameterMap().
+      getOptional(SOURCE_NAME).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("https://w3id.org/deer/datasetSource");
+    //orElse("https://w3id.org/deer/datasetSource");
+    targetName = getParameterMap().
+      getOptional(TARGET_NAME).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("https://w3id.org/deer/datasetTarget");
+     namespaceIntegration = getParameterMap().
+      getOptional(NAMESPACE_INTEGRATION).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("https://w3id.org/deer/testName");
+    provenanceProperty = getParameterMap().
+      getOptional(PROVENANCE).
+      map(RDFNode::asLiteral).map(Literal::getString).
+      orElse("https://w3id.org/deer/provenance");
+
+    getParameterMap().listPropertyObjects(PROPERTY_FUSION_MAPPING)
+      .map(RDFNode::asResource)
+      .forEach(op ->{
+        final String property = op.getPropertyResourceValue(PROPERTY_VALUE).asResource().getURI();
+        final String fusionStrategy = op.getPropertyResourceValue(FUSION_VALUE).asLiteral().toString();
+        FusionStrategy fs;
+        try {
+          fs = FusionStrategy.valueOf(fusionStrategy);
+        }
+        catch(Exception ex){
+           fs = FusionStrategy.standard;//fallback
+        }
+
+        propertyFusionMatching.put(property,fs);
+      });
+  /*
+    final FusionStrategy fusionStrategy = FusionStrategy.valueOf(
+      getParameterMap().get(FUSION_STRATEGY).asLiteral().getString()
+    );
+     */
+    final String outputVariant = getParameterMap().getOptional(OUTPUT_VARIANT)
+      .map(RDFNode::asLiteral).map(Literal::getString).orElse("ttl");
+    final boolean addTarget = getParameterMap().getOptional(ADD_TARGET)
+      .map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
+
+  }
+
   /**
    * Build source and target.
    */
@@ -416,11 +418,15 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     String prefix = "http://xmlns.com/foaf/0.1/";
     Property sourceProp = model.createProperty(prefix, "name");
     Property targetProp = model.createProperty(prefix, "name");
-    // Vorname :
+    // fullname :
     MatchablePropertys name = new MatchablePropertys("name");
     name.setSourceProperty(sourceProp);
     name.setTargetProperty(targetProp);
-
+    FusionStrategy fs = FusionStrategy.standard;
+    if(propertyFusionMatching.containsKey(sourceProp.getURI())){
+      fs = propertyFusionMatching.get(sourceProp.getURI());
+    }
+    name.setFusionStrategy(fs);
     matchablePropertys.add(name);
   }
 
