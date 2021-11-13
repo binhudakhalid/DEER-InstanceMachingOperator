@@ -32,20 +32,36 @@ Only one Jena model will be return.
 
 ### Sample Ouput
 
-
-``` 
+```
 1 [https://w3id.org/deer/datasetSource, https://w3id.org/deer/path, data/data_nobelprize_org.nt]
 2 [https://w3id.org/deer/datasetTarget, https://w3id.org/deer/path, data/lov_linkeddata_es_dataset_lov.nt] 
+  
 
-3 [http://data.nobelprize.org/resource/laureate/958, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://xmlns.com/foaf/0.1/Person]
-4 [http://data.nobelprize.org/resource/laureate/448, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://xmlns.com/foaf/0.1/Person] 
-5 [http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://xmlns.com/foaf/0.1/Person] 
-6 [http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://xmlns.com/foaf/0.1/Person] 
- 
+3 [https://w3id.org/deer/subjectType, https://w3id.org/deer/is, http://xmlns.com/foaf/0.1/Person]  
+4 [https://w3id.org/deer/objectType, https://w3id.org/deer/is, http://xmlns.com/foaf/0.1/Person] 
 
-7 [http://data.nobelprize.org/resource/laureate/448, http://www.w3.org/2002/07/owl#sameAs, http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef] 
-8 [http://data.nobelprize.org/resource/laureate/958, http://www.w3.org/2002/07/owl#sameAs, http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0]
+5 [924974c4-44fa-4c75-ac18-d908e2d527e6, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement]
+
+6 [924974c4-44fa-4c75-ac18-d908e2d527e6, http://www.w3.org/1999/02/22-rdf-syntax-ns#subject, http://data.nobelprize.org/resource/laureate/448]
+
+7 [924974c4-44fa-4c75-ac18-d908e2d527e6, http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate, http://www.w3.org/2002/07/owl#sameAs]
+
+8 [924974c4-44fa-4c75-ac18-d908e2d527e6, http://www.w3.org/1999/02/22-rdf-syntax-ns#object, http://sparql.cwrc.ca/ontologies/cwrc#26ad3610-a0bb-4e62-8fbc-d6be9ccbbdf6-partof-327d5213ef] 
+  
+9 [924974c4-44fa-4c75-ac18-d908e2d527e6, https://w3id.org/deer/confidence, "90"] 
+  
+  
+10 [433d9319-40d5-4d45-ac3b-1b4345e97d76, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement]
+
+11 [433d9319-40d5-4d45-ac3b-1b4345e97d76, http://www.w3.org/1999/02/22-rdf-syntax-ns#subject, http://data.nobelprize.org/resource/laureate/958] 
+
+12 [433d9319-40d5-4d45-ac3b-1b4345e97d76, http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate, http://www.w3.org/2002/07/owl#sameAs] 
+
+13 [433d9319-40d5-4d45-ac3b-1b4345e97d76, http://www.w3.org/1999/02/22-rdf-syntax-ns#object, http://sparql.cwrc.ca/ontologies/cwrc#a5686049-f450-415c-9ca6-deee26e30899-b3f841f5c0] 
+
+14 [433d9319-40d5-4d45-ac3b-1b4345e97d76, https://w3id.org/deer/confidence, "90"]
 ```
+
 
 ### Explaination
 
