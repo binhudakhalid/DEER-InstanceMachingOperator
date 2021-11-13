@@ -13,12 +13,12 @@
   fcage:hasOutput :matcher ;
 .
 
-:matcher
+:matcher   #add source and target and restriction(read from output of ontology matching group)
  a deer:IntanceMatchingOperator ;
- deer:coverage "0.70" ;			   #Coverage of a Property     #propteryCount/TotalInstanceCount
- deer:maxLimit "10";           #Maximum number of Properties
- deer:test "true";
- fcage:hasInput :reader ;
+ deer:coverage "0.70" ;		   #Coverage of a Property     #propteryCount/TotalInstanceCount #Default=90%
+ deer:maxLimit "10";           #Maximum number of Properties #Default=3
+ deer:test "true"; 			   #Default=false
+ fcage:hasInput :reader ; 
 .
  
  

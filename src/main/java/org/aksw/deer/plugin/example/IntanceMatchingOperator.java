@@ -83,7 +83,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
+		return ValidatableParameterMap.builder()
+				.declareProperty(Coverage)
+				.declareProperty(MaxLimit)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
@@ -132,14 +134,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.exit(0);
 
 		// Setting DEER Parameters
-		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("did not able to find coverage");
-		System.out.println(" drecipient-d coverage: " + coverageString);
-		String maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("did not able to find maxLimit param ");
-		System.out.println(" drecipient-d maxLimit: " + maxLimit);
+		double coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getDouble)
+				.orElse(0.90);
+		int maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
 
-		double coverage = Double.valueOf(coverageString);
+		System.out.println(" drecipient-dc coverage: " + coverage);
+
+		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
+
+		//System.exit(0);
+		// double coverage = Double.valueOf(coverage);
 
 		// Getting input from previous operator
 		// There parameter will be set by the output from previous operator
@@ -155,10 +159,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// if the endpoint is filetype
 		if (inputEndpoint == "fileType") {
 
-			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
-					Integer.parseInt(maxLimit));
-			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions,
-					Integer.parseInt(maxLimit));
+			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
+			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, maxLimit);
 			System.out.println("propertiesListSource ahmed s:" + propertiesListSource1);
 			System.out.println("propertiesListTarget ahmed t:" + propertiesListTarget1);
 
@@ -184,7 +186,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			callLimes(con);
 
 			System.out.println("--> In Output Generating Phase");
-			
+
 			List<Model> InstanceMatcherOutputList = new ArrayList<>();
 
 			// output from Ontology
@@ -267,13 +269,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			addStatement("https://w3id.org/deer/objectType", "https://w3id.org/deer/is", targetRestrictions,
 					finalOuputModel);
 
-		
 			InstanceMatcherOutputList.add(finalOuputModel);
-			
+
 			System.out.println(" \n\n\n ----> cehce-2202 finalOuputModel: " + finalOuputModel);
-			 
-			
-			
+
 			return InstanceMatcherOutputList;
 
 			// System.exit(0);
@@ -291,11 +290,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
-			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions,
-					Integer.parseInt(maxLimit));
+			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
 
-			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions,
-					Integer.parseInt(maxLimit));
+			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
 
 			// If no property have the coverage than the coverage parameter(Set in
 			// configuration.ttl)
