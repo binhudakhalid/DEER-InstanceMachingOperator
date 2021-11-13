@@ -183,6 +183,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			callLimes(con);
 
+			System.out.println("--> In Output Generating Phase");
+			
 			List<Model> InstanceMatcherOutputList = new ArrayList<>();
 
 			// output from Ontology
@@ -221,7 +223,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			// InstanceMatcherOutputList.add(e);
 			// InstanceMatcherOutputList.add(sourceData);
-			InstanceMatcherOutputList.add(limesOutputModel);
+			// InstanceMatcherOutputList.add(limesOutputModel);
 
 			// InstanceMatcherOutputList.add(targetData);
 
@@ -236,34 +238,18 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			System.out.println(" \n \n \n cehce-1 " + limesOutputModel2);
 
-			String typeTemp = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 			final String NS = "https://w3id.org/deer/";
 			final Property told = limesOutputModel.createProperty(NS + "confidence");
 
 			StmtIterator itTemp = limesOutputModel2.listStatements();
 			while (itTemp.hasNext()) {
 				Statement stmt = itTemp.next();
-
 				final ReifiedStatement rstmt = temp.createReifiedStatement(stmt);
 				temp.add(rstmt, told, "90");
-				/*
-				 * System.out.println("Ma1,a getSubject" + stmt.getSubject());
-				 * System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
-				 * System.out.println("Ma3,a getObject" + stmt.getObject());
-				 */
-
-				// Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type,
-				// sourceRestrictions1);
-
-				// adding statement in to model
-				// adding restriction for Source entity
-				// addStatement(stmt.getSubject().toString(), type, sourceRestrictions,
-				// limesOutputModel);
-
-				// adding restriction for target entity
-				// addStatement(stmt.getObject().toString(), type, targetRestrictions,
-				// limesOutputModel);
 			}
+
+			// Add rectified statements to final model
+			finalOuputModel.add(temp);
 
 			// Adding source data set
 			addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
@@ -272,55 +258,22 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// Adding target data set
 			addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
 					finalOuputModel);
-			
+
 			// Adding subject type, or source restriction
 			addStatement("https://w3id.org/deer/subjectType", "https://w3id.org/deer/is", sourceRestrictions,
 					finalOuputModel);
-			
+
 			// Adding object type, or target restriction
 			addStatement("https://w3id.org/deer/objectType", "https://w3id.org/deer/is", targetRestrictions,
 					finalOuputModel);
+
+		
+			InstanceMatcherOutputList.add(finalOuputModel);
+			
+			System.out.println(" \n\n\n ----> cehce-2202 finalOuputModel: " + finalOuputModel);
+			 
 			
 			
-
-			finalOuputModel.add(temp);
-			System.out.println(" \n\n\n ----> cehce-202 finalOuputModel: " + finalOuputModel);
-
-			System.exit(1);
-
-			String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-			StmtIterator it = limesOutputModel2.listStatements();
-			while (it.hasNext()) {
-				Statement stmt = it.next();
-				/*
-				 * System.out.println("Ma1,a getSubject" + stmt.getSubject());
-				 * System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
-				 * System.out.println("Ma3,a getObject" + stmt.getObject());
-				 */
-
-				// Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type,
-				// sourceRestrictions1);
-
-				// adding statement in to model
-				// adding restriction for Source entity
-				addStatement(stmt.getSubject().toString(), type, sourceRestrictions, limesOutputModel);
-
-				// adding restriction for target entity
-				addStatement(stmt.getObject().toString(), type, targetRestrictions, limesOutputModel);
-			}
-
-			// Adding source data set
-			addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
-					limesOutputModel);
-
-			// Adding target data set
-			addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
-					limesOutputModel);
-
-			System.out.println("\n\n\n");
-			// System.out.println("Ma3,a limesOutputModel1 ** " + limesOutputModel);
-
-			// System.out.print("check");
 			return InstanceMatcherOutputList;
 
 			// System.exit(0);
