@@ -39,6 +39,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ReifiedStatement;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -86,8 +87,53 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
+	
+	 public static void tam() {
+	        final String NS = "http://stackoverflow.com/questions/19526223/";
+	        final Model model = ModelFactory.createDefaultModel();
+
+	        final Resource john = model.createResource( NS+"john" );
+	        final Resource ali = model.createResource( NS+"ali" );
+
+	        final Resource car = model.createResource( NS+"car" );
+	        final Resource bus = model.createResource( NS+"bus" );
+	        final Property hasColor = model.createProperty( NS+"hasColor" );
+	        final Property hasWeight = model.createProperty( NS+"hasWeight" );
+	        final Property hasValuw = model.createProperty( NS+"hasValue" );
+
+	        final Property says = model.createProperty( NS+"says" );
+	        final Property told = model.createProperty( NS+"told" );
+	        final Resource blue = model.createResource( NS+"blue" );
+	        final Resource five = model.createResource( NS+"500KG" );
+
+	        // creating a statement doesn't add it to the model
+	        final Statement stmt = model.createStatement( car, hasColor, blue );
+	       // final Statement stmt1 = model.createStatement( car, hasColor, blue );
+	        //final Statement stmt1 = model.createStatement( car, hasWeight, five );
+
+
+
+	        // creating a reified statement does add some triples to the model, but
+	        // not the triple [car hasColor blue].
+	        final ReifiedStatement rstmt = model.createReifiedStatement(stmt);
+	      // final ReifiedStatement rstmt = model.createReifiedStatement( stmt1 );
+	      //  rstmt.addProperty(told, "5kg weight");
+	       
+	        // john says rstmt
+	        model.add( rstmt, told, "5kg weight" );
+	      //  model.add( rstmt, told, john );
+
+	       // System.out.println("m : " + model);
+	        model.write( System.out, "N-TRIPLE", null ); // or "RDF/XML", etc.
+	    }
+	 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+		
+		
+		tam();
+		System.out.println();
+		System.exit(0);
 
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
