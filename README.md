@@ -63,13 +63,13 @@ Only one Jena model will be return.
 ```
 
 
-### Explaination
+### Explanation
 
-The line 1 and 2 is telling about the path of source and target datasets. Here <strong> https://w3id.org/deer/path</strong> can be a <strong> *file path*</strong> or a <strong> *Url*</strong> or  a <strong> *knowledge graph endpoint*</strong>.  
+The line 1 and 2 is telling about the path of source and target data sets. Here <strong> https://w3id.org/deer/path</strong> can be a <strong> *file path*</strong> or a <strong> *Url*</strong> or  a <strong> *knowledge graph endpoint*</strong>.  
 
-Line 3, 4, 5 and 6 is telling the *rdf type* of entities.
+Line 3, 4 are telling the type of subject (source restriction) and object (target restriction) statement respectively.
 
-Line 7 and 8 is telling which entities are similar/sameAs. Also subject belong to "datasetSource" and object belong to "datasetTarget".
+Other lines shows the rdf rectified statements.
 
 For the above example you can find the source and target dataset in project folder called "data".
 
