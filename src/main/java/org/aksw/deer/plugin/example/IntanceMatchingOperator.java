@@ -87,53 +87,49 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
-	
-	 public static void tam() {
-	        final String NS = "http://stackoverflow.com/questions/19526223/";
-	        final Model model = ModelFactory.createDefaultModel();
+	public static void getReifiedStatement(Statement statement) {
+		final String NS = "http://stackoverflow.com/questions/19526223/";
+		final Model model = ModelFactory.createDefaultModel();
 
-	        final Resource john = model.createResource( NS+"john" );
-	        final Resource ali = model.createResource( NS+"ali" );
+		final Resource john = model.createResource(NS + "john");
+		final Resource ali = model.createResource(NS + "ali");
 
-	        final Resource car = model.createResource( NS+"car" );
-	        final Resource bus = model.createResource( NS+"bus" );
-	        final Property hasColor = model.createProperty( NS+"hasColor" );
-	        final Property hasWeight = model.createProperty( NS+"hasWeight" );
-	        final Property hasValuw = model.createProperty( NS+"hasValue" );
+		final Resource car = model.createResource(NS + "car");
+		final Resource bus = model.createResource(NS + "bus");
+		final Property hasColor = model.createProperty(NS + "hasColor");
+		final Property hasWeight = model.createProperty(NS + "hasWeight");
+		final Property hasValuw = model.createProperty(NS + "hasValue");
 
-	        final Property says = model.createProperty( NS+"says" );
-	        final Property told = model.createProperty( NS+"told" );
-	        final Resource blue = model.createResource( NS+"blue" );
-	        final Resource five = model.createResource( NS+"500KG" );
+		final Property says = model.createProperty(NS + "says");
+		final Property told = model.createProperty(NS + "told");
+		final Resource blue = model.createResource(NS + "blue");
+		final Resource five = model.createResource(NS + "500KG");
 
-	        // creating a statement doesn't add it to the model
-	        final Statement stmt = model.createStatement( car, hasColor, blue );
-	       // final Statement stmt1 = model.createStatement( car, hasColor, blue );
-	        //final Statement stmt1 = model.createStatement( car, hasWeight, five );
+		// creating a statement doesn't add it to the model
+		final Statement stmt = model.createStatement(car, hasColor, blue);
+		// final Statement stmt1 = model.createStatement( car, hasColor, blue );
+		// final Statement stmt1 = model.createStatement( car, hasWeight, five );
 
+		// creating a reified statement does add some triples to the model, but
+		// not the triple [car hasColor blue].
+		final ReifiedStatement rstmt = model.createReifiedStatement(stmt);
+		// final ReifiedStatement rstmt = model.createReifiedStatement( stmt1 );
+		// rstmt.addProperty(told, "5kg weight");
 
+		// john says rstmt
+		model.add(rstmt, told, "5kg weight");
+		// model.add( rstmt, told, john );
 
-	        // creating a reified statement does add some triples to the model, but
-	        // not the triple [car hasColor blue].
-	        final ReifiedStatement rstmt = model.createReifiedStatement(stmt);
-	      // final ReifiedStatement rstmt = model.createReifiedStatement( stmt1 );
-	      //  rstmt.addProperty(told, "5kg weight");
-	       
-	        // john says rstmt
-	        model.add( rstmt, told, "5kg weight" );
-	      //  model.add( rstmt, told, john );
+		// System.out.println("m : " + model);
+		model.write(System.out, "N-TRIPLE", null); // or "RDF/XML", etc.
+	}
 
-	       // System.out.println("m : " + model);
-	        model.write( System.out, "N-TRIPLE", null ); // or "RDF/XML", etc.
-	    }
-	 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
-		
-		tam();
-		System.out.println();
-		System.exit(0);
+
+		// tam();
+		// System.out.println();
+		// System.exit(0);
 
 		// Setting DEER Parameters
 		String coverageString = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getString)
@@ -157,7 +153,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "fileType1") {
+		if (inputEndpoint == "fileType") {
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions,
 					Integer.parseInt(maxLimit));
@@ -203,6 +199,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			System.out.println("The info is " + info);
 
+			// Ouput Model
+			Model finalOuputModel = ModelFactory.createDefaultModel();
+			Model temp = ModelFactory.createDefaultModel();
+
 			// load accepted.nt into Jena model
 			Model limesOutputModel = ModelFactory.createDefaultModel();
 			limesOutputModel.read("accepted.nt");
@@ -233,6 +233,60 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			Model limesOutputModel2 = ModelFactory.createDefaultModel();
 			limesOutputModel2.add(limesOutputModel);
+
+			System.out.println(" \n \n \n cehce-1 " + limesOutputModel2);
+
+			String typeTemp = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+			final String NS = "https://w3id.org/deer/";
+			final Property told = limesOutputModel.createProperty(NS + "confidence");
+
+			StmtIterator itTemp = limesOutputModel2.listStatements();
+			while (itTemp.hasNext()) {
+				Statement stmt = itTemp.next();
+
+				final ReifiedStatement rstmt = temp.createReifiedStatement(stmt);
+				temp.add(rstmt, told, "90");
+				/*
+				 * System.out.println("Ma1,a getSubject" + stmt.getSubject());
+				 * System.out.println("Ma2,a getPredicate" + stmt.getPredicate());
+				 * System.out.println("Ma3,a getObject" + stmt.getObject());
+				 */
+
+				// Statement stmt2 = model.createStatement(stmt.getSubject().toString(), type,
+				// sourceRestrictions1);
+
+				// adding statement in to model
+				// adding restriction for Source entity
+				// addStatement(stmt.getSubject().toString(), type, sourceRestrictions,
+				// limesOutputModel);
+
+				// adding restriction for target entity
+				// addStatement(stmt.getObject().toString(), type, targetRestrictions,
+				// limesOutputModel);
+			}
+
+			// Adding source data set
+			addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
+					finalOuputModel);
+
+			// Adding target data set
+			addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
+					finalOuputModel);
+			
+			// Adding subject type, or source restriction
+			addStatement("https://w3id.org/deer/subjectType", "https://w3id.org/deer/is", sourceRestrictions,
+					finalOuputModel);
+			
+			// Adding object type, or target restriction
+			addStatement("https://w3id.org/deer/objectType", "https://w3id.org/deer/is", targetRestrictions,
+					finalOuputModel);
+			
+			
+
+			finalOuputModel.add(temp);
+			System.out.println(" \n\n\n ----> cehce-202 finalOuputModel: " + finalOuputModel);
+
+			System.exit(1);
 
 			String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 			StmtIterator it = limesOutputModel2.listStatements();
@@ -302,7 +356,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			// Check if the data is available, if we query it with following properties
-			isDataAvailable(targetEndpoint, targetRestrictions, propertiesListTarget1 );
+			isDataAvailable(targetEndpoint, targetRestrictions, propertiesListTarget1);
 
 		}
 //		 
@@ -1096,22 +1150,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Statement stmt = model.createStatement(subject, predicate, object);
 		model.add(stmt);
 	}
-	
 
-	private void isDataAvailable(String targetEndpoint, String targetRestrictions, List<PropertyEntity> tempPropertiesListTarget) {
-		
-		
-		
-		
-		
-		
-		
-		
+	private void isDataAvailable(String targetEndpoint, String targetRestrictions,
+			List<PropertyEntity> tempPropertiesListTarget) {
+
 		// TODO Auto-generated method stub
-		
-		
-		
-		
 
 	}
 
