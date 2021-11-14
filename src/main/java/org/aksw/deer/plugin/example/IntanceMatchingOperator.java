@@ -75,6 +75,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public static Property Coverage = DEER.property("coverage");
 	public static Property MaxLimit = DEER.property("maxLimit");
+	public static Property Test = DEER.property("test");
+	public static Property Type = DEER.property("type");
+	public static Property Source = DEER.property("source");
+	public static Property Target = DEER.property("target");
+	public static Property SourceRestriction = DEER.property("sourceRestriction");
+	public static Property TargetRestriction = DEER.property("targetRestriction");
+	
 	List<Model> outputList = new ArrayList<>();;
 
 	public IntanceMatchingOperator() {
@@ -86,47 +93,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return ValidatableParameterMap.builder()
 				.declareProperty(Coverage)
 				.declareProperty(MaxLimit)
+				.declareProperty(Test)
+				.declareProperty(Type)
+				.declareProperty(Source)
+				.declareProperty(Target)
+				.declareProperty(SourceRestriction)
+				.declareProperty(TargetRestriction)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
-
-	public static void getReifiedStatement(Statement statement) {
-		final String NS = "http://stackoverflow.com/questions/19526223/";
-		final Model model = ModelFactory.createDefaultModel();
-
-		final Resource john = model.createResource(NS + "john");
-		final Resource ali = model.createResource(NS + "ali");
-
-		final Resource car = model.createResource(NS + "car");
-		final Resource bus = model.createResource(NS + "bus");
-		final Property hasColor = model.createProperty(NS + "hasColor");
-		final Property hasWeight = model.createProperty(NS + "hasWeight");
-		final Property hasValuw = model.createProperty(NS + "hasValue");
-
-		final Property says = model.createProperty(NS + "says");
-		final Property told = model.createProperty(NS + "told");
-		final Resource blue = model.createResource(NS + "blue");
-		final Resource five = model.createResource(NS + "500KG");
-
-		// creating a statement doesn't add it to the model
-		final Statement stmt = model.createStatement(car, hasColor, blue);
-		// final Statement stmt1 = model.createStatement( car, hasColor, blue );
-		// final Statement stmt1 = model.createStatement( car, hasWeight, five );
-
-		// creating a reified statement does add some triples to the model, but
-		// not the triple [car hasColor blue].
-		final ReifiedStatement rstmt = model.createReifiedStatement(stmt);
-		// final ReifiedStatement rstmt = model.createReifiedStatement( stmt1 );
-		// rstmt.addProperty(told, "5kg weight");
-
-		// john says rstmt
-		model.add(rstmt, told, "5kg weight");
-		// model.add( rstmt, told, john );
-
-		// System.out.println("m : " + model);
-		model.write(System.out, "N-TRIPLE", null); // or "RDF/XML", etc.
-	}
-
-	@Override
+ 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
 		// tam();
@@ -138,11 +113,30 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
 
+		String test = getParameterMap().getOptional(Test).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("false");
+		 
+		String type = getParameterMap().getOptional(Type).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("fileType");
+		String source = getParameterMap().getOptional(Source).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("sampleFalse");
+		String target = getParameterMap().getOptional(Target).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("smapleTarget");
+		String sourceRestriction = getParameterMap().getOptional(SourceRestriction).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("sampleSourceRestriction");
+		String targetRestriction = getParameterMap().getOptional(TargetRestriction).map(RDFNode::asLiteral).map(Literal::getString)
+				.orElse("sampleTargetRestriction");
+		
+		
 		System.out.println(" drecipient-dc coverage: " + coverage);
-
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
-
-		//System.exit(0);
+		System.out.println(" drecipient-dc test: " + test);
+		System.out.println(" drecipient-dc type: " + type);
+		System.out.println(" drecipient-dc source: " + source);
+		System.out.println(" drecipient-dc target: " + target);
+		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
+		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
+		System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
 		// Getting input from previous operator
@@ -1105,7 +1099,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			List<PropertyEntity> tempPropertiesListTarget) {
 
 		// TODO Auto-generated method stub
+		
+		
+		
+		
 
 	}
+	
 
 }

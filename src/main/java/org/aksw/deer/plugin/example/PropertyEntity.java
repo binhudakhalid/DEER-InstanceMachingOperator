@@ -52,8 +52,8 @@ public class PropertyEntity {
 		}
 		@Override
 		public String toString() {
-			return " \n PropertyEntity [key=" + key + ", value=" + value + ", property=" + propertyName + ", count= " + count
-					+ " coverage=" + coverage + "]";
+			return " \n PropertyEntity [key= " + key + ", value= " + value + ", property= " + propertyName + ", count= " + count
+					+ " coverage= " + coverage + "]";
 		}
 
 		 

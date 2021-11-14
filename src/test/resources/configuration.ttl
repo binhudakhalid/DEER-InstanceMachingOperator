@@ -18,6 +18,11 @@
  deer:coverage "0.70" ;		   #Coverage of a Property     #propteryCount/TotalInstanceCount #Default=90%
  deer:maxLimit "10";           #Maximum number of Properties #Default=3
  deer:test "true"; 			   #Default=false
+ deer:type "file";              #It can be "file" or "endpoints
+ deer:source "data/data_nobelprize_org.nt";
+ deer:target "data/lov_linkeddata_es_dataset_lov.nt";
+ deer:sourceRestriction "http://xmlns.com/foaf/0.1/Person";
+ deer:targetRestriction "http://xmlns.com/foaf/0.1/Person";
  fcage:hasInput :reader ; 
 .
  
