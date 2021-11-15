@@ -300,7 +300,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			// Check if the data is available, if we query it with following properties
-			isDataAvailable(targetEndpoint, targetRestrictions, propertiesListTarget1);
+			isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
 
 		}
 //		 
@@ -1095,11 +1095,30 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		model.add(stmt);
 	}
 
-	private void isDataAvailable(String targetEndpoint, String targetRestrictions,
-			List<PropertyEntity> tempPropertiesListTarget) {
+	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
 
-		// TODO Auto-generated method stub
+		StringBuilder varibleQueryPart = new StringBuilder();
+		StringBuilder prefixQueryPart = new StringBuilder();
+		StringBuilder propertyQueryPart = new StringBuilder();
 
+		int i = 1;
+		for (PropertyEntity propertyEntity : propertyEntities) {
+			varibleQueryPart.append(" ?v" + i);
+			prefixQueryPart.append("PREFIX " + propertyEntity.key + ": <" + propertyEntity.value + ">\r\n");
+			propertyQueryPart
+					.append("?t " + propertyEntity.key + ":" + propertyEntity.propertyName + " ?v" + i + " . \n");
+			i++;
+		}
+		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
+				+ propertyQueryPart + " } LIMIT 1";
+		System.out.println("queryString:  \n" + queryString);
+		
+		QueryExecution qe = null;
+		qe = QueryExecutionFactory.sparqlService(url, queryString);
+		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+		//resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
+		qe.close();
+		return true;
 	}
 
 	/*
@@ -1113,15 +1132,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		RDFDataMgr.read(model, path, Lang.NTRIPLES);
 
-	    StringBuilder varibleQueryPart = new StringBuilder();
-	    StringBuilder prefixQueryPart = new StringBuilder();
-	    StringBuilder propertyQueryPart = new StringBuilder();
+		StringBuilder varibleQueryPart = new StringBuilder();
+		StringBuilder prefixQueryPart = new StringBuilder();
+		StringBuilder propertyQueryPart = new StringBuilder();
 
 		int i = 1;
 		for (PropertyEntity propertyEntity : propertyEntities) {
 			varibleQueryPart.append(" ?v" + i);
 			prefixQueryPart.append("PREFIX " + propertyEntity.key + ": <" + propertyEntity.value + ">\r\n");
-			propertyQueryPart.append("?t " + propertyEntity.key + ":" + propertyEntity.propertyName + " ?v" + i + " . \n");
+			propertyQueryPart
+					.append("?t " + propertyEntity.key + ":" + propertyEntity.propertyName + " ?v" + i + " . \n");
 			i++;
 		}
 
@@ -1137,43 +1157,34 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 * QueryExecutionFactory.create(query1, model); ResultSet results =
 		 * qexec1.execSelect(); // System.out.println("result 009 : " + results); //
 		 * ResultSetFormatter.out(System.out, results); ///
-		 */ 
-		
+		 */
+
 		String a = "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX dbpr: <http://dbpedia.org/property/>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
-				+ "SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7\r\n"
-				+ "WHERE {\r\n"
-				+ "?t w3200:label ?v1 .\r\n"
-				+ "?t xmfo:gender ?v2 .\r\n"
-				+ "?t xmfo:givenName ?v3 .\r\n"
-				+ "?t xmfo:nasdame ?v4 .\r\n"
-				+ "?t dbpr:dateOfBirth ?v5 .\r\n"
-				+ "?t xmfo:birthday ?v6 .\r\n"
-				+ "?t xmfo:familyName ?v7 .\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX dbpr: <http://dbpedia.org/property/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7\r\n" + "WHERE {\r\n" + "?t w3200:label ?v1 .\r\n"
+				+ "?t xmfo:gender ?v2 .\r\n" + "?t xmfo:givenName ?v3 .\r\n" + "?t xmfo:nasdame ?v4 .\r\n"
+				+ "?t dbpr:dateOfBirth ?v5 .\r\n" + "?t xmfo:birthday ?v6 .\r\n" + "?t xmfo:familyName ?v7 .\r\n"
 				+ " } LIMIT 1";
-		
-		 Query query = QueryFactory.create(a);
-		 QueryExecution qexec = QueryExecutionFactory.create(query, model);
-		 ResultSet results = qexec.execSelect(); 
-		 //results.
-		 System.out.println("result 0019 : " + results); //
-		 ResultSetFormatter.out(System.out, results); //
+
+		Query query = QueryFactory.create(a);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		ResultSet results = qexec.execSelect();
+		// results.
+		System.out.println("result 0019 : " + results); //
+		ResultSetFormatter.out(System.out, results); //
 		// System.out.println(((Statement) model).getSubject());
-		 
-		 Query query2 = QueryFactory.create(a);
-		 QueryExecution qexec2 = QueryExecutionFactory.create(a, model);
-		 ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
-		 resultsOne.forEachRemaining(qsol -> { 
-		 String predicate = qsol.getLiteral("v1").toString();
-		 System.out.println(" lookit : " + predicate);
-		 });
-		 
-		 
+
+		Query query2 = QueryFactory.create(a);
+		QueryExecution qexec2 = QueryExecutionFactory.create(a, model);
+		ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
+		resultsOne.forEachRemaining(qsol -> {
+			String predicate = qsol.getLiteral("v1").toString();
+			System.out.println(" lookit : " + predicate);
+		});
+		// resultsOne.getRowNumber()
+
 		return true;
 	}
 
