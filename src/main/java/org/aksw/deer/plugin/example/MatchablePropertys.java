@@ -45,6 +45,16 @@ public class MatchablePropertys {
   public void setSourceProperty(Property sourceProperty) {
     this.sourceProperty = sourceProperty;
   }
+
+  @Override
+  public String toString() {
+    return "MatchablePropertys{" +
+      "label='" + label + '\'' +
+      ", targetProperty=" + targetProperty +
+      ", sourceProperty=" + sourceProperty +
+      ", fusionStrategy=" + fusionStrategy +
+      '}';
+  }
 }
 // ask ontology matching
 

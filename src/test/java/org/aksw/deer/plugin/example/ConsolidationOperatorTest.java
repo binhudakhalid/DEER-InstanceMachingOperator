@@ -1,6 +1,7 @@
 package org.aksw.deer.plugin.example;
 
 import junit.framework.TestCase;
+import org.aksw.deer.enrichments.AuthorityConformationEnrichmentOperator;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -29,13 +30,25 @@ public class ConsolidationOperatorTest extends TestCase {
     co.initParameters(params);
     input = RDFDataMgr.loadModel("instanceMatchingOutput.ttl");
 
+    expectedParams = co.createParameterMap();
+    expectedParams.add(ConsolidationOperator.PROPERTY_FUSION_MAPPING, expectedParams.createResource()
+      .addProperty(ConsolidationOperator.PROPERTY_VALUE, input.createProperty("http://xmlns.com/foaf/0.1/","name"))// input.expandPrefix("ex:")))
+      .addProperty(ConsolidationOperator.FUSION_VALUE,expected.createResource("expertiseSource"))
+    );
 
+    expectedParams.add(ConsolidationOperator.PROPERTY_FUSION_MAPPING, expectedParams.createResource()
+      .addProperty(ConsolidationOperator.PROPERTY_VALUE, input.createProperty("http://xmlns.com/foaf/0.1/","firstName"))// input.expandPrefix("ex:")))
+      .addProperty(ConsolidationOperator.FUSION_VALUE, expected.createResource("precise"))
+    );
+
+    co.initDegrees(1,1);
+    expectedParams.init();
 
   }
 
   @Test
   public void testSafeApply() {
-
+    co.initParameters(expectedParams);
     List<Model> res = co.safeApply(List.of(input));
   //  System.out.println(res.get(0));
   }

@@ -52,45 +52,45 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * The constant SAME_AS.
    */
 // Controller for this
-  private static final Property SAME_AS = DEER.property("sameAs");
+  public static final Property SAME_AS = DEER.property("sameAs");
   /**
    * The constant ENTITY_NAME.
    */
-  private static final Property ENTITY_NAME = DEER.property("entityName");
+  public static final Property ENTITY_NAME = DEER.property("entityName");
   /**
    * The constant SOURCE_NAME.
    */
-  private static final Property SOURCE_NAME = DEER.property("sourceName");
+  public static final Property SOURCE_NAME = DEER.property("sourceName");
   /**
    * The constant TARGET_NAME.
    */
-  private static final Property TARGET_NAME = DEER.property("targetName");
+  public static final Property TARGET_NAME = DEER.property("targetName");
   /**
    * The constant NAMESPACE_INTEGRATION.
    */
-  private static final Property NAMESPACE_INTEGRATION = DEER.property("namespaceIntegration");
+  public static final Property NAMESPACE_INTEGRATION = DEER.property("namespaceIntegration");
   /**
    * The constant provenance.
    */
-  private static final Property PROVENANCE = DEER.property("provenanceProperty");
+  public static final Property PROVENANCE = DEER.property("provenanceProperty");
   /**
    * The constant FUSION_STRATEGY.
    */
-  private static final Property FUSION_STRATEGY =  DEER.property("globalFusionStrategy");
+  public static final Property FUSION_STRATEGY =  DEER.property("globalFusionStrategy");
   /**
    * The constant OUTPUT_VARIANT.
    */
-  private static final Property OUTPUT_VARIANT = DEER.property("outputVariant");
+  public static final Property OUTPUT_VARIANT = DEER.property("outputVariant");
   /**
    * The constant ADD_TARGET.
    */
-  private static final Property ADD_TARGET = DEER.property("addTarget");
+  public static final Property ADD_TARGET = DEER.property("addTarget");
 
-  private static final Property PROPERTY_FUSION_MAPPING = DEER.property("propertyFusion");
+  public static final Property PROPERTY_FUSION_MAPPING = DEER.property("propertyFusion");
 
-  private static final Property PROPERTY_VALUE = DEER.property("propertyValue");
+  public static final Property PROPERTY_VALUE = DEER.property("propertyValue");
 
-  private static final Property FUSION_VALUE = DEER.property("fusionStrategy");
+  public static final Property FUSION_VALUE = DEER.property("fusionStrategy");
 
   /**
    * The constant addTarget.
@@ -147,7 +147,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private static Model target;
 
-
+  private boolean DEBUG = true;
   static {
     /*
     String
@@ -315,6 +315,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       .declareProperty(FUSION_STRATEGY)
       .declareProperty(OUTPUT_VARIANT)
       .declareProperty(ADD_TARGET)
+      .declareProperty(PROPERTY_FUSION_MAPPING)
       .declareValidationShape(getValidationModelFor(ConsolidationOperator.class)).build();
   }
 
@@ -377,7 +378,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       .map(RDFNode::asResource)
       .forEach(op ->{
         final String property = op.getPropertyResourceValue(PROPERTY_VALUE).asResource().getURI();
-        final String fusionStrategy = op.getPropertyResourceValue(FUSION_VALUE).asLiteral().toString();
+        final String fusionStrategy = op.getPropertyResourceValue(FUSION_VALUE).toString();
         FusionStrategy fs;
         try {
           fs = FusionStrategy.valueOf(fusionStrategy);
@@ -388,6 +389,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 
         propertyFusionMatching.put(property,fs);
       });
+
   /*
     final FusionStrategy fusionStrategy = FusionStrategy.valueOf(
       getParameterMap().get(FUSION_STRATEGY).asLiteral().getString()
@@ -398,6 +400,13 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     final boolean addTarget = getParameterMap().getOptional(ADD_TARGET)
       .map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
 
+    if(DEBUG && propertyFusionMatching.size() > 0){
+      System.out.println("show property-fusionstrategy map");
+      for (Map.Entry<String,FusionStrategy> entry : propertyFusionMatching.entrySet()) {
+        System.out.println(entry.getKey() + " - " + entry.getValue().toString());
+      }
+      System.out.println("");
+    }
   }
 
   /**
@@ -428,6 +437,14 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     }
     name.setFusionStrategy(fs);
     matchablePropertys.add(name);
+
+    if(DEBUG){
+      System.out.println("\nMatchable propertys: \n");
+      for (MatchablePropertys entry: matchablePropertys) {
+        System.out.println(entry);
+      }
+      System.out.println("");
+    }
   }
 
 
