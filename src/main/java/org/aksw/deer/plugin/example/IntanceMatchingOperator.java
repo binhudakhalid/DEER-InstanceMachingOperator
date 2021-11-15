@@ -81,7 +81,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property Target = DEER.property("target");
 	public static Property SourceRestriction = DEER.property("sourceRestriction");
 	public static Property TargetRestriction = DEER.property("targetRestriction");
-	
+
 	List<Model> outputList = new ArrayList<>();;
 
 	public IntanceMatchingOperator() {
@@ -90,18 +90,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder()
-				.declareProperty(Coverage)
-				.declareProperty(MaxLimit)
-				.declareProperty(Test)
-				.declareProperty(Type)
-				.declareProperty(Source)
-				.declareProperty(Target)
-				.declareProperty(SourceRestriction)
-				.declareProperty(TargetRestriction)
+		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
+				.declareProperty(Test).declareProperty(Type).declareProperty(Source).declareProperty(Target)
+				.declareProperty(SourceRestriction).declareProperty(TargetRestriction)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
- 	@Override
+
+	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
 		// tam();
@@ -115,19 +110,18 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		String test = getParameterMap().getOptional(Test).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("false");
-		 
+
 		String type = getParameterMap().getOptional(Type).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("fileType");
 		String source = getParameterMap().getOptional(Source).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("sampleFalse");
 		String target = getParameterMap().getOptional(Target).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
-		String sourceRestriction = getParameterMap().getOptional(SourceRestriction).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("sampleSourceRestriction");
-		String targetRestriction = getParameterMap().getOptional(TargetRestriction).map(RDFNode::asLiteral).map(Literal::getString)
-				.orElse("sampleTargetRestriction");
-		
-		
+		String sourceRestriction = getParameterMap().getOptional(SourceRestriction).map(RDFNode::asLiteral)
+				.map(Literal::getString).orElse("sampleSourceRestriction");
+		String targetRestriction = getParameterMap().getOptional(TargetRestriction).map(RDFNode::asLiteral)
+				.map(Literal::getString).orElse("sampleTargetRestriction");
+
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
 		System.out.println(" drecipient-dc test: " + test);
@@ -136,7 +130,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc target: " + target);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
-		System.exit(0);
+		// System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
 		// Getting input from previous operator
@@ -173,6 +167,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
+
+			// check
+
+			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1);
+			System.exit(0);
+			// check
 
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
 					targetRestrictions);
@@ -1099,12 +1099,82 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			List<PropertyEntity> tempPropertiesListTarget) {
 
 		// TODO Auto-generated method stub
-		
-		
-		
-		
 
 	}
-	
+
+	/*
+	 * Checking if the data is available in the data set, if we do a query with
+	 * specific properties
+	 */
+	public boolean isDataAvailableFile(String path, String restriction, int maximumProperties,
+			List<PropertyEntity> propertyEntities) {
+
+		Model model = ModelFactory.createDefaultModel();
+
+		RDFDataMgr.read(model, path, Lang.NTRIPLES);
+
+	    StringBuilder varibleQueryPart = new StringBuilder();
+	    StringBuilder prefixQueryPart = new StringBuilder();
+	    StringBuilder propertyQueryPart = new StringBuilder();
+
+		int i = 1;
+		for (PropertyEntity propertyEntity : propertyEntities) {
+			varibleQueryPart.append(" ?v" + i);
+			prefixQueryPart.append("PREFIX " + propertyEntity.key + ": <" + propertyEntity.value + ">\r\n");
+			propertyQueryPart.append("?t " + propertyEntity.key + ":" + propertyEntity.propertyName + " ?v" + i + " . \n");
+			i++;
+		}
+
+		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
+				+ propertyQueryPart + " } LIMIT 1";
+
+		System.out.println("queryString:  \n" + queryString);
+
+		/*
+		 * 
+		 * // JUST FOR DEBUG remove before commit Query query1 =
+		 * QueryFactory.create(queryString1); QueryExecution qexec1 =
+		 * QueryExecutionFactory.create(query1, model); ResultSet results =
+		 * qexec1.execSelect(); // System.out.println("result 009 : " + results); //
+		 * ResultSetFormatter.out(System.out, results); ///
+		 */ 
+		
+		String a = "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX dbpr: <http://dbpedia.org/property/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
+				+ "SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7\r\n"
+				+ "WHERE {\r\n"
+				+ "?t w3200:label ?v1 .\r\n"
+				+ "?t xmfo:gender ?v2 .\r\n"
+				+ "?t xmfo:givenName ?v3 .\r\n"
+				+ "?t xmfo:nasdame ?v4 .\r\n"
+				+ "?t dbpr:dateOfBirth ?v5 .\r\n"
+				+ "?t xmfo:birthday ?v6 .\r\n"
+				+ "?t xmfo:familyName ?v7 .\r\n"
+				+ " } LIMIT 1";
+		
+		 Query query = QueryFactory.create(a);
+		 QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		 ResultSet results = qexec.execSelect(); 
+		 //results.
+		 System.out.println("result 0019 : " + results); //
+		 ResultSetFormatter.out(System.out, results); //
+		// System.out.println(((Statement) model).getSubject());
+		 
+		 Query query2 = QueryFactory.create(a);
+		 QueryExecution qexec2 = QueryExecutionFactory.create(a, model);
+		 ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
+		 resultsOne.forEachRemaining(qsol -> { 
+		 String predicate = qsol.getLiteral("v1").toString();
+		 System.out.println(" lookit : " + predicate);
+		 });
+		 
+		 
+		return true;
+	}
 
 }
