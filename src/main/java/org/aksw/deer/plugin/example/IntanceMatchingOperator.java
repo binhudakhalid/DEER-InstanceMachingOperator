@@ -170,8 +170,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			// check
 
-			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1);
-			System.exit(0);
+			//isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1);
+			//System.exit(0);
 			// check
 
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
