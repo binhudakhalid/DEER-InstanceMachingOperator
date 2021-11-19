@@ -138,11 +138,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// Setting the parameter manually until the ontology operator is integrated with
 		// it.
 
+		
 		String inputEndpoint = "fileType";
-		String sourceFilePath = "data/data_nobelprize_org.nt";
-		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
-		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		String sourceFilePath = "data/dbtune_org_jamendo_sparql.nt";
+		String targetFilePath = "data/dbtune_org_magnatune_sparql.nt";
+		String sourceRestrictions = "http://purl.org/ontology/mo/Lyrics";
+		String targetRestrictions = "http://purl.org/ontology/mo/Performance";
+		 
 
 		// if the endpoint is filetype
 		if (inputEndpoint == "fileType") {
@@ -177,7 +179,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
 					targetRestrictions);
 
+			System.out.println("see 0011 " );
 			callLimes(con);
+			System.out.println("see 0012 " );
 
 			System.out.println("--> In Output Generating Phase");
 
@@ -454,7 +458,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-
+		prefixes.put("puon", "http://purl.org/ontology/mo/");
+		
+	
 		src.setPrefixes(prefixes);
 
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
@@ -468,7 +474,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
 		targetPrefixesMap.put("owl", "http://www.w3.org/2002/07/owl#");
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-
+		targetPrefixesMap.put("puon", "http://purl.org/ontology/mo/");
 		// setting prefix for target
 		for (PropertyEntity list : propertiesListTarget1) {
 
@@ -505,9 +511,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		 */
 
 		ArrayList<String> al1 = new ArrayList<String>();
-		al1.add("xmfo:name");
+		//al1.add("xmfo:name");
 		// al1.add("");
-		target.setProperties(al1);
+		target.setProperties(targetPropertylist);
 		// target.setProperties(al1);
 		// target.setOptionalProperties(targetPropertylist);
 
