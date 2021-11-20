@@ -48,8 +48,18 @@ public class ConsolidationOperatorTest extends TestCase {
 
   @Test
   public void testSafeApply() {
-    co.initParameters(expectedParams);
     List<Model> res = co.safeApply(List.of(input));
   //  System.out.println(res.get(0));
+  }
+  @Test
+  public void testListOfParams(){
+
+    co.initParameters(expectedParams);
+    List<Model> res = co.safeApply(List.of(input));
+
+  }
+  @Test
+  public void testTestAuthority(){
+  //Todo: add expected Params addTarget: Use Output to feed to Authority and check if the names are usable for fusion
   }
 }

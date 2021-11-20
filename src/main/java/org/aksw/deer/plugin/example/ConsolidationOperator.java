@@ -147,6 +147,11 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private static Model target;
 
+  private static String softwareAgentLabel = "DEERProvenanceBot";//https://www.w3.org/TR/prov-o/#SoftwareAgent
+  // Agent is source or Target not a specific bot
+
+  private String[] fileSuffixKnowledgeBase = new String[]{"ttl", "nt", "", ""};
+
   private boolean DEBUG = true;
   static {
     /*
@@ -321,7 +326,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 
   @Override
   protected List<Model> safeApply(List<Model> models) { // 3
-    System.out.println("\n\n ---- Consolidation Operator started ---- \n\n");
+    if(DEBUG)
+      System.out.println("\n\n ---- Consolidation Operator started ---- \n\n");
     // Here parameter mapping
     // todo: ask if String or better Ressources
 
@@ -340,10 +346,18 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     buildMatchablePropertys();
     //   consolidateModelOld();
     consolidateModel(); //functionin
-    System.out.println("\n\n---- Consolidation Operator stopped ---- ");
+    if(DEBUG)
+      System.out.println("\n\n---- Consolidation Operator stopped ---- ");
 
     // Source (answer set), targetset, read from instance, matches, entities
-    return List.of(source);//, target, model, matches, entities);
+
+    List<Model> result = List.of(source);
+    if(addTarget){
+      // target - w/o matched propertys, than add this to my source and return it
+      // input authority = target.minus(source)
+      result = List.of(source,target);  // todo: Question
+    }
+    return result;//, target, model, matches, entities);
   }
 
   private void fillParameterFromConfig() {
@@ -423,6 +437,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    */
   private void buildMatchablePropertys() {
     // TODO: get it from Onto matching (no propertys yet)
+
+    // go through source & target , and try to find same and add it
     Model model = ModelFactory.createDefaultModel();
     String prefix = "http://xmlns.com/foaf/0.1/";
     Property sourceProp = model.createProperty(prefix, "name");
@@ -608,11 +624,27 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         ">  ?p ?o.\n" +
         "\n" +
         "}";
+
+    // getObject.split(".")[last] in [fileendings] : readFile
+    // else sparqlendpoint
+    String usedEnpoint =  source ? dataSourceStatement.getObject().toString() : dataTargetStatement.getObject().toString();
+    String ending = usedEnpoint.substring(usedEnpoint.lastIndexOf(".") +1);
     Model model = ModelFactory.createDefaultModel();
-    RDFDataMgr.read(model, source ? dataSourceStatement.getObject().toString() : dataTargetStatement.getObject().toString(), Lang.NTRIPLES);
-    Query query1 = QueryFactory.create(queryString);
-    QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
-    return qexec1.execConstruct();
+
+    if( Arrays.stream(fileSuffixKnowledgeBase).anyMatch(ending::equals)){
+     // fileendpoint
+      RDFDataMgr.read(model,usedEnpoint, Lang.NTRIPLES);
+      Query query1 = QueryFactory.create(queryString);
+      QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
+      model = qexec1.execConstruct();;
+      qexec1.close();
+    }
+    else { //Sparql Endpoint
+      QueryExecution qexec = QueryExecutionFactory.sparqlService(usedEnpoint, queryString);
+      model = qexec.execConstruct();
+      qexec.close();
+    }
+    return model;
   }
 
   /**

@@ -1,5 +1,6 @@
 Questions:
-
+- [ ] two different forms of output
+  - to feed authority conform operator
 - [ ] Data Write Back
   - source is the only interesting part?
 - [ ] Provenance 
@@ -27,13 +28,13 @@ Todos:
 - [ ]  export fusion/consolidation and use it as class !
 - [ ] Timing Test
 - [ ] Add Endpoints (atm just file) (should be via config)
-- [ ] config runnable & maybe control if different plugins are used
-  - (output file)
-  - (target merge to source)
+- [ ] add different Tests with workflow (or add different configs and load them like instance matcher)
+- [ ]
 - [ ] Different inputs (waiting for other groups to provide smth)
   - Endpoints and Data 
 - [ ] Property matching (onto)
 - [x] ask kevin how to map in config source - property 
+- [x] safeApply
 - [x] User Able to choose fusionstrategy by sourceproperty 
 - [x] Before Setup of common testings
 - [ ] Data Write back 
