@@ -173,11 +173,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
 
-			// check
+			// check if we get any data if query with following property list
+			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
+			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target" );
 
-			// isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit,
-			// propertiesListSource1);
-			// System.exit(0);
+			
 			// check
 
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
@@ -464,12 +464,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		// prefixes.put("puon", "http://purl.org/ontology/mo/");
+		// prefixes.put("", "http://purl.org/ontology/mo/");
 
 		// Setting prefix for source restriction
 		PrefixEntity sourceRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(srcRestrictions);
 		prefixes.put(sourceRestrictionPrefixEntity.key, sourceRestrictionPrefixEntity.value);
-	
+
 		// THis is okay
 
 		src.setPrefixes(prefixes);
@@ -485,13 +485,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		Map<String, String> targetPrefixesMap = new HashMap<String, String>();
 		targetPrefixesMap.put("owl", "http://www.w3.org/2002/07/owl#");
 		targetPrefixesMap.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		// targetPrefixesMap.put("puon", "http://purl.org/ontology/mo/");
-		
+		// targetPrefixesMap.put("", "http://purl.org/ontology/mo/");
+
 		// Setting prefix for target restriction
 		PrefixEntity targetRestrictionPrefix = PrefixUtility.splitPreficFromProperty(targetRestrictions);
 		targetPrefixesMap.put(targetRestrictionPrefix.key, targetRestrictionPrefix.value);
 
-		
 		// setting prefix for target
 		for (PropertyEntity list : propertiesListTarget1) {
 
@@ -1154,7 +1153,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * specific properties
 	 */
 	public boolean isDataAvailableFile(String path, String restriction, int maximumProperties,
-			List<PropertyEntity> propertyEntities) {
+			List<PropertyEntity> propertyEntities, String tag) {
 
 		Model model = ModelFactory.createDefaultModel();
 
@@ -1196,17 +1195,30 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				+ "?t dbpr:dateOfBirth ?v5 .\r\n" + "?t xmfo:birthday ?v6 .\r\n" + "?t xmfo:familyName ?v7 .\r\n"
 				+ " } LIMIT 1";
 
-		Query query = QueryFactory.create(a);
+		Query query = QueryFactory.create(queryString); // queryString, a
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
 		ResultSet results = qexec.execSelect();
 		// results.
+		System.out.println(" 099kkhan bhai : " + results.toString());
+		System.out.println(" 099kkhan bhai getRowNumber : " + results.getRowNumber());
+		System.out.println(" 099kkhan bhai hasNext : " + results.hasNext());
 
-		System.out.println("result 0019 show data that is return after query : " + results); //
-		ResultSetFormatter.out(System.out, results); //
-		// System.out.println(((Statement) model).getSubject());
+		if (results.hasNext() == false) {
+			System.out.println(" !! No data avaible for following query for " + tag + " !! ");
+			System.out.println(" File Path: " + path);
+			System.out.println("*****************************************");
+			System.out.println(" Query String: " +"\n" + queryString +"\n");
+			System.out.println("*****************************************");
+		}
+		
 
-		Query query2 = QueryFactory.create(a);
-		QueryExecution qexec2 = QueryExecutionFactory.create(a, model);
+		if (debug) {
+			System.out.println("result 0019 show data that is return after query : " + results); //
+			ResultSetFormatter.out(System.out, results);
+		}
+
+		Query query2 = QueryFactory.create(queryString);
+		QueryExecution qexec2 = QueryExecutionFactory.create(queryString, model);
 		ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getLiteral("v1").toString();
