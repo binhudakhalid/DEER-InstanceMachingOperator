@@ -343,7 +343,10 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     getDataOutOfModel(model);
     buildSourceAndTarget();
     // do the consolidation!!
-    buildMatchablePropertys();
+    if(DEBUG)
+      buildMatchablePropertysByName();
+
+    buildMatchablePropertys(); // hard coded
     //   consolidateModelOld();
     consolidateModel(); //functionin
     if(DEBUG)
@@ -427,8 +430,10 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * Build source and target.
    */
   private void buildSourceAndTarget() {
+    // Todo: Check if we need to do a different loadModel variante later on
     target = RDFDataMgr.loadModel(dataTargetStatement.getObject().toString());
     source = RDFDataMgr.loadModel(dataSourceStatement.getObject().toString());
+
 
   }
 
@@ -464,7 +469,43 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
 
-  /**
+  private void buildMatchablePropertysByName() {
+    // property source & target durchgehen
+    // alle source merken
+    // schauen ob es gleiche gibt
+    // Now we get an iterator over the resources that have type o_Parking.
+    List<Property> propList = new ArrayList<>();
+
+    final Statement statement = source.listStatements().nextStatement(); // just the first
+    /*
+    Model sourceModel = constructModel(statement.getSubject().toString(),true);
+    Model targetModel = constructModel(statement.getObject().toString(),false);
+
+    StmtIterator stmtIterator = sourceModel.listStatements();
+     */
+    StmtIterator sourceIterator = source.listStatements(statement.getSubject(),null,(RDFNode) null);
+
+    while(sourceIterator.hasNext()){
+      Statement s = sourceIterator.nextStatement();
+      if(DEBUG)
+        System.out.println(s.getPredicate());
+      StmtIterator targetIterator = target.listStatements(null,s.getPredicate(),(RDFNode) null);
+      if(targetIterator.hasNext()){
+        //
+        MatchablePropertys tmp = new MatchablePropertys(s.getPredicate().getLocalName());
+        tmp.setSourceProperty(s.getPredicate());
+        tmp.setTargetProperty(s.getPredicate());
+        FusionStrategy fs = FusionStrategy.standard;
+        if(propertyFusionMatching.containsKey(s.getPredicate().getURI())){
+          fs = propertyFusionMatching.get(s.getPredicate().getURI());
+        }
+        tmp.setFusionStrategy(fs);
+        matchablePropertys.add(tmp);
+
+      }
+    }
+  }
+   /**
    * Gets data out of model.
    *
    * @param model the model
@@ -520,13 +561,21 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     // execute fusion
     for (var sstm : statementSourceTargetMap.entrySet()){
       for (var stm:  sstm.getValue().matchingMap.entrySet()){
-        stm.getValue().result = executeFusion(stm.getValue().getAlternatives());
-        System.out.println(stm.getValue().toString());
-        SourceTargetMatch tmp = stm.getValue();
-        //change
-        StmtIterator stmtIterator = source.listStatements(tmp.source.getSubject(),tmp.source.getPredicate(),(RDFNode) null);
-        stmtIterator.nextStatement().changeObject(tmp.result); // change it
-        // add provenance
+        if(stm.getValue().target != null && stm.getValue().source != null) {
+          try {
+            stm.getValue().result = executeFusion(stm.getValue().getAlternatives());
+            System.out.println(stm.getValue().toString());
+            SourceTargetMatch tmp = stm.getValue();
+            //change
+            StmtIterator stmtIterator = source.listStatements(tmp.source.getSubject(), tmp.source.getPredicate(), (RDFNode) null);
+            stmtIterator.nextStatement().changeObject(tmp.result); // change it
+            // add provenance
+          }
+          catch(LiteralRequiredException literalRequiredException){
+            logger.error("Given source target mapping is not on literals", stm.getValue().toString());
+          }
+
+        }
       }
     }
 
@@ -647,28 +696,34 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
     return model;
   }
 
-  /**
-   * Construct model before model.
-   *
-   * @param subject  the subject
-   * @param endpoint the endpoint
-   * @return the model
-   */
-  private Model constructModelBefore(String subject, String endpoint) {
+
+  public Model getPredicates(String subject,boolean source){
     String queryString =
-      "CONSTRUCT { <" +
-        subject +
-        "> ?p ?o}\n" +
+      "SELECT ?p \n" +
         "WHERE {\n<" +
         subject +
         ">  ?p ?o.\n" +
         "\n" +
         "}";
 
-    QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, queryString);
-    Model result = qexec.execConstruct();
-    qexec.close();
-    return result;
+    String usedEnpoint =  source ? dataSourceStatement.getObject().toString() : dataTargetStatement.getObject().toString();
+    String ending = usedEnpoint.substring(usedEnpoint.lastIndexOf(".") +1);
+    Model model = ModelFactory.createDefaultModel();
+
+    if( Arrays.stream(fileSuffixKnowledgeBase).anyMatch(ending::equals)){
+      // fileendpoint
+      RDFDataMgr.read(model,usedEnpoint, Lang.NTRIPLES);
+      Query query1 = QueryFactory.create(queryString);
+      QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
+      model = qexec1.execConstruct();;
+      qexec1.close();
+    }
+    else { //Sparql Endpoint
+      QueryExecution qexec = QueryExecutionFactory.sparqlService(usedEnpoint, queryString);
+      model = qexec.execConstruct();
+      qexec.close();
+    }
+    return model;
   }
 
 }

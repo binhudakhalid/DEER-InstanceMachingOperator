@@ -37,8 +37,8 @@ public class ConsolidationOperatorTest extends TestCase {
     );
 
     expectedParams.add(ConsolidationOperator.PROPERTY_FUSION_MAPPING, expectedParams.createResource()
-      .addProperty(ConsolidationOperator.PROPERTY_VALUE, input.createProperty("http://xmlns.com/foaf/0.1/","firstName"))// input.expandPrefix("ex:")))
-      .addProperty(ConsolidationOperator.FUSION_VALUE, expected.createResource("precise"))
+      .addProperty(ConsolidationOperator.PROPERTY_VALUE, input.createProperty("http://www.w3.org/2000/01/rdf-schema#","seeAlso"))// input.expandPrefix("ex:")))
+      .addProperty(ConsolidationOperator.FUSION_VALUE, expected.createResource("expertiseTarget"))
     );
 
     co.initDegrees(1,1);
