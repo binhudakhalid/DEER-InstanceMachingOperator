@@ -1,7 +1,9 @@
 package org.aksw.deer.plugin.example;
 
 import junit.framework.TestCase;
+import org.aksw.deer.Deer;
 import org.aksw.deer.enrichments.AuthorityConformationEnrichmentOperator;
+import org.aksw.faraday_cage.engine.CompiledExecutionGraph;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -9,8 +11,10 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.junit.Before;
 import org.junit.Test;
+import org.pf4j.DefaultPluginManager;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ConsolidationOperatorTest extends TestCase {
 
@@ -62,4 +66,21 @@ public class ConsolidationOperatorTest extends TestCase {
   public void testTestAuthority(){
   //Todo: add expected Params addTarget: Use Output to feed to Authority and check if the names are usable for fusion
   }
+  @Test
+  public void testConfiguration_consolidation_only(){
+    String url = Objects.requireNonNull(ConsolidationOperatorTest.class.getClassLoader().getResource("config_consolidation_only.ttl")).toExternalForm();
+    Model configurationModel = ModelFactory.createDefaultModel().read(url);
+    CompiledExecutionGraph executionGraph = Deer.getExecutionContext(new DefaultPluginManager()).compile(configurationModel);
+    executionGraph.run();
+    executionGraph.join();
+  }
+  @Test
+  public void testConfiguration_with_FusionStrategyPerProperty(){
+    String url = Objects.requireNonNull(ConsolidationOperatorTest.class.getClassLoader().getResource("config_consolidation_withFusionStrategy.ttl")).toExternalForm();
+    Model configurationModel = ModelFactory.createDefaultModel().read(url);
+    CompiledExecutionGraph executionGraph = Deer.getExecutionContext(new DefaultPluginManager()).compile(configurationModel);
+    executionGraph.run();
+    executionGraph.join();
+  }
+
 }
