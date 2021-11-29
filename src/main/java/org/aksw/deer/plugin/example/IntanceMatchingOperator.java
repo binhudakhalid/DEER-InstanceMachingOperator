@@ -82,6 +82,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property Target = DEER.property("target");
 	public static Property SourceRestriction = DEER.property("sourceRestriction");
 	public static Property TargetRestriction = DEER.property("targetRestriction");
+	public static Property TabuPropertis = DEER.property("tabuPropertis");
+	
+	
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -94,6 +97,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
 				.declareProperty(Test).declareProperty(Type).declareProperty(Source).declareProperty(Target)
 				.declareProperty(SourceRestriction).declareProperty(TargetRestriction)
+				.declareProperty(TabuPropertis)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
@@ -123,6 +127,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetRestriction = getParameterMap().getOptional(TargetRestriction).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleTargetRestriction");
 
+		String tabuPropertis = getParameterMap().getOptional(TabuPropertis).map(RDFNode::asLiteral)
+				.map(Literal::getString).orElse("none");
+
+		
+		
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
 		System.out.println(" drecipient-dc test: " + test);
@@ -131,7 +140,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc target: " + target);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
-		// System.exit(0);
+		System.out.println(" drecipient-dc tabuPropertis: " + tabuPropertis);
+		System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
 		// Getting input from previous operator
@@ -1229,4 +1239,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return true;
 	}
 
+	/*HashMap tabuPropertiesToList(String propertyString ){
+		
+		return HashMap;
+		
+	}*/
+	
 }

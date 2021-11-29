@@ -23,6 +23,7 @@
  deer:target "data/lov_linkeddata_es_dataset_lov.nt";
  deer:sourceRestriction "http://xmlns.com/foaf/0.1/Person";
  deer:targetRestriction "http://xmlns.com/foaf/0.1/Person";
+ deer:tabuPropertis "http://xmasdlns.com/foaf/0.1/id, http://xmasdlns.com/foaf/0.1/soundTrack";
  fcage:hasInput :reader ; 
 .
  
