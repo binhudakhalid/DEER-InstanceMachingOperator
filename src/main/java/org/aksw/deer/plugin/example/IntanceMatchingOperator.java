@@ -122,7 +122,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("smapleTarget");
 	
 		
-		final Optional<String> sourceRestriction  = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asResource).map(Resource::getURI);
+		final String sourceRestriction  = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asResource).map(Resource::getURI).orElse("asdasd");
 				//.asResource(). .orElse("sampleSourceRestriction");
 		
 		
@@ -138,8 +138,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc type: " + type);
 		System.out.println(" drecipient-dc source: " + source);
 		System.out.println(" drecipient-dc target: " + target);
-		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get());
-		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get().getClass());
+		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
+		//System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get().getClass());
 
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
 		System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
