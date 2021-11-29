@@ -74,17 +74,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	Set<String> entityListFile;
 
-	public static Property Coverage = DEER.property("coverage");
-	public static Property MaxLimit = DEER.property("maxLimit");
-	public static Property Test = DEER.property("test");
-	public static Property Type = DEER.property("type");
-	public static Property Source = DEER.property("source");
-	public static Property Target = DEER.property("target");
-	public static Property SourceRestriction = DEER.property("sourceRestriction");
-	public static Property TargetRestriction = DEER.property("targetRestriction");
-	public static Property TabuPropertis = DEER.property("tabuPropertis");
-	
-	
+	public static Property COVERAGE = DEER.property("coverage");
+	public static Property MAX_LIMIT = DEER.property("maxLimit");
+	public static Property TEST = DEER.property("test");
+	public static Property TYPE = DEER.property("type");
+	public static Property SOURCE = DEER.property("source");
+	public static Property TARGET = DEER.property("target");
+	public static Property SOURCE_RESTRICTION = DEER.property("sourceRestriction");
+	public static Property TARGET_RESTRICTION = DEER.property("targetRestriction");
+	public static Property TABU_PROPERTY = DEER.property("tabuProperty");
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -94,10 +92,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	@Override
 	public ValidatableParameterMap createParameterMap() { // 2
-		return ValidatableParameterMap.builder().declareProperty(Coverage).declareProperty(MaxLimit)
-				.declareProperty(Test).declareProperty(Type).declareProperty(Source).declareProperty(Target)
-				.declareProperty(SourceRestriction).declareProperty(TargetRestriction)
-				.declareProperty(TabuPropertis)
+		return ValidatableParameterMap.builder().declareProperty(COVERAGE).declareProperty(MAX_LIMIT)
+				.declareProperty(TEST).declareProperty(TYPE).declareProperty(SOURCE).declareProperty(TARGET)
+				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION).declareProperty(TABU_PROPERTY)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
@@ -109,29 +106,27 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.exit(0);
 
 		// Setting DEER Parameters
-		double coverage = getParameterMap().getOptional(Coverage).map(RDFNode::asLiteral).map(Literal::getDouble)
+		double coverage = getParameterMap().getOptional(COVERAGE ).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
-		int maxLimit = getParameterMap().getOptional(MaxLimit).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
+		int maxLimit = getParameterMap().getOptional(MAX_LIMIT ).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
 
-		String test = getParameterMap().getOptional(Test).map(RDFNode::asLiteral).map(Literal::getString)
+		String test = getParameterMap().getOptional(TEST ).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("false");
 
-		String type = getParameterMap().getOptional(Type).map(RDFNode::asLiteral).map(Literal::getString)
+		String type = getParameterMap().getOptional(TYPE ).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("fileType");
-		String source = getParameterMap().getOptional(Source).map(RDFNode::asLiteral).map(Literal::getString)
+		String source = getParameterMap().getOptional(SOURCE ).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("sampleFalse");
-		String target = getParameterMap().getOptional(Target).map(RDFNode::asLiteral).map(Literal::getString)
+		String target = getParameterMap().getOptional(TARGET ).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
-		String sourceRestriction = getParameterMap().getOptional(SourceRestriction).map(RDFNode::asLiteral)
+		String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleSourceRestriction");
-		String targetRestriction = getParameterMap().getOptional(TargetRestriction).map(RDFNode::asLiteral)
+		String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION ).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleTargetRestriction");
 
-		String tabuPropertis = getParameterMap().getOptional(TabuPropertis).map(RDFNode::asLiteral)
+		String tabuProperty = getParameterMap().getOptional(TABU_PROPERTY ).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("none");
 
-		
-		
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
 		System.out.println(" drecipient-dc test: " + test);
@@ -140,7 +135,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc target: " + target);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
-		System.out.println(" drecipient-dc tabuPropertis: " + tabuPropertis);
+		System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
 		System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
@@ -185,9 +180,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			// check if we get any data if query with following property list
 			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
-			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target" );
+			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target");
 
-			
 			// check
 
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
@@ -1217,10 +1211,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println(" !! No data avaible for following query for " + tag + " !! ");
 			System.out.println(" File Path: " + path);
 			System.out.println("*****************************************");
-			System.out.println(" Query String: " +"\n" + queryString +"\n");
+			System.out.println(" Query String: " + "\n" + queryString + "\n");
 			System.out.println("*****************************************");
 		}
-		
 
 		if (debug) {
 			System.out.println("result 0019 show data that is return after query : " + results); //
@@ -1239,10 +1232,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return true;
 	}
 
-	/*HashMap tabuPropertiesToList(String propertyString ){
-		
-		return HashMap;
-		
-	}*/
-	
+	/*
+	 * HashMap tabuPropertiesToList(String propertyString ){
+	 * 
+	 * return HashMap;
+	 * 
+	 * }
+	 */
+
 }
