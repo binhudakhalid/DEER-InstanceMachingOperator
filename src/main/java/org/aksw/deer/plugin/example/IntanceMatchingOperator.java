@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -119,8 +120,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("sampleFalse");
 		String target = getParameterMap().getOptional(TARGET ).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
-		String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asLiteral)
-				.map(Literal::getString).orElse("sampleSourceRestriction");
+	
+		
+		final Optional<String> sourceRestriction  = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asResource).map(Resource::getURI);
+				//.asResource(). .orElse("sampleSourceRestriction");
+		
+		
 		String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION ).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleTargetRestriction");
 
@@ -133,7 +138,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc type: " + type);
 		System.out.println(" drecipient-dc source: " + source);
 		System.out.println(" drecipient-dc target: " + target);
-		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
+		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get());
+		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get().getClass());
+
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
 		System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
 		System.exit(0);
