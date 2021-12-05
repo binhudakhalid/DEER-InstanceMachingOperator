@@ -3,8 +3,7 @@ package org.aksw.deer.plugin.example;
 import java.util.*;
 import java.util.function.Function;
 
-import de.vandermeer.asciitable.CWC_FixedWidth;
-import evaluation.Match;
+
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
@@ -153,160 +152,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   private String[] fileSuffixKnowledgeBase = new String[]{"ttl", "nt", "", ""};
 
   private boolean DEBUG = true;
-  static {
-    /*
-    String
-     */
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#string",
-      ConsolidationOperator::computeFusionForString //
-    );
-    dispatchMap.put(
-      "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-      ConsolidationOperator::computeFusionForString
-    );
-    /*
-    Integer
-     */
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#int",
-      ConsolidationOperator::computeFusionForInteger
-    );
 
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#byte",
-      ConsolidationOperator::computeFusionForInteger
-    );
-
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#ling",
-      ConsolidationOperator::computeFusionForInteger
-    );
-
-    // todo: right URI below here
-    // Core Type
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#boolean",
-      ConsolidationOperator::computeFusionForBoolean
-    );
-    //floating points
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#decimal",
-      ConsolidationOperator::computeFusionForDecimal
-    );
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#float",
-      ConsolidationOperator::computeFusionForDecimal
-    );
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#double",
-      ConsolidationOperator::computeFusionForDecimal
-    );
-    /*
-    Time & Date
-     */
-    dispatchMap.put(
-      "http://www.w3.org/2001/XMLSchema#date",
-      ConsolidationOperator::computeFusionForDate
-    );
-    //
-  }
-
-
-  /**
-   * Compute fusion for date literal.
-   *
-   * @param literals the literals
-   * @return the literal
-   */
-  private static Literal computeFusionForDate(List<Literal> literals) {
-    return ResourceFactory.createTypedLiteral(
-      literals.stream().mapToLong(Literal::getLong).average()
-    );
-  }
-
-  /**
-   * Compute fusion for decimal literal.
-   *
-   * @param literals the literals
-   * @return the literal
-   */
-  private static Literal computeFusionForDecimal(List<Literal> literals) {
-    return ResourceFactory.createTypedLiteral(
-      literals.stream().mapToDouble(Literal::getDouble).average()
-    );
-  }
-
-  /**
-   * Compute fusion for boolean literal.
-   *
-   * @param literals the literals
-   * @return the literal
-   */
-// True if all the same and
-  private static Literal computeFusionForBoolean(List<Literal> literals) {
-    return ResourceFactory.createTypedLiteral(
-      literals.get(0).getBoolean() &&
-        literals.stream().distinct().count() == 1
-    );
-  }
-
-
-
-  //https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html
-
-  /**
-   * Compute fusion for integer literal.
-   *
-   * @param alternatives the alternatives
-   * @return the literal
-   */
-  private static Literal computeFusionForInteger(List<Literal> alternatives) { // @todo: keep more precise e.g
-    // take average int
-    return ResourceFactory.createTypedLiteral(
-      alternatives.stream().mapToInt(Literal::getInt).average()
-    );
-  }
-
-  /**
-   * Compute fusion for string literal.
-   *
-   * @param alternatives the alternatives
-   * @return the literal
-   */
-  private static Literal computeFusionForString(List<Literal> alternatives) {
-    // take longest string ; (Dont know if there is a avg variant of string)
-    return alternatives.stream()
-      .max(Comparator.comparingInt(l -> l.getString().length()))
-      .orElse(ResourceFactory.createStringLiteral(""));
-  }
-
-  /**
-   * Fall back fusion literal.
-   *
-   * @param alternatives the alternatives
-   * @return the literal
-   */
-  private static Literal fallBackFusion(List<Literal> alternatives) {
-    // take first
-    return alternatives.get(0);
-  }
-
-
-  /**
-   * Execute fusion literal.
-   *
-   * @param alternatives the alternatives
-   * @return the literal
-   */
-  private Literal executeFusion(List<Literal> alternatives) {
-    // compute common datatype here or pass it into the function
-    var typeURL = alternatives.get(0).getDatatypeURI();
-    return Objects.requireNonNullElse(
-      dispatchMap.get(typeURL),
-      ConsolidationOperator::fallBackFusion
-    ).apply(alternatives);
-  }
 
 
   @Override
@@ -549,11 +395,11 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         StmtIterator targetIterator = target.listStatements(null, mp.getTargetProperty(), (RDFNode) null);
         while(sourceIterator.hasNext()) {
           Statement statement1 = sourceIterator.nextStatement();
-          addToSourceTargetMap(statement,statement1,mp.label,true);
+          addToSourceTargetMap(statement,statement1,mp.label,true, mp.fusionStrategy);
         }
         while(targetIterator.hasNext()) {
           Statement statement1 = targetIterator.nextStatement();
-          addToSourceTargetMap(statement,statement1,mp.label,false);
+          addToSourceTargetMap(statement,statement1,mp.label,false, mp.fusionStrategy);
         }
 
       }
@@ -563,7 +409,13 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
       for (var stm:  sstm.getValue().matchingMap.entrySet()){
         if(stm.getValue().target != null && stm.getValue().source != null) {
           try {
-            stm.getValue().result = executeFusion(stm.getValue().getAlternatives());
+            // change standard to propertyMathcing
+            FusionStrategy fs = stm.getValue().getFusionStrategy();
+            if(fs == null){
+              fs = FusionStrategy.standard;
+            }
+            stm.getValue().result = ConsolidationStrategys.executeFusion(stm.getValue().getAlternatives(),fs);
+             // = executeFusion(stm.getValue().getAlternatives());
             System.out.println(stm.getValue().toString());
             SourceTargetMatch tmp = stm.getValue();
             //change
@@ -592,6 +444,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
 
+
+
   /**
    * Add to source target map.
    *
@@ -600,7 +454,7 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
    * @param label     the label
    * @param source    the source
    */
-  public void addToSourceTargetMap(Statement key, Statement statement, String label, boolean source){
+  public void addToSourceTargetMap(Statement key, Statement statement, String label, boolean source, FusionStrategy fs){
 
     if(statementSourceTargetMap.get(key).matchingMap.containsKey(label)){
       SourceTargetMatch stm = statementSourceTargetMap.get(key).matchingMap.get(label);
@@ -612,7 +466,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         stm.target = statement;
         stm.endpointTarget = dataTargetStatement.getObject().toString();
       }
-
+      if (fs != null)
+        stm.fusionStrategy = fs;
     }
     else{
 
@@ -622,6 +477,8 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
         //todo Namespace setzen
         statementSourceTargetMap.get(key).matchingMap.put(label,new SourceTargetMatch(statement,dataTargetStatement.getObject().toString(), "" ));
 
+      if(fs != null)
+        statementSourceTargetMap.get(key).matchingMap.get(label).setFusionStrategy(fs);
     }
   }
 

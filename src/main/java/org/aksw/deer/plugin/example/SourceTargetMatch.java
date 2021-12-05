@@ -10,19 +10,22 @@ public class SourceTargetMatch {
   String namespace; //set if source is empty
   String endpointSource, endpointTarget;
   Literal result;
+  FusionStrategy fusionStrategy;
 
-  SourceTargetMatch(Statement source, Statement target, String namespace, String endpointSource, String endpointTarget){
+  SourceTargetMatch(Statement source, Statement target, String namespace, String endpointSource, String endpointTarget,
+                    FusionStrategy fusionStrategy){
     this.source = source;
     this.target = target;
     this.namespace = namespace;
     this.endpointSource = endpointSource;
     this.endpointTarget = endpointTarget;
+    this.fusionStrategy = fusionStrategy;
   }
   SourceTargetMatch(Statement source,String endpoint){
-    this(source,null,null,endpoint,null);
+    this(source,null,null,endpoint,null,null);
   }
   SourceTargetMatch(Statement target, String endpoint, String namespace){
-    this(null,target,namespace,null,endpoint);
+    this(null,target,namespace,null,endpoint,null);
   }
 
   public Statement getSource() {
@@ -83,6 +86,13 @@ public class SourceTargetMatch {
     return source != null && target != null;
   }
 
+  public FusionStrategy getFusionStrategy() {
+    return fusionStrategy;
+  }
+
+  public void setFusionStrategy(FusionStrategy fusionStrategy) {
+    this.fusionStrategy = fusionStrategy;
+  }
 
   public String toString(){
     return "source=" + source +
