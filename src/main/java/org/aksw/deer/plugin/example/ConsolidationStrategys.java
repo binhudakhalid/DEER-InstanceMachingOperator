@@ -149,10 +149,14 @@ public class ConsolidationStrategys {
   //https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html
 
 
-
-
+  /**
+   * Emergency fallback fusion method, if nothing else is specified for a datatype or as a fallback fusion method for
+   * a given {@link FusionStrategy} this will be used
+   * @param alternatives
+   * @return Literal from the source w/o doing anything fancy
+   */
   static Literal fallBackFusion(List<Literal> alternatives){
-    return alternatives.get(0); //todo: better Fallback option?
+    return alternatives.get(0);
   }
 
   public static Literal executeFusion(List<Literal> alternatives, FusionStrategy fusionStrategy) {

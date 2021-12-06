@@ -63,6 +63,17 @@ public class ConsolidationOperatorTest extends TestCase {
 
   }
   @Test
+  public void testNonInitializedFusionStrategy(){
+    expectedParams = co.createParameterMap();
+    expectedParams.add(ConsolidationOperator.PROPERTY_FUSION_MAPPING, expectedParams.createResource()
+      .addProperty(ConsolidationOperator.PROPERTY_VALUE, input.createProperty("http://xmlns.com/foaf/0.1/","name"))// input.expandPrefix("ex:")))
+      .addProperty(ConsolidationOperator.FUSION_VALUE, expected.createResource("voting"))
+    );
+    expectedParams.init();
+    co.initParameters(expectedParams);
+    List<Model> res = co.safeApply(List.of(input));
+  }
+  @Test
   public void testTestAuthority(){
   //Todo: add expected Params addTarget: Use Output to feed to Authority and check if the names are usable for fusion
   }
