@@ -84,6 +84,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property SOURCE_RESTRICTION = DEER.property("sourceRestriction");
 	public static Property TARGET_RESTRICTION = DEER.property("targetRestriction");
 	public static Property TABU_PROPERTY = DEER.property("tabuProperty");
+	public static final Property SOURCE_AUTHORITY = DEER.property("sourceAuthority");
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -107,30 +108,43 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// System.exit(0);
 
 		// Setting DEER Parameters
-		double coverage = getParameterMap().getOptional(COVERAGE ).map(RDFNode::asLiteral).map(Literal::getDouble)
+		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
-		int maxLimit = getParameterMap().getOptional(MAX_LIMIT ).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
+		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
 
-		String test = getParameterMap().getOptional(TEST ).map(RDFNode::asLiteral).map(Literal::getString)
+		String test = getParameterMap().getOptional(TEST).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("false");
 
-		String type = getParameterMap().getOptional(TYPE ).map(RDFNode::asLiteral).map(Literal::getString)
+		String type = getParameterMap().getOptional(TYPE).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("fileType");
-		String source = getParameterMap().getOptional(SOURCE ).map(RDFNode::asLiteral).map(Literal::getString)
+		String source = getParameterMap().getOptional(SOURCE).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("sampleFalse");
-		String target = getParameterMap().getOptional(TARGET ).map(RDFNode::asLiteral).map(Literal::getString)
+		String target = getParameterMap().getOptional(TARGET).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
-	
-		
-		final String sourceRestriction  = getParameterMap().getOptional(SOURCE_RESTRICTION ).map(RDFNode::asResource).map(Resource::getURI).orElse("asdasd");
-				//.asResource(). .orElse("sampleSourceRestriction");
-		
-		
-		String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION ).map(RDFNode::asLiteral)
+
+		final String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION).map(RDFNode::asResource)
+				.map(Resource::getURI).orElse("asdasd");
+		// .asResource(). .orElse("sampleSourceRestriction");
+
+		String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleTargetRestriction");
 
-		String tabuProperty = getParameterMap().getOptional(TABU_PROPERTY ).map(RDFNode::asLiteral)
-				.map(Literal::getString).orElse("none");
+		// String tabuProperty = getParameterMap().getOptional(TABU_PROPERTY
+		// ).map(RDFNode::asLiteral)
+		// .map(Literal::getString).orElse("none");
+		getParameterMap().listPropertyObjects(TABU_PROPERTY).map(RDFNode::asResource).forEach(op -> {
+			System.out.println("op1 : " + op.toString());
+
+			final String abc = op.getPropertyResourceValue(SOURCE_AUTHORITY).asResource().getURI();
+			System.out.println("op1 : " + abc);
+
+			// op.
+			// final String source =
+			// op.getPropertyResourceValue(SOURCE_AUTHORITY).asResource().getURI();
+			// final String target =
+			// op.getPropertyResourceValue(TARGET_AUTHORITY).asResource().getURI();
+
+		});
 
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
@@ -139,10 +153,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc source: " + source);
 		System.out.println(" drecipient-dc target: " + target);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
-		//System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction.get().getClass());
+		// System.out.println(" drecipient-dc sourceRestriction: " +
+		// sourceRestriction.get().getClass());
 
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
-		System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
+		// System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
 		System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
