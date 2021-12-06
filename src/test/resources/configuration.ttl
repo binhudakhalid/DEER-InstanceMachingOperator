@@ -23,11 +23,12 @@
  deer:target "data/lov_linkeddata_es_dataset_lov.nt";
  deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
  deer:targetRestriction "http://xmlns.com/foaf/0.1/Person";
- deer:tabuProperty [
-    deer:sourceAuthority <http://xmasdlns.com/foaf/0.1/idsee> ;
-  ],[
-    deer:sourceAuthority <http://xmasdlns.com/foaf/0.1/idsaw> ;
-  ] ;
+ 
+ deer:tabuSourceProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idseeSource> ],
+						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsawSource> ];
+  
+ deer:tabuTargetProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsee1Target> ],
+                         [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsaw2Target> ];
  fcage:hasInput :reader ; 
 .
  

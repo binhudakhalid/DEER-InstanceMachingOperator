@@ -83,8 +83,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property TARGET = DEER.property("target");
 	public static Property SOURCE_RESTRICTION = DEER.property("sourceRestriction");
 	public static Property TARGET_RESTRICTION = DEER.property("targetRestriction");
-	public static Property TABU_PROPERTY = DEER.property("tabuProperty");
-	public static final Property SOURCE_AUTHORITY = DEER.property("sourceAuthority");
+	public static Property TABU_SOURCE_PROPERTY = DEER.property("tabuSourceProperty");
+	public static Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
+
+	public static final Property PROPERTY_URI = DEER.property("propertyURI");
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -96,7 +98,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public ValidatableParameterMap createParameterMap() { // 2
 		return ValidatableParameterMap.builder().declareProperty(COVERAGE).declareProperty(MAX_LIMIT)
 				.declareProperty(TEST).declareProperty(TYPE).declareProperty(SOURCE).declareProperty(TARGET)
-				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION).declareProperty(TABU_PROPERTY)
+				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION)
+				.declareProperty(TABU_SOURCE_PROPERTY).declareProperty(TABU_TARGET_PROPERTY)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
@@ -129,21 +132,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
 				.map(Literal::getString).orElse("sampleTargetRestriction");
 
-		// String tabuProperty = getParameterMap().getOptional(TABU_PROPERTY
-		// ).map(RDFNode::asLiteral)
-		// .map(Literal::getString).orElse("none");
-		getParameterMap().listPropertyObjects(TABU_PROPERTY).map(RDFNode::asResource).forEach(op -> {
-			System.out.println("op1 : " + op.toString());
-
-			final String abc = op.getPropertyResourceValue(SOURCE_AUTHORITY).asResource().getURI();
+		getParameterMap().listPropertyObjects(TABU_SOURCE_PROPERTY).map(RDFNode::asResource).forEach(op -> {
+			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
 			System.out.println("op1 : " + abc);
+		});
 
-			// op.
-			// final String source =
-			// op.getPropertyResourceValue(SOURCE_AUTHORITY).asResource().getURI();
-			// final String target =
-			// op.getPropertyResourceValue(TARGET_AUTHORITY).asResource().getURI();
-
+		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
+			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
+			System.out.println("op2 : " + abc);
 		});
 
 		System.out.println(" drecipient-dc coverage: " + coverage);
