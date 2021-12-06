@@ -26,7 +26,8 @@
  deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
  
  deer:tabuSourceProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idseeSource> ],
-						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsawSource> ];
+						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/second> ],
+						  [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/third> ];
   
  deer:tabuTargetProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsee1Target> ],
                          [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsaw2Target> ];

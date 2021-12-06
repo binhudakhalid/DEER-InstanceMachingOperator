@@ -74,6 +74,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	private static boolean debug;
 
 	Set<String> entityListFile;
+	
+	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
+	private HashMap<Integer, Double> tabuTargetProperty;
 
 	public static Property COVERAGE = DEER.property("coverage");
 	public static Property MAX_LIMIT = DEER.property("maxLimit");
@@ -137,10 +140,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		final String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asResource)
 				.map(Resource::getURI).orElse("asdasd tat");
 		
+		
 		getParameterMap().listPropertyObjects(TABU_SOURCE_PROPERTY).map(RDFNode::asResource).forEach(op -> {
-			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
-			System.out.println("op1 : " + abc);
+		
+			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
+			//final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
+			//System.out.println("op1 :      " + abc);
+			System.out.println("op1 abcd : " + propertyUri);
+		//	System.out.println("Count   :" + a);
+			
+			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
+			
 		});
+		System.out.println("tabuSourceProperty : " + tabuSourceProperty );
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
