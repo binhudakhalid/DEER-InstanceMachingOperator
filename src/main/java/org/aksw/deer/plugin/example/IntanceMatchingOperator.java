@@ -224,7 +224,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// check
 
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
-					targetRestrictions);
+					targetRestrictions, "NT");
 
 			System.out.println("see 0011 ");
 			callLimes(con);
@@ -372,7 +372,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// check
 
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
-					targetRestrictions);
+					targetRestrictions, "sparql");
 
 			System.out.println("see 0011 " +  con);
 			callLimes(con);
@@ -483,7 +483,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	}
 
 	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
-			String targetRestrictions) {
+			String targetRestrictions, String type) {
 
 		Configuration conf = new Configuration();
 
@@ -518,7 +518,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				"?s rdf:type " + srcRestrictionPrefixEntity.key + ":" + srcRestrictionPrefixEntity.name })));
 
 		src.setProperties(srcPropertylist);
-		src.setType("NT");
+		src.setType(type);
 
 		Map<String, String> prefixes = new HashMap<String, String>();
 
@@ -610,7 +610,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setPrefixes(targetPrefixesMap);
 
 		target.setFunctions(functions);
-		target.setType("NT");
+		
+		target.setType(type);
 		conf.setTargetInfo(target);
 
 		// Set either Metric or MLALGORITHM
@@ -669,6 +670,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
+		
+		System.out.println(" doe  done ");
+		System.exit(0);
 	}
 
 	public void dynamicPrefix() {
