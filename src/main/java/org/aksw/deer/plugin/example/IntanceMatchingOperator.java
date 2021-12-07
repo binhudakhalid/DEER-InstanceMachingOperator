@@ -192,7 +192,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		debug = true;
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "fileTypea") {
+		if (inputEndpoint == "fileType") {
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, maxLimit);
@@ -381,7 +381,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println("--> In Output Generating Phase");
 
 			System.out.println(" now umerali ");
-			System.exit(0);
+			//System.exit(0);
 
 		}
 //		 
@@ -672,7 +672,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				acceptanceFile.getAbsolutePath());
 		
 		System.out.println(" doe  done ");
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	public void dynamicPrefix() {
