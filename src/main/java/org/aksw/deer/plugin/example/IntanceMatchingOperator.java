@@ -1219,6 +1219,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(url, queryString);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
+		ResultSetFormatter.out(System.out, resultOne);
+		
 		// resultOne.forEachRemaining(qsol -> totalInstances =
 		// qsol.getLiteral("totalInstances").getInt());
 		qe.close();
