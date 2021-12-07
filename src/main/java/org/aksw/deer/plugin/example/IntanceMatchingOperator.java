@@ -74,7 +74,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	private static boolean debug;
 
 	Set<String> entityListFile;
-	
+
 	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
 	private HashMap<Integer, Double> tabuTargetProperty;
 
@@ -132,27 +132,29 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.map(Resource::getURI).orElse("asdasd");
 		// .asResource(). .orElse("sampleSourceRestriction");
 
-		//String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
-		//		.map(Literal::getString).orElse("sampleTargetRestriction");
+		// String targetRestriction =
+		// getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
+		// .map(Literal::getString).orElse("sampleTargetRestriction");
 
-		//ValidatableParameterMap parameters = getParameterMap();
-	    // String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).asResource().getURI();
+		// ValidatableParameterMap parameters = getParameterMap();
+		// String targetRestriction =
+		// getParameterMap().getOptional(TARGET_RESTRICTION).asResource().getURI();
 		final String targetRestriction = getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asResource)
 				.map(Resource::getURI).orElse("asdasd tat");
-		
-		
+
 		getParameterMap().listPropertyObjects(TABU_SOURCE_PROPERTY).map(RDFNode::asResource).forEach(op -> {
-		
+
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
-			//final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
-			//System.out.println("op1 :      " + abc);
+			// final String abc =
+			// op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
+			// System.out.println("op1 : " + abc);
 			System.out.println("op1 abcd : " + propertyUri);
-		//	System.out.println("Count   :" + a);
-			
+			// System.out.println("Count :" + a);
+
 			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
-			
+
 		});
-		System.out.println("tabuSourceProperty : " + tabuSourceProperty );
+		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
@@ -168,13 +170,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		// System.out.println(" drecipient-dc sourceRestriction: " +
 		// sourceRestriction.get().getClass());
-		
-		//    String fromEndpoint = parameters.get(FROM_ENDPOINT).asResource().getURI();
 
+		// String fromEndpoint = parameters.get(FROM_ENDPOINT).asResource().getURI();
 
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
 		// System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
-		System.exit(0);
+		// System.exit(0);
 		// double coverage = Double.valueOf(coverage);
 
 		// Getting input from previous operator
@@ -191,7 +192,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		debug = true;
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "fileType") {
+		if (inputEndpoint == "fileTypea") {
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, maxLimit);
@@ -323,9 +324,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		} // if the endpoint is url
 		else { // if (inputEndpoint == "url") {
 
-			String sourceEndpoint = "http://sparql.contextdatacloud.org";
+			System.out.println(" we are in else");
+
+			String sourceEndpoint = "http://vocab.getty.edu/sparql";
 			String targetEndpoint = "http://vocab.getty.edu/sparql";
-			sourceRestrictions = "http://www.contextdatacloud.org/cmo/ontology/MajorConcept";
+
+			sourceRestrictions = "http://vocab.getty.edu/ontology#GroupConcept";
 			targetRestrictions = "http://vocab.getty.edu/ontology#GroupConcept";
 
 			// String inputEndpoint = "fileType";
@@ -334,9 +338,21 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
+			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
+
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
 
-			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
+			System.out.println(" 91029 propertiesListTarget1 ");
+
+			System.out.println("------------------------------------------------");
+			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
+			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
+			System.out.println("------------------------------------------------");
+
+			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
+			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
+			System.out.println(
+					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
 			// If no property have the coverage than the coverage parameter(Set in
 			// configuration.ttl)
@@ -350,7 +366,22 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			}
 
 			// Check if the data is available, if we query it with following properties
+			isDataAvailableURL(sourceEndpoint, sourceRestrictions, propertiesListTarget1);
 			isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
+
+			// check
+
+			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
+					targetRestrictions);
+
+			System.out.println("see 0011 " +  con);
+			callLimes(con);
+			System.out.println("see 0012 ");
+
+			System.out.println("--> In Output Generating Phase");
+
+			System.out.println(" now umerali ");
+			System.exit(0);
 
 		}
 //		 
@@ -1094,7 +1125,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
+		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
+		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
+
 		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
@@ -1103,7 +1137,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
-
+		System.out.println(" khalid Bin Huda  : " + InstanceCount.getFinalRedirectedUrl(path));
+		
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(InstanceCount.getFinalRedirectedUrl(path),
 				"PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
