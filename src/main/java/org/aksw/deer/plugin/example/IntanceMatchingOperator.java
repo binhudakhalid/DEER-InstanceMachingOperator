@@ -47,6 +47,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.VCARD;
+import org.jgap.gp.terminal.False;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public int totalInstances;
 	private static boolean debug;
+	private static boolean debugLogs;
 
 	Set<String> entityListFile;
 
@@ -88,6 +90,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property TARGET_RESTRICTION = DEER.property("targetRestriction");
 	public static Property TABU_SOURCE_PROPERTY = DEER.property("tabuSourceProperty");
 	public static Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
+	public static Property DEBUG_LOGS = DEER.property("debugLogs");
 
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
 
@@ -102,7 +105,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return ValidatableParameterMap.builder().declareProperty(COVERAGE).declareProperty(MAX_LIMIT)
 				.declareProperty(TEST).declareProperty(TYPE).declareProperty(SOURCE).declareProperty(TARGET)
 				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION)
-				.declareProperty(TABU_SOURCE_PROPERTY).declareProperty(TABU_TARGET_PROPERTY)
+				.declareProperty(TABU_SOURCE_PROPERTY).declareProperty(TABU_TARGET_PROPERTY).declareProperty(DEBUG_LOGS)
 				.declareValidationShape(getValidationModelFor(IntanceMatchingOperator.class)).build();
 	}
 
@@ -112,7 +115,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// tam();
 		// System.out.println();
 		// System.exit(0);
-
 		// Setting DEER Parameters
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
@@ -127,10 +129,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("sampleFalse");
 		String target = getParameterMap().getOptional(TARGET).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
+		debugLogs = getParameterMap().getOptional(DEBUG_LOGS).map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
 
 		final String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION).map(RDFNode::asResource)
 				.map(Resource::getURI).orElse("asdasd");
 		// .asResource(). .orElse("sampleSourceRestriction");
+
+		if(debugLogs)
+			System.out.println("Zidane 10");
+
 
 		// String targetRestriction =
 		// getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
@@ -155,6 +162,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
+		printOut("tabuSourceProperty tsp : " + tabuSourceProperty);
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
@@ -200,6 +208,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
+
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
@@ -1310,6 +1319,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// resultsOne.getRowNumber()
 
 		return true;
+	}
+
+	public void printOut(Object toBePrinted)
+	{
+		if(debugLogs)
+			System.out.println(toBePrinted);
 	}
 
 	/*
