@@ -76,6 +76,11 @@ public class ConsolidationOperatorTest extends TestCase {
   @Test
   public void testTestAuthority(){
   //Todo: add expected Params addTarget: Use Output to feed to Authority and check if the names are usable for fusion
+    String url = Objects.requireNonNull(ConsolidationOperatorTest.class.getClassLoader().getResource("config_authority.ttl")).toExternalForm();
+    Model configurationModel = ModelFactory.createDefaultModel().read(url);
+    CompiledExecutionGraph executionGraph = Deer.getExecutionContext(new DefaultPluginManager()).compile(configurationModel);
+    executionGraph.run();
+    executionGraph.join();
   }
   @Test
   public void testConfiguration_consolidation_only(){
