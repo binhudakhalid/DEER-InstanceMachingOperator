@@ -422,6 +422,9 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
             StmtIterator stmtIterator = source.listStatements(tmp.source.getSubject(), tmp.source.getPredicate(), (RDFNode) null);
             stmtIterator.nextStatement().changeObject(tmp.result); // change it
             // add provenance
+            ProvenanceOperator.addProvenance(source, tmp.source.getSubject(), tmp.target.getSubject(),
+              null,
+              null); // todo: Ask here
           }
           catch(LiteralRequiredException literalRequiredException){
             logger.error("Given source target mapping is not on literals", stm.getValue().toString());

@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ConsolidationStrategys {
 
@@ -37,6 +38,16 @@ public class ConsolidationStrategys {
     return alternatives.get(1);
   }
 
+
+  static Literal computeFusionVoting(List<Literal> alternatives){
+    /*
+    Find the Provenance ones , count them , return highest
+     */
+
+
+
+    return null;
+  }
   /*
   Integer
   */
@@ -119,6 +130,12 @@ public class ConsolidationStrategys {
       .min(Comparator.comparingInt(l -> l.getString().length()))
       .orElse(ResourceFactory.createStringLiteral(""));
   }
+  // not completly right
+  public static Literal computeFusionForStringConcat(List<Literal> alternatives){
+    return ResourceFactory.createStringLiteral(
+       alternatives.stream().toArray().toString()
+    );
+  }
 
   /*
   Date
@@ -140,6 +157,8 @@ public class ConsolidationStrategys {
       literals.stream().mapToLong(Literal::getLong).max()
     );
   }
+
+
 
 
 
