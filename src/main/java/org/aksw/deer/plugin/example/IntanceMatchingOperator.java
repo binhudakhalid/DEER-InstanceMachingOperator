@@ -136,7 +136,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// .asResource(). .orElse("sampleSourceRestriction");
 
 		if(debugLogs)
-			System.out.println("Zidane 10");
+			printOut("Zidane 10");
 
 
 		// String targetRestriction =
@@ -155,33 +155,33 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// final String abc =
 			// op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
 			// System.out.println("op1 : " + abc);
-			System.out.println("op1 abcd : " + propertyUri);
+			printOut("op1 abcd : " + propertyUri);
 			// System.out.println("Count :" + a);
 
 			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
 
 		});
-		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
+		//System.out.println("tabuSourceProperty : " + tabuSourceProperty);
 		printOut("tabuSourceProperty tsp : " + tabuSourceProperty);
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
-			System.out.println("op2 : " + abc);
+			printOut("op2 : " + abc);
 		});
 
-		System.out.println(" drecipient-dc coverage: " + coverage);
-		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
-		System.out.println(" drecipient-dc test: " + test);
-		System.out.println(" drecipient-dc type: " + type);
-		System.out.println(" drecipient-dc source: " + source);
-		System.out.println(" drecipient-dc target: " + target);
-		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
+		printOut(" drecipient-dc coverage: " + coverage);
+		printOut(" drecipient-dm maxLimit: " + maxLimit);
+		printOut(" drecipient-dc test: " + test);
+		printOut(" drecipient-dc type: " + type);
+		printOut(" drecipient-dc source: " + source);
+		printOut(" drecipient-dc target: " + target);
+		printOut(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		// System.out.println(" drecipient-dc sourceRestriction: " +
 		// sourceRestriction.get().getClass());
 
 		// String fromEndpoint = parameters.get(FROM_ENDPOINT).asResource().getURI();
 
-		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
+		printOut(" drecipient-dc targetRestriction: " + targetRestriction);
 		// System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
 		// System.exit(0);
 		// double coverage = Double.valueOf(coverage);
@@ -204,15 +204,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, maxLimit);
-			System.out.println("------------------------------------------------");
-			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
-			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
-			System.out.println("------------------------------------------------");
+			printOut("------------------------------------------------");
+			printOut("propertiesListSource from source -->: " + propertiesListSource1);
+			printOut("propertiesListTarget from target -->: " + propertiesListTarget1);
+			printOut("------------------------------------------------");
 
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
-			System.out.println(
+			printOut(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
 			// If no property have the coverage than the coverage parameter(Set in
@@ -221,7 +221,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// propertiesListTarget1.remove(0);
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
-				System.out.println(
+				printOut(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
@@ -235,11 +235,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
 					targetRestrictions, "NT");
 
-			System.out.println("see 0011 ");
+			printOut("see 0011 ");
 			callLimes(con);
-			System.out.println("see 0012 ");
+			printOut("see 0012 ");
 
-			System.out.println("--> In Output Generating Phase");
+			printOut("--> In Output Generating Phase");
 
 			List<Model> InstanceMatcherOutputList = new ArrayList<>();
 
@@ -255,7 +255,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
 			addStatement("DEER:targetDataSource", "DEER:is", "4", info);
 
-			System.out.println("The info is " + info);
+			printOut("The info is " + info);
 
 			// Ouput Model
 			Model finalOuputModel = ModelFactory.createDefaultModel();
@@ -292,7 +292,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			Model limesOutputModel2 = ModelFactory.createDefaultModel();
 			limesOutputModel2.add(limesOutputModel);
 
-			System.out.println(" \n \n \n cehce-1 " + limesOutputModel2);
+			printOut(" \n \n \n cehce-1 " + limesOutputModel2);
 
 			final String NS = "https://w3id.org/deer/";
 			final Property told = limesOutputModel.createProperty(NS + "confidence");
@@ -325,7 +325,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			InstanceMatcherOutputList.add(finalOuputModel);
 
-			System.out.println(" \n\n\n ----> cehce-2202 finalOuputModel: " + finalOuputModel);
+			printOut(" \n\n\n ----> cehce-2202 finalOuputModel: " + finalOuputModel);
 
 			return InstanceMatcherOutputList;
 
@@ -333,7 +333,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		} // if the endpoint is url
 		else { // if (inputEndpoint == "url") {
 
-			System.out.println(" we are in else");
+			printOut(" we are in else");
 
 			String sourceEndpoint = "http://vocab.getty.edu/sparql";
 			String targetEndpoint = "http://vocab.getty.edu/sparql";
@@ -351,16 +351,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
 
-			System.out.println(" 91029 propertiesListTarget1 ");
+			printOut(" 91029 propertiesListTarget1 ");
 
-			System.out.println("------------------------------------------------");
-			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
-			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
-			System.out.println("------------------------------------------------");
+			printOut("------------------------------------------------");
+			printOut("propertiesListSource from source -->: " + propertiesListSource1);
+			printOut("propertiesListTarget from target -->: " + propertiesListTarget1);
+			printOut("------------------------------------------------");
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
-			System.out.println(
+			printOut(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
 			// If no property have the coverage than the coverage parameter(Set in
@@ -369,7 +369,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			// propertiesListTarget1.remove(0);
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
-				System.out.println(
+				printOut(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
@@ -383,13 +383,13 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
 					targetRestrictions, "sparql");
 
-			System.out.println("see 0011 " +  con);
+			printOut("see 0011 " +  con);
 			callLimes(con);
-			System.out.println("see 0012 ");
+			printOut("see 0012 ");
 
-			System.out.println("--> In Output Generating Phase");
+			printOut("--> In Output Generating Phase");
 
-			System.out.println(" now umerali ");
+			printOut(" now umerali ");
 			//System.exit(0);
 
 		}
@@ -461,9 +461,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 * Parameter set from Configura.ttl file)
 	 */
 	private void removePropertiesHavingLowerCoverage(double coverage, List<PropertyEntity> tempPropertiesListSource) {
-		System.out.println(" ahsan tempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
+		printOut(" ahsan tempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
 
-		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties before comparing with Coverage: "
+		printOut("removePropertiesHavingLowerCoverage -> Total Properties before comparing with Coverage: "
 				+ tempPropertiesListSource.size());
 		Iterator itr = tempPropertiesListSource.iterator();
 
@@ -485,8 +485,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		}
 
-		System.out.println(" ahsan tempCoverage after = " + tempPropertiesListSource);
-		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: "
+		printOut(" ahsan tempCoverage after = " + tempPropertiesListSource);
+		printOut("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: "
 				+ tempPropertiesListSource.size());
 
 	}
@@ -519,7 +519,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		PrefixEntity srcRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(srcRestrictions);
 
-		System.out.println(" srcRestrictionPrefixEntity1 " + srcRestrictionPrefixEntity);
+		printOut(" srcRestrictionPrefixEntity1 " + srcRestrictionPrefixEntity);
 		// System.out.println("?s rdf:type " + srcRestrictionPrefixEntity.key
 		// +":"+srcRestrictionPrefixEntity.name);
 		// System.exit(1);
@@ -538,12 +538,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
 			prefixes.put(list.key, list.value);
-			System.out.println("scotlandyard - prefixes -: " + list.key + list.value);
+			printOut("scotlandyard - prefixes -: " + list.key + list.value);
 
-			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
+			printOut("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
 
-		System.out.println(" polp ");
+		printOut(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		// prefixes.put("", "http://purl.org/ontology/mo/");
@@ -579,10 +579,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			conf.addPrefix(list.key, list.value);
 
 			targetPrefixesMap.put(list.key, list.value);
-			System.out.println("scotlandyard - targetPrefixesMap -: " + list.key + list.value);
+			printOut("scotlandyard - targetPrefixesMap -: " + list.key + list.value);
 
 			targetPropertylist.add(list.key + ":" + list.propertyName);
-			System.out.println(
+			printOut(
 					"debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
 		}
 
@@ -656,7 +656,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// Output format CSV etc
 		conf.setOutputFormat("NT"); // NT or TTL
 
-		System.out.println("lool me conf " + conf);
+		printOut("lool me conf " + conf);
 		return conf;
 	}
 
@@ -680,7 +680,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
 		
-		System.out.println(" doe  done ");
+		printOut(" doe  done ");
 		//System.exit(0);
 	}
 
@@ -700,11 +700,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				String Line = myReader.nextLine();
 				if (Line.contains("@prefix")) {
 					prefix = Line.substring(Line.indexOf(" "), Line.indexOf(":"));
-					System.out.println("prefix:::: " + prefix);
+					printOut("prefix:::: " + prefix);
 
 					// this should will done in the new util method
 					prefixValue = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));// .replaceAll(":",
-					System.out.println("prefixValue:::: " + prefixValue);
+					printOut("prefixValue:::: " + prefixValue);
 
 					prefixMap.put(prefix, prefixValue);
 				}
@@ -719,7 +719,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				String predicatePrefixValue;
 
 				if (Line.contains("@prefix")) {
-					System.out.println("Contains @prefix");
+					printOut("Contains @prefix");
 				} else if (Line.contains("<http://")) {
 					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
 
@@ -743,9 +743,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 						String predicatePrefixValue2 = subjecturl.substring(subjecturl.indexOf("#") + 1,
 								subjecturl.length());
 
-						System.out.println("RedALret prefixKey  :" + prefixKey);
-						System.out.println("RedALret predicatePrefixValue :" + predicatePrefixValue);
-						System.out.println("RedALret predicatePrefixValue2 :" + predicatePrefixValue2);
+						printOut("RedALret prefixKey  :" + prefixKey);
+						printOut("RedALret predicatePrefixValue :" + predicatePrefixValue);
+						printOut("RedALret predicatePrefixValue2 :" + predicatePrefixValue2);
 
 					} else {
 
@@ -765,12 +765,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				}
 
 			}
-			System.out.println(" let check prefixMap " + prefixMap);
+			printOut(" let check prefixMap " + prefixMap);
 
 			myReader.close();
 			myReader2.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
+			printOut("An error occurred.");
 			e.printStackTrace();
 		}
 		// return prefixMap;
@@ -829,7 +829,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				}
 
 				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-				System.out.println("-------------------------------------------------");
+				printOut("-------------------------------------------------");
 			} else {
 				// System.out.println("****************-URL without Hash********************");
 				// System.out.println("predicate : " + predicate);
@@ -860,9 +860,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 
-		System.out.println("Here is the log propertyMap : " + propertyMap);
+		printOut("Here is the log propertyMap : " + propertyMap);
 
-		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
+		resultOne.forEachRemaining(qsol -> printOut("khad2 : " + qsol.getLiteral("predicate").getInt()));
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
 		qe.close();
@@ -938,9 +938,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-				System.out.println("predicatePrefixValue : " + predicatePrefixValue);
-				System.out.println("predicatePrefixValue2 : " + predicatePrefixValue2);
-				System.out.println("predicatePrefixKey : " + predicatePrefixKey);
+				printOut("predicatePrefixValue : " + predicatePrefixValue);
+				printOut("predicatePrefixValue2 : " + predicatePrefixValue2);
+				printOut("predicatePrefixKey : " + predicatePrefixKey);
 				PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
 				propertiesPrefixesSource.add(prefix);
 
@@ -951,7 +951,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		ResultSet results = qe.execSelect();
 		ResultSetFormatter.out(System.out, results);
-		System.out.println("after countEntityPredicate");
+		printOut("after countEntityPredicate");
 		qe.close();
 
 	}
@@ -962,8 +962,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		coverageMap = new HashMap<String, Double>();
 
 		double tempTotal = totalInstance("Movie");
-		System.out.println("tempTotal : " + tempTotal);
-		System.out.println(" H1e1r1e is the log propertyMap : " + propertyMap);
+		printOut("tempTotal : " + tempTotal);
+		printOut(" H1e1r1e is the log propertyMap : " + propertyMap);
 
 		for (Entry<String, Integer> entry : propertyMap.entrySet()) {
 			String prefixName = entry.getKey();
@@ -1019,9 +1019,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		RDFDataMgr.read(model, link, Lang.NTRIPLES);
 
 		size = model.size();
-		System.out.println("size :::: " + size);
+		printOut("size :::: " + size);
 		if (size < 1) {
-			System.out.println("File is empty. size :" + size);
+			printOut("File is empty. size :" + size);
 		}
 
 		Property predicateRDFType = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
@@ -1035,12 +1035,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			RDFNode object = stmt.getObject();
 
 			if (predicate.toString().equals(predicateRDFType.toString())) {
-				System.out.println("found enitity : ");
+				printOut("found enitity : ");
 				entityListFile.add(object.toString());
 			}
-			System.out.println("predicate : " + predicate);
+			printOut("predicate : " + predicate);
 		}
-		System.out.println(" entity list : " + entityListFile);
+		printOut(" entity list : " + entityListFile);
 
 		return entityListFile;
 	}
@@ -1054,12 +1054,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// restriction = "http://xmlns.com/foaf/0.1/Person";
 
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
-		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
+		printOut("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromFile(path, restrictionPrefixEntity);
 
-		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
+		printOut("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 
@@ -1085,7 +1085,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		ResultSet results = qexec1.execSelect();
 
 		if (debug) {
-			System.out.println("result 009 The output of sparql query : " + results);
+			printOut("result 009 The output of sparql query : " + results);
 			ResultSetFormatter.out(System.out, results);
 		}
 		///
@@ -1128,7 +1128,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 
-		System.out.println("propertiesListTemp: " + propertiesListTemp);
+		printOut("propertiesListTemp: " + propertiesListTemp);
 		return propertiesListTemp;
 	}
 
@@ -1138,19 +1138,19 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
-		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
+		printOut(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
-		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
+		printOut(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
 
-		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
+		printOut("restrictionPrefixEntity:: " + restrictionPrefixEntity);
 
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
 
-		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
+		printOut("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
-		System.out.println(" khalid Bin Huda  : " + InstanceCount.getFinalRedirectedUrl(path));
+		printOut(" khalid Bin Huda  : " + InstanceCount.getFinalRedirectedUrl(path));
 		
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(InstanceCount.getFinalRedirectedUrl(path),
@@ -1198,7 +1198,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		});
 
-		System.out.println("propertiesListTemp url: " + propertiesListTemp);
+		printOut("propertiesListTemp url: " + propertiesListTemp);
 
 		return propertiesListTemp;
 	}
@@ -1227,12 +1227,12 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		}
 		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
 				+ propertyQueryPart + " } LIMIT 1";
-		System.out.println("queryString:  \n" + queryString);
+		printOut("queryString:  \n" + queryString);
 
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(url, queryString);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
+		printOut(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
 		
 		// resultOne.forEachRemaining(qsol -> totalInstances =
@@ -1268,7 +1268,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
 				+ propertyQueryPart + " } LIMIT 1";
 
-		System.out.println("queryString:  \n" + queryString);
+		printOut("queryString:  \n" + queryString);
 
 		/*
 		 * 
@@ -1292,20 +1292,20 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
 		ResultSet results = qexec.execSelect();
 		// results.
-		System.out.println(" 099kkhan bhai : " + results.toString());
-		System.out.println(" 099kkhan bhai getRowNumber : " + results.getRowNumber());
-		System.out.println(" 099kkhan bhai hasNext : " + results.hasNext());
+		printOut(" 099kkhan bhai : " + results.toString());
+		printOut(" 099kkhan bhai getRowNumber : " + results.getRowNumber());
+		printOut(" 099kkhan bhai hasNext : " + results.hasNext());
 
 		if (results.hasNext() == false) {
-			System.out.println(" !! No data avaible for following query for " + tag + " !! ");
-			System.out.println(" File Path: " + path);
-			System.out.println("*****************************************");
-			System.out.println(" Query String: " + "\n" + queryString + "\n");
-			System.out.println("*****************************************");
+			printOut(" !! No data avaible for following query for " + tag + " !! ");
+			printOut(" File Path: " + path);
+			printOut("*****************************************");
+			printOut(" Query String: " + "\n" + queryString + "\n");
+			printOut("*****************************************");
 		}
 
 		if (debug) {
-			System.out.println("result 0019 show data that is return after query : " + results); //
+			printOut("result 0019 show data that is return after query : " + results); //
 			ResultSetFormatter.out(System.out, results);
 		}
 
@@ -1314,7 +1314,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getLiteral("v1").toString();
-			System.out.println(" lookit : " + predicate);
+			printOut(" lookit : " + predicate);
 		});
 		// resultsOne.getRowNumber()
 
