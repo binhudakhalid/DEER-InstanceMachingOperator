@@ -129,15 +129,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				.orElse("sampleFalse");
 		String target = getParameterMap().getOptional(TARGET).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("smapleTarget");
-		debugLogs = getParameterMap().getOptional(DEBUG_LOGS).map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(false);
+		debugLogs = getParameterMap().getOptional(DEBUG_LOGS).map(RDFNode::asLiteral).map(Literal::getBoolean)
+				.orElse(false);
 
 		final String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION).map(RDFNode::asResource)
 				.map(Resource::getURI).orElse("asdasd");
 		// .asResource(). .orElse("sampleSourceRestriction");
 
-		if(debugLogs)
+		if (debugLogs)
 			System.out.println("Zidane 10");
-
 
 		// String targetRestriction =
 		// getParameterMap().getOptional(TARGET_RESTRICTION).map(RDFNode::asLiteral)
@@ -192,10 +192,11 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// it.
 
 		String inputEndpoint = "fileType";
-		String sourceFilePath = "data/dbtune_org_jamendo_sparql.nt";
-		String targetFilePath = "data/dbtune_org_magnatune_sparql.nt";
-		String sourceRestrictions = "http://purl.org/ontology/mo/Lyrics";
-		String targetRestrictions = "http://purl.org/ontology/mo/Performance";
+		String sourceFilePath = "data/data_nobelprize_org.nt";
+		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
+		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		
 
 		debug = true;
 
@@ -208,7 +209,6 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
-
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
@@ -224,6 +224,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 				System.out.println(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
+				// if the above if is true then the execution should be stopped.
+				return null;
 			}
 
 			// check if we get any data if query with following property list
@@ -383,14 +385,14 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
 					targetRestrictions, "sparql");
 
-			System.out.println("see 0011 " +  con);
+			System.out.println("see 0011 " + con);
 			callLimes(con);
 			System.out.println("see 0012 ");
 
 			System.out.println("--> In Output Generating Phase");
 
 			System.out.println(" now umerali ");
-			//System.exit(0);
+			// System.exit(0);
 
 		}
 //		 
@@ -619,7 +621,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		target.setPrefixes(targetPrefixesMap);
 
 		target.setFunctions(functions);
-		
+
 		target.setType(type);
 		conf.setTargetInfo(target);
 
@@ -679,9 +681,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-		
+
 		System.out.println(" doe  done ");
-		//System.exit(0);
+		// System.exit(0);
 	}
 
 	public void dynamicPrefix() {
@@ -1151,7 +1153,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
 		System.out.println(" khalid Bin Huda  : " + InstanceCount.getFinalRedirectedUrl(path));
-		
+
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(InstanceCount.getFinalRedirectedUrl(path),
 				"PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
@@ -1234,7 +1236,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
-		
+
 		// resultOne.forEachRemaining(qsol -> totalInstances =
 		// qsol.getLiteral("totalInstances").getInt());
 		qe.close();
@@ -1321,9 +1323,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		return true;
 	}
 
-	public void printOut(Object toBePrinted)
-	{
-		if(debugLogs)
+	public void printOut(Object toBePrinted) {
+		if (debugLogs)
 			System.out.println(toBePrinted);
 	}
 
