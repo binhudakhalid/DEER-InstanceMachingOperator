@@ -168,6 +168,21 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
 			System.out.println("op2 : " + abc);
 		});
+		
+		
+		getParameterMap().listPropertyObjects(SOURCE_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
+
+			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
+			// final String abc =
+			// op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
+			// System.out.println("op1 : " + abc);
+			System.out.println("op1 abcd SOURCE_RESTRICTION : " + propertyUri);
+			// System.out.println("Count :" + a);
+
+			//tabuSourceProperty.put(propertyUri.toString(), propertyUri);
+
+		});
+		System.exit(0);
 
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
