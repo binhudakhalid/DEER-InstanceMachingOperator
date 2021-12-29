@@ -27,9 +27,11 @@
 						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction2> ],
 						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction3> ];
 						 
-  deer:targetRestriction [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1a> ],
-						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1b> ],
-						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1c> ];
+  deer:targetRestriction [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1a>;
+		                   deer:restrictionURI2 <http://xmasdlns.com/foaf/0.1/restriction1at111111111111>;],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1b>;
+						  deer:restrictionURI2 <http://xmasdlns.com/foaf/0.1/restriction1at2222222222222>;],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1c>;                           deer:restrictionURI2<http://xmasdlns.com/foaf/0.1/restriction1at3333333333333>;];
 						 						 
  
  #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;

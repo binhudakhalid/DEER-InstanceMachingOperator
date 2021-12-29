@@ -97,6 +97,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
 	public static final Property RESTRICTION_URI = DEER.property("restrictionURI");
+	public static final Property RESTRICTION_URI2 = DEER.property("restrictionURI2");
+	
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -168,6 +170,8 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
 		printOut("tabuSourceProperty tsp : " + tabuSourceProperty);
 
+		 
+		
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
 			System.out.println("op2 : " + abc);
@@ -180,6 +184,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 
 		getParameterMap().listPropertyObjects(TARGET_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
 			final Resource restrictionUri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
+			final Resource restrictionUri2 = op.getPropertyResourceValue(RESTRICTION_URI2).asResource();
+			System.out.println("restrictionUri2 rza : " + restrictionUri2 );
+			
 			targetRestrictionMap.put(restrictionUri.toString(), restrictionUri);
 		});
 
@@ -206,7 +213,10 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// it.
 		System.out.println("sourceRestrictionMap + " + sourceRestrictionMap);
 		System.out.println("targetRestrictionMap + " + targetRestrictionMap);
+		
+		 
 		System.exit(0);
+		 
 
 		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
