@@ -80,6 +80,9 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
 	private HashMap<Integer, Double> tabuTargetProperty;
 
+	private HashMap<String, Resource> sourceRestrictionMap = new HashMap<String, Resource>();
+	private HashMap<String, Resource> targetRestrictionMap = new HashMap<String, Resource>();
+
 	public static Property COVERAGE = DEER.property("coverage");
 	public static Property MAX_LIMIT = DEER.property("maxLimit");
 	public static Property TEST = DEER.property("test");
@@ -93,6 +96,7 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 	public static Property DEBUG_LOGS = DEER.property("debugLogs");
 
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
+	public static final Property RESTRICTION_URI = DEER.property("restrictionURI");
 
 	List<Model> outputList = new ArrayList<>();;
 
@@ -169,6 +173,16 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 			System.out.println("op2 : " + abc);
 		});
 
+		getParameterMap().listPropertyObjects(SOURCE_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
+			final Resource restrictionUri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
+			sourceRestrictionMap.put(restrictionUri.toString(), restrictionUri);
+		});
+
+		getParameterMap().listPropertyObjects(TARGET_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
+			final Resource restrictionUri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
+			targetRestrictionMap.put(restrictionUri.toString(), restrictionUri);
+		});
+
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
 		System.out.println(" drecipient-dc test: " + test);
@@ -190,13 +204,15 @@ public class IntanceMatchingOperator extends AbstractParameterizedEnrichmentOper
 		// There parameter will be set by the output from previous operator
 		// Setting the parameter manually until the ontology operator is integrated with
 		// it.
+		System.out.println("sourceRestrictionMap + " + sourceRestrictionMap);
+		System.out.println("targetRestrictionMap + " + targetRestrictionMap);
+		System.exit(0);
 
 		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
 		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
 		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		
 
 		debug = true;
 

@@ -22,8 +22,19 @@
  deer:source "data/data_nobelprize_org.nt";
  deer:target "data/lov_linkeddata_es_dataset_lov.nt";
  
- deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
- deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
+ 
+  deer:sourceRestriction [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1> ],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction2> ],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction3> ];
+						 
+  deer:targetRestriction [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1a> ],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1b> ],
+						 [ deer:restrictionURI <http://xmasdlns.com/foaf/0.1/restriction1c> ];
+						 						 
+ 
+ #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
+ #deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
+ 
  
  deer:tabuSourceProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/first> ],
 						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/second> ],
