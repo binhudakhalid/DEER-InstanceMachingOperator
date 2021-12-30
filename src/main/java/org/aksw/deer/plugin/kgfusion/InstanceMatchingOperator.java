@@ -111,6 +111,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+		
+		
+		
+		
+		OutputUtility ouputUtility1 = new OutputUtility();
+		ouputUtility1.createOuput("accepted.nt", "s", "t", "ss", "tt", "File");
+		
+		System.exit(1);
 
 		// tam();
 		// System.out.println();
@@ -267,6 +275,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			// load accepted.nt into Jena model
 			Model limesOutputModel = ModelFactory.createDefaultModel();
+
+		 
 			limesOutputModel.read("accepted.nt");
 
 			// load source data into Jena model
