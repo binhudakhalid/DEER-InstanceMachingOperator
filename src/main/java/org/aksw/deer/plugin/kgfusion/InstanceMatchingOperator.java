@@ -61,13 +61,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
 	public HashMap<String, Double> coverageMap;
-	// public HashMap<String, String> propertiesPrefixesSource;
 	public List<PrefixEntity> propertiesPrefixesSource;
-
-	// public List<PropertyEntity> propertiesList;
-	// public List<PropertyEntity> propertiesListSource;
-	// public List<PropertyEntity> propertiesListTarget;
-
 	public List<PropertyEntity> propertiesListSource1;
 	public List<PropertyEntity> propertiesListTarget1;
 
@@ -112,10 +106,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		// tam();
-		// System.out.println();
-		// System.exit(0);
-		// Setting DEER Parameters
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
@@ -134,7 +124,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		final String sourceRestriction = getParameterMap().getOptional(SOURCE_RESTRICTION).map(RDFNode::asResource)
 				.map(Resource::getURI).orElse("asdasd");
-		// .asResource(). .orElse("sampleSourceRestriction");
 
 		if (debugLogs)
 			System.out.println("Zidane 10");
@@ -167,23 +156,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" drecipient-dc type: " + type);
 		System.out.println(" drecipient-dc source: " + source);
 		System.out.println(" drecipient-dc target: " + target);
-
-		// System.exit(1);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
-		// System.out.println(" drecipient-dc sourceRestriction: " +
-		// sourceRestriction.get().getClass());
-
-		// String fromEndpoint = parameters.get(FROM_ENDPOINT).asResource().getURI();
-
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
-		// System.out.println(" drecipient-dc tabuProperty: " + tabuProperty);
-		// System.exit(0);
-		// double coverage = Double.valueOf(coverage);
-
-		// Getting input from previous operator
-		// There parameter will be set by the output from previous operator
-		// Setting the parameter manually until the ontology operator is integrated with
-		// it.
 
 		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
@@ -233,14 +207,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
 			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target");
 
-			// check
-
 			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
 					targetRestrictions, "NT");
 
-			System.out.println("see 0011 ");
+			System.out.println("callLimes before");
 			callLimes(con);
-			System.out.println("see 0012 ");
+			System.out.println("callLimes after ");
 
 			System.out.println("--> In Output Generating Phase");
 
@@ -250,8 +222,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 					sourceFilePath, targetFilePath, "File");
 
 			return l1;
-
-			// System.exit(0);
 		} // if the endpoint is url
 		else { // if (inputEndpoint == "url") {
 
@@ -380,9 +350,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	private void removeTabuProperties(HashMap<String, Resource> tabuSourceProperty,
 			List<PropertyEntity> propertiesList) {
-		
-		System.out.println("removeTabuProperties ->  Total Properties before removing tabu properties: "
-				+ propertiesList.size());
+
+		System.out.println(
+				"removeTabuProperties ->  Total Properties before removing tabu properties: " + propertiesList.size());
 
 		if (!tabuSourceProperty.isEmpty()) {
 
@@ -392,52 +362,23 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				String value = propertyString.substring(0, (propertyString.lastIndexOf("/")) + 1);
 				String property = propertyString.substring(propertyString.lastIndexOf("/") + 1);
 
-				for(int i = 0; i< propertiesList.size(); i++) 
-				{
-					if (propertiesList.get(i).propertyName.equals(property) && propertiesList.get(i).value.equals(value)) {
-				        {
-				        	System.out.println("propertiesList.get(i).propertyName : " + propertiesList.get(i).propertyName);
-							System.out.println("property : " + property);
-							System.out.println(" propertiesList.get(i).value : " +  propertiesList.get(i).value);
-							System.out.println("value : " + value);
-
-							System.out.println(" *matched* ");
-				        	
-				        }
-				        	propertiesList.remove(i);
-				        }
-				}
-				
-				/*for (PropertyEntity p1 : propertiesList) {
-
-					if (p1.propertyName.equals(property) && p1.value.equals(value)) {
-						System.out.println("p1.propertyName : " + p1.propertyName);
+				for (int i = 0; i < propertiesList.size(); i++) {
+					if (propertiesList.get(i).propertyName.equals(property)
+							&& propertiesList.get(i).value.equals(value)) {
+						System.out
+								.println("propertiesList.get(i).propertyName : " + propertiesList.get(i).propertyName);
 						System.out.println("property : " + property);
-						System.out.println("p1.value : " + p1.value);
+						System.out.println(" propertiesList.get(i).value : " + propertiesList.get(i).value);
 						System.out.println("value : " + value);
-
 						System.out.println(" *matched* ");
-						System.out.println("----------------------------------");
-				
-						 list.remove(i);
-						propertiesList.remove(p1);
-					} else {
-						System.out.println("not matched");
+						propertiesList.remove(i);
 					}
-				}*/
-
+				}
 			}
 
 		}
-		System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
-				+ propertiesList.size());
-		//System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
-		//		+ propertiesList);
-
-		
-
-		// TODO Auto-generated method stub
-
+		System.out.println(
+				"removeTabuProperties -> Total Properties after removing tabu properties: " + propertiesList.size());
 	}
 
 	/*
@@ -451,36 +392,22 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				+ tempPropertiesListSource.size());
 		Iterator itr = tempPropertiesListSource.iterator();
 
-		// Holds true till there is sibgle element
-		// remaining in the object
 		while (itr.hasNext()) {
-
-			// Remove elements smaller than 10 using
-			// Iterator.remove()
 			PropertyEntity propertyEntity = (PropertyEntity) itr.next();
 			if (propertyEntity.coverage < coverage) {
-
-				// System.out.println(" propertyEntity.coverage : " + propertyEntity.coverage );
-				// System.out.println(" coverage : " + coverage );
-				// System.out.println("----------------------------------");
-
 				itr.remove();
 			}
-
 		}
-
-		System.out.println(" ahsan tempCoverage after = " + tempPropertiesListSource);
+	
 		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: "
 				+ tempPropertiesListSource.size());
-
+		System.out.println(" removePropertiesHavingLowerCoverage -> list after = " + tempPropertiesListSource);
 	}
 
 	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
 			String targetRestrictions, String type) {
 
 		Configuration conf = new Configuration();
-
-		// dynamicPrefix();
 
 		List<String> srcPropertylist = new ArrayList<String>();
 		List<String> targetPropertylist = new ArrayList<String>();
