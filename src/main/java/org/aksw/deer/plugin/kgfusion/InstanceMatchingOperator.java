@@ -112,13 +112,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 		
-		
-		
-		
-		OutputUtility ouputUtility1 = new OutputUtility();
-		ouputUtility1.createOuput("accepted.nt", "s", "t", "ss", "tt", "File");
-		
-		System.exit(1);
 
 		// tam();
 		// System.out.println();
@@ -250,98 +243,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("see 0011 ");
 			callLimes(con);
 			System.out.println("see 0012 ");
-
+			
+			
 			System.out.println("--> In Output Generating Phase");
 
-			List<Model> InstanceMatcherOutputList = new ArrayList<>();
-
-			// output from Ontology
-			// InstanceMatcherOutputList.add(models.get(0));
-
-			//// information about entities and class
-			Model info = ModelFactory.createDefaultModel();
-			addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions, info);
-			addStatement("DEER:targetClass", "DEER:is", targetRestrictions, info);
-
-			addStatement("DEER:dataSourceType", "DEER:is", "File", info);
-			addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
-			addStatement("DEER:targetDataSource", "DEER:is", "4", info);
-
-			System.out.println("The info is " + info);
-
-			// Ouput Model
-			Model finalOuputModel = ModelFactory.createDefaultModel();
-			Model temp = ModelFactory.createDefaultModel();
-
-			// load accepted.nt into Jena model
-			Model limesOutputModel = ModelFactory.createDefaultModel();
-
+			OutputUtility ouputUtility = new OutputUtility();
+			
+			List<Model>  l1 = ouputUtility.createOuput("accepted.nt", sourceRestrictions, targetRestrictions, sourceFilePath,
+					targetFilePath, "File");
+			
 		 
-			limesOutputModel.read("accepted.nt");
 
-			// load source data into Jena model
-			/*
-			 * Model sourceData = ModelFactory.createDefaultModel() ;
-			 * sourceData.read(sourceFilePath) ;
-			 */
 
-			// load target data into Jena model
-			/*
-			 * Model targetData = ModelFactory.createDefaultModel() ;
-			 * targetData.read(targetFilePath) ;
-			 */
-
-			// InstanceMatcherOutputList.add(e);
-			// InstanceMatcherOutputList.add(sourceData);
-			// InstanceMatcherOutputList.add(limesOutputModel);
-
-			// InstanceMatcherOutputList.add(targetData);
-
-			// return box;
-			// System.out.println("model : "+ model);
-//			model.read("data.foo", "TURTLE") ;
-
-			// Setting the output
-
-			Model limesOutputModel2 = ModelFactory.createDefaultModel();
-			limesOutputModel2.add(limesOutputModel);
-
-			System.out.println(" \n \n \n cehce-1 " + limesOutputModel2);
-
-			final String NS = "https://w3id.org/deer/";
-			final Property told = limesOutputModel.createProperty(NS + "confidence");
-
-			StmtIterator itTemp = limesOutputModel2.listStatements();
-			while (itTemp.hasNext()) {
-				Statement stmt = itTemp.next();
-				final ReifiedStatement rstmt = temp.createReifiedStatement(stmt);
-				temp.add(rstmt, told, "90");
-			}
-
-			// Add rectified statements to final model
-			finalOuputModel.add(temp);
-
-			// Adding source data set
-			addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
-					finalOuputModel);
-
-			// Adding target data set
-			addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
-					finalOuputModel);
-
-			// Adding subject type, or source restriction
-			addStatement("https://w3id.org/deer/subjectType", "https://w3id.org/deer/is", sourceRestrictions,
-					finalOuputModel);
-
-			// Adding object type, or target restriction
-			addStatement("https://w3id.org/deer/objectType", "https://w3id.org/deer/is", targetRestrictions,
-					finalOuputModel);
-
-			InstanceMatcherOutputList.add(finalOuputModel);
-
-			System.out.println(" \n\n\n ----> cehce-2202 finalOuputModel: " + finalOuputModel);
-
-			return InstanceMatcherOutputList;
+			return l1;
 
 			// System.exit(0);
 		} // if the endpoint is url

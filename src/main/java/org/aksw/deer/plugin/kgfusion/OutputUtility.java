@@ -104,7 +104,7 @@ public class OutputUtility {
 		// Add Reified statements to final model
 		finalOuputModel.add(limeOutputModel);
 		InstanceMatcherOutputList.add(finalOuputModel);
-		System.out.println(" ZGreat: " + InstanceMatcherOutputList);
+		//System.out.println(" ZGreat: " + InstanceMatcherOutputList);
 
 		return InstanceMatcherOutputList;
 
