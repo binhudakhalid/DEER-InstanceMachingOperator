@@ -50,7 +50,7 @@ public class OutputUtility {
 
 		Model limeOutputModel = ModelFactory.createDefaultModel();
 		try {
-			File myObj = new File("TABaccepted.nt");
+			File myObj = new File("accepted.nt");
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				String data = myReader.nextLine();

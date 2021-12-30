@@ -582,7 +582,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setExecutionEngine("default");
 
 		// Output format CSV etc
-		conf.setOutputFormat("NT"); // NT or TTL
+		conf.setOutputFormat("TAB"); // NT or TTL
 
 		System.out.println("lool me conf " + conf);
 		return conf;
