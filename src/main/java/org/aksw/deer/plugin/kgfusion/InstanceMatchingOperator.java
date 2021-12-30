@@ -111,7 +111,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
-		
 
 		// tam();
 		// System.out.println();
@@ -169,8 +168,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
 			System.out.println("op2 : " + abc);
 		});
-		
-		
 
 		System.out.println(" drecipient-dc coverage: " + coverage);
 		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
@@ -178,6 +175,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" drecipient-dc type: " + type);
 		System.out.println(" drecipient-dc source: " + source);
 		System.out.println(" drecipient-dc target: " + target);
+
+		// System.exit(1);
 		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
 		// System.out.println(" drecipient-dc sourceRestriction: " +
 		// sourceRestriction.get().getClass());
@@ -199,7 +198,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
 		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		
 
 		debug = true;
 
@@ -213,8 +211,16 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
 
+			/*
+			 * Remove tabu properties
+			 */
+
+			removeTabuProperties(tabuSourceProperty, propertiesListSource1);
+			// removeTabuProperties(coverage, propertiesListTarget1);
+
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
+
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
@@ -243,17 +249,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("see 0011 ");
 			callLimes(con);
 			System.out.println("see 0012 ");
-			
-			
+
 			System.out.println("--> In Output Generating Phase");
 
 			OutputUtility ouputUtility = new OutputUtility();
-			
-			List<Model>  l1 = ouputUtility.createOuput("accepted.nt", sourceRestrictions, targetRestrictions, sourceFilePath,
-					targetFilePath, "File");
-			
-		 
 
+			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceRestrictions, targetRestrictions,
+					sourceFilePath, targetFilePath, "File");
 
 			return l1;
 
@@ -382,6 +384,68 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 //		System.out.println(" Model1a " + model1 );
 
 		return outputList;
+	}
+
+	private void removeTabuProperties(HashMap<String, Resource> tabuSourceProperty,
+			List<PropertyEntity> propertiesList) {
+		
+		System.out.println("removeTabuProperties ->  Total Properties after removing tabu properties: "
+				+ propertiesList.size());
+
+		if (!tabuSourceProperty.isEmpty()) {
+
+			for (Entry<String, Resource> entry : tabuSourceProperty.entrySet()) {
+				String propertyString = entry.getKey();
+
+				String value = propertyString.substring(0, (propertyString.lastIndexOf("/")) + 1);
+				String property = propertyString.substring(propertyString.lastIndexOf("/") + 1);
+
+				for(int i = 0; i< propertiesList.size(); i++) 
+				{
+					if (propertiesList.get(i).propertyName.equals(property) && propertiesList.get(i).value.equals(value)) {
+				        {
+				        	System.out.println("propertiesList.get(i).propertyName : " + propertiesList.get(i).propertyName);
+							System.out.println("property : " + property);
+							System.out.println(" propertiesList.get(i).value : " +  propertiesList.get(i).value);
+							System.out.println("value : " + value);
+
+							System.out.println(" *matched* ");
+				        	
+				        }
+				        	propertiesList.remove(i);
+				        }
+				}
+				
+				/*for (PropertyEntity p1 : propertiesList) {
+
+					if (p1.propertyName.equals(property) && p1.value.equals(value)) {
+						System.out.println("p1.propertyName : " + p1.propertyName);
+						System.out.println("property : " + property);
+						System.out.println("p1.value : " + p1.value);
+						System.out.println("value : " + value);
+
+						System.out.println(" *matched* ");
+						System.out.println("----------------------------------");
+				
+						 list.remove(i);
+						propertiesList.remove(p1);
+					} else {
+						System.out.println("not matched");
+					}
+				}*/
+
+			}
+
+		}
+		System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
+				+ propertiesList.size());
+		System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
+				+ propertiesList);
+
+		System.exit(1);
+
+		// TODO Auto-generated method stub
+
 	}
 
 	/*
