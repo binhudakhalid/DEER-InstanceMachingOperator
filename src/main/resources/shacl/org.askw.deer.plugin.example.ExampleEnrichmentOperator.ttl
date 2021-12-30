@@ -5,19 +5,19 @@
 @prefix deer: <https://w3id.org/deer/> .
 @prefix fcage: <https://w3id.org/fcage/> .
 
-# Node ExampleEnrichmentOperator
+# Node InstanceMatchingOperator
 
-deer:ExampleEnrichmentOperatorShape
+deer:InstanceMatchingOperatorShape
   a sh:NodeShape ;
-  sh:targetClass deer:IntanceMactchingOperator ;
-  sh:property deer:ExampleEnrichmentOperatorShape_name ;
+  sh:targetClass deer:InstanceMatchingOperator ;
+  sh:property deer:InstanceMatchingOperatorShape_name ;
   fcage:minInPorts 1 ;
   fcage:maxInPorts 1 ;
   fcage:minOutPorts 1 ;
   fcage:maxOutPorts 1 ;
 .
 
-deer:ExampleEnrichmentOperatorShape_name
+deer:InstanceMatchingOperatorShape_name
   sh:path deer:fromPath ;
   sh:minCount 1 ;
   sh:maxCount 1 ;

@@ -13,12 +13,26 @@
   fcage:hasOutput :matcher ;
 .
 
-:matcher
- a deer:IntanceMatchingOperator ;
- deer:coverage "8.66" ;			   #Coverage of a Property     #propteryCount/TotalInstanceCount
- deer:maxLimit "10";           #Maximum number of Properties
- deer:test "true";
- fcage:hasInput :reader ;
+:matcher   #add source and target and restriction(read from output of ontology matching group)
+ a deer:InstanceMatchingOperator ;
+ deer:coverage "0.70" ;		   #Coverage of a Property     #propteryCount/TotalInstanceCount #Default=90%
+ deer:maxLimit "1";           #Maximum number of Properties #Default=3
+ deer:test "true"; 			   #Default=false
+ deer:type "file";              #It can be "file" or "endpoints
+ deer:source "data/data_nobelprize_org.nt";
+ deer:target "data/lov_linkeddata_es_dataset_lov.nt";
+ 
+ deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
+ deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
+ 
+ deer:tabuSourceProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/first> ],
+						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/second> ],
+						 [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/third> ];
+  
+ deer:tabuTargetProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsee1Target> ],
+                         [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsaw2Target> ];
+ fcage:hasInput :reader ; 
+ deer:debugLogs "true" ;
 .
  
  
