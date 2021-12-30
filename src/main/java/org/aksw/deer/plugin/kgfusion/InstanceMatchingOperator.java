@@ -78,7 +78,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	Set<String> entityListFile;
 
 	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
-	private HashMap<Integer, Double> tabuTargetProperty;
+	private HashMap<String, Resource> tabuTargetProperty = new HashMap<String, Resource>();;
 
 	public static Property COVERAGE = DEER.property("coverage");
 	public static Property MAX_LIMIT = DEER.property("maxLimit");
@@ -150,23 +150,15 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.map(Resource::getURI).orElse("asdasd tat");
 
 		getParameterMap().listPropertyObjects(TABU_SOURCE_PROPERTY).map(RDFNode::asResource).forEach(op -> {
-
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
-			// final String abc =
-			// op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
-			// System.out.println("op1 : " + abc);
-			System.out.println("op1 abcd : " + propertyUri);
-			// System.out.println("Count :" + a);
-
 			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
-
 		});
 		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
 		printOut("tabuSourceProperty tsp : " + tabuSourceProperty);
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
-			final String abc = op.getPropertyResourceValue(PROPERTY_URI).asResource().getURI();
-			System.out.println("op2 : " + abc);
+			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
+			tabuTargetProperty.put(propertyUri.toString(), propertyUri);
 		});
 
 		System.out.println(" drecipient-dc coverage: " + coverage);
@@ -216,7 +208,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			 */
 
 			removeTabuProperties(tabuSourceProperty, propertiesListSource1);
-			// removeTabuProperties(coverage, propertiesListTarget1);
+			removeTabuProperties(tabuTargetProperty, propertiesListTarget1);
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
@@ -389,7 +381,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	private void removeTabuProperties(HashMap<String, Resource> tabuSourceProperty,
 			List<PropertyEntity> propertiesList) {
 		
-		System.out.println("removeTabuProperties ->  Total Properties after removing tabu properties: "
+		System.out.println("removeTabuProperties ->  Total Properties before removing tabu properties: "
 				+ propertiesList.size());
 
 		if (!tabuSourceProperty.isEmpty()) {
@@ -439,10 +431,10 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 		System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
 				+ propertiesList.size());
-		System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
-				+ propertiesList);
+		//System.out.println("removeTabuProperties -> Total Properties after removing tabu properties: "
+		//		+ propertiesList);
 
-		System.exit(1);
+		
 
 		// TODO Auto-generated method stub
 
