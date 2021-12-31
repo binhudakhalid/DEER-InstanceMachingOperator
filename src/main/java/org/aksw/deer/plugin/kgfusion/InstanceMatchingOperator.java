@@ -595,102 +595,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// System.exit(0);
 	}
 
-	public void dynamicPrefix() {
-
-		prefixMap = new HashMap<String, String>();// Creating HashMap
-
-		String prefix, prefixValue;
-		try {
-
-			// We will get this data from Ontology team eventually
-			File tempDataFile = new File("EntityFileSource.ttl");
-			Scanner myReader = new Scanner(tempDataFile);
-			// We need this loop to run for every line as we don't know where the prefix can
-			// be found in the data file.
-			while (myReader.hasNextLine()) {
-				String Line = myReader.nextLine();
-				if (Line.contains("@prefix")) {
-					prefix = Line.substring(Line.indexOf(" "), Line.indexOf(":"));
-					System.out.println("prefix:::: " + prefix);
-
-					// this should will done in the new util method
-					prefixValue = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));// .replaceAll(":",
-					System.out.println("prefixValue:::: " + prefixValue);
-
-					prefixMap.put(prefix, prefixValue);
-				}
-			}
-
-			Scanner myReader2 = new Scanner(tempDataFile);
-
-			while (myReader2.hasNextLine()) {
-
-				String Line = myReader2.nextLine();
-				String prefixKey = null, prefixV = null;
-				String predicatePrefixValue;
-
-				if (Line.contains("@prefix")) {
-					System.out.println("Contains @prefix");
-				} else if (Line.contains("<http://")) {
-					String subjecturl = Line.substring(Line.indexOf("<") + 1, Line.indexOf(">"));
-
-					// @prefix prov: <http://www.w3.org/ns/prov#>
-					if (subjecturl.contains("#")) {
-
-						URL aURL = new URL(subjecturl);
-						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-						prefixV = temp.substring(0, temp.lastIndexOf('/') + 1);
-
-						/// creating prefix key
-						// prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
-
-						if (aURL.getHost().contains("www.")) {
-							prefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-						} else {
-							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-						}
-
-						predicatePrefixValue = subjecturl.substring(0, subjecturl.indexOf("#") + 1);
-						String predicatePrefixValue2 = subjecturl.substring(subjecturl.indexOf("#") + 1,
-								subjecturl.length());
-
-						System.out.println("RedALret prefixKey  :" + prefixKey);
-						System.out.println("RedALret predicatePrefixValue :" + predicatePrefixValue);
-						System.out.println("RedALret predicatePrefixValue2 :" + predicatePrefixValue2);
-
-					} else {
-
-						URL aURL = new URL(subjecturl);
-						String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-						predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
-						/// creating prefix key
-						// prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 2);
-						if (aURL.getHost().contains("www.")) {
-							prefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-						} else {
-							prefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-						}
-					}
-
-					prefixMap.put(prefixKey, predicatePrefixValue);
-				}
-
-			}
-			System.out.println(" let check prefixMap " + prefixMap);
-
-			myReader.close();
-			myReader2.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-		// return prefixMap;
-		catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	// finding the number of records having the specific property
 	// save it to hashMap.
 	// Query returns the number of times every property is present in all records.
@@ -1213,7 +1117,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("*****************************************");
 			System.out.println(" Query String: " + "\n" + queryString + "\n");
 			System.out.println("*****************************************");
-		}
+		
+		} 
 
 		if (debug) {
 			System.out.println("result 0019 show data that is return after query : " + results); //

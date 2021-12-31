@@ -949,10 +949,10 @@
 <http://data.nobelprize.org/resource/laureate/958>	<http://homepages.inf.ed.ac.uk/jcheney/>	0.5
 <http://data.nobelprize.org/resource/laureate/958>	<http://sparql.cwrc.ca/ontologies/cwrc#366c694c-b5bd-47b4-80a9-2dead4f7a7cb-fe3a497236>	0.5
 <http://data.nobelprize.org/resource/laureate/716>	<mailto:admin@lexicater.co.uk>	0.7071067811865475
-<http://data.nobelprize.org/resource/laureate/839>	<file:///F:/mat/base/plugin-example/>	0.5
-<http://data.nobelprize.org/resource/laureate/839>	<http://sparql.cwrc.ca/ontologies/cwrc#b736fb3c-dcde-49f3-aa07-67ce6a42100a-1ca90e57c1>	0.5
 <http://data.nobelprize.org/resource/laureate/718>	<file:///F:/mat/base/plugin-example/>	0.5
 <http://data.nobelprize.org/resource/laureate/718>	<http://sparql.cwrc.ca/ontologies/cwrc#b736fb3c-dcde-49f3-aa07-67ce6a42100a-1ca90e57c1>	0.5
+<http://data.nobelprize.org/resource/laureate/839>	<file:///F:/mat/base/plugin-example/>	0.5
+<http://data.nobelprize.org/resource/laureate/839>	<http://sparql.cwrc.ca/ontologies/cwrc#b736fb3c-dcde-49f3-aa07-67ce6a42100a-1ca90e57c1>	0.5
 <http://data.nobelprize.org/resource/laureate/724>	<file:///F:/mat/base/plugin-example/>	0.5
 <http://data.nobelprize.org/resource/laureate/724>	<http://google.com/+EricJahn>	0.5
 <http://data.nobelprize.org/resource/laureate/603>	<https://plus.google.com/115186039655970066249>	0.7071067811865475
