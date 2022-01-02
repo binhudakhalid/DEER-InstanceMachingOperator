@@ -28,6 +28,7 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
+import org.apache.jena.base.Sys;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -271,7 +272,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			}
 
 			// Check if the data is available, if we query it with following properties
-			//isDataAvailableURL(sourceEndpoint, sourceRestrictions, propertiesListTarget1);
+			//isDataAvailableURL(sourceEndpoint, sourceRestrictions, propertiesListSource1);
 			//isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
 
 			// check
@@ -978,6 +979,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
+		maximumProperties = 3;
 		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
@@ -1033,7 +1035,10 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-
+			System.out.println("-----------------------" );
+			System.out.println(" predicate: " + predicate);
+			System.out.println(" PredicateCount: " + PredicateCount);
+			System.out.println("-----------------------" );
 			// System.out.println(" lookit : " + predicate);
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
@@ -1059,7 +1064,7 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 		});
 
 		System.out.println("propertiesListTemp url: " + propertiesListTemp);
-
+	
 		return propertiesListTemp;
 	}
 
@@ -1072,6 +1077,8 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 	}
 
 	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
+
+		
 
 		StringBuilder varibleQueryPart = new StringBuilder();
 		StringBuilder prefixQueryPart = new StringBuilder();
@@ -1087,10 +1094,40 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 		}
 		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
 				+ propertyQueryPart + " } LIMIT 1";
-		System.out.println("queryString:  \n" + queryString);
+
+				System.out.println("queryString 090: propertyEntities \n" + propertyEntities);
+		System.out.println("queryString 090:  \n" + queryString);
+		System.out.println("queryString 090 url:  " + url);
+		System.out.println("queryString 090 restriction:  " + restriction);
+
+		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
+
+		//Adding restriction prefix and restriction
+		String restrictionPrefix = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">";
+
+		//"t v0"
+
+		String qtest =  "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n"
+				+ "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX scac: <http://schema.org/>\r\n"
+				+ "PREFIX w3199: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX scsa: <http://schema.org/>\r\n"
+				+ "SELECT DISTINCT ?t ?v0 ?v1 ?v2 ?v3 ?v4 ?v5\r\n"
+				+ "WHERE {\r\n"
+				+ "?t rdf:type url:Movie  .\r\n"
+				+ "?t w3200:comment ?v1 .\r\n"
+				+ "?t w3200:label ?v2 .\r\n"
+				+ "?t scac:actor ?v3 .\r\n"
+				+ "?t w3199:type ?v4 .\r\n"
+				+ "?t scsa:sameAs ?v5 .\r\n"
+				+ " } LIMIT 1";
+
+		System.out.println("queryString 090 restriction: toString " + restrictionPrefixEntity.toString());
 
 		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(url, queryString);
+		qe = QueryExecutionFactory.sparqlService(url, qtest);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
@@ -1098,7 +1135,13 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 		// resultOne.forEachRemaining(qsol -> totalInstances =
 		// qsol.getLiteral("totalInstances").getInt());
 		qe.close();
+
+		System.out.println("your ended here");
+
+		System.exit(0);
 		return true;
+
+	
 	}
 
 	/*
