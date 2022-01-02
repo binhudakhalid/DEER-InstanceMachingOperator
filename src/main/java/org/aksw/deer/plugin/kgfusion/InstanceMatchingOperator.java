@@ -573,13 +573,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.5);
+		conf.setAcceptanceThreshold(0.3);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
 
 		// Review
-		conf.setVerificationThreshold(0.4);
+		conf.setVerificationThreshold(0.2);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
@@ -979,7 +979,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
-		maximumProperties = 10;
+		maximumProperties = 5;
 		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
