@@ -573,13 +573,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.0);
+		conf.setAcceptanceThreshold(0.5);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
 
 		// Review
-		conf.setVerificationThreshold(0.1);
+		conf.setVerificationThreshold(0.4);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
@@ -979,7 +979,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
-		maximumProperties = 3;
+		maximumProperties = 10;
 		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
@@ -1000,7 +1000,7 @@ String a =  path +
 "PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
 "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
 		+ "  ?s rdf:type url:Movie> .\r\n"
-		+ "  ?s ?predicate ?o .\r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )"
+			+ "  ?s ?predicate ?o .\r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )"
 		+ "LIMIT 10";
 		//QueryExecution qe = null;
 	/*	qe = QueryExecutionFactory.sparqlService(path,
@@ -1025,7 +1025,9 @@ QueryExecution qe = QueryExecutionFactory.sparqlService(
 	"PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
 	"SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
 			+ "  ?s rdf:type url:Movie .\r\n"
-			+ "  ?s ?predicate ?o .\r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )"
+			+ "  ?s ?predicate ?o .\r\n" 
+			+ " FILTER(isLiteral(?o) ). \r\n "
+			+ "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )"
 			+ " LIMIT " + maximumProperties);
 		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
