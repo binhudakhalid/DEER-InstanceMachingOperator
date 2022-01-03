@@ -245,8 +245,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
 
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
-
-			System.out.println(" 91029 propertiesListTarget1 ");
+			
 
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
@@ -270,10 +269,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			}
 
 			// Check if the data is available, if we query it with following properties
-			// isDataAvailableURL(sourceEndpoint, sourceRestrictions,
-			// propertiesListSource1);
-			// isDataAvailableURL(targetEndpoint, targetRestrictions,
-			// propertiesListTarget1);
+			// isDataAvailableURL(sourceEndpoint, sourceRestrictions, propertiesListSource1);
+			 isDataAvailableURL(targetEndpoint, targetRestrictions,
+			 propertiesListTarget1);
 
 			// check
 
@@ -412,7 +410,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties after comparing with Coverage: "
 				+ tempPropertiesListSource.size());
-		System.out.println(" removePropertiesHavingLowerCoverage -> list after = " + tempPropertiesListSource);
+		System.out.println("removePropertiesHavingLowerCoverage -> list after = " + tempPropertiesListSource);
 	}
 
 	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
@@ -988,27 +986,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
 
-		maximumProperties = 5;
-		System.out.println(" In there 855 " + path + " - " + restriction + " - " + maximumProperties);
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
-		System.out.println(" In there 856 restrictionPrefixEntity :  " + restrictionPrefixEntity);
-
-		System.out.println("restrictionPrefixEntity:: " + restrictionPrefixEntity);
-
 		InstanceCount instanceCount = new InstanceCount();
 		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
-
-		System.out.println("getPropertiesFromFile -> Total instance of '" + restriction + "' is : " + size);
-
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
-		System.out.println(" khalid Bin Huda  : " + InstanceCount.getFinalRedirectedUrl(path));
 
-		String a = path + "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n "
-				+ "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
-				+ "  ?s rdf:type url:Movie> .\r\n" + "  ?s ?predicate ?o .\r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
-				+ "order by desc ( ?count )" + "LIMIT 10";
+		// This query not working after the update on DBpedia.com
 		// QueryExecution qe = null;
 		/*
 		 * qe = QueryExecutionFactory.sparqlService(path, "PREFIX " +
@@ -1025,10 +1008,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		 * "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties);
 		 */
 
-		System.out.println("  see the game a  : " + a);
-		QueryExecution qe = QueryExecutionFactory.sparqlService(
-
-				path,
+		QueryExecution qe = QueryExecutionFactory.sparqlService(path,
 				"PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
 						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n "
@@ -1036,32 +1016,21 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 						+ "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n"
 						+ " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n"
 						+ "order by desc ( ?count )" + " LIMIT " + maximumProperties);
-		// url1:Person
-//		http://xmlns.com/foaf/0.1/Person
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		System.out.println("  see the game b : ");
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-			System.out.println("-----------------------");
+/*			System.out.println("-----------------------");
 			System.out.println(" predicate: " + predicate);
 			System.out.println(" PredicateCount: " + PredicateCount);
 			System.out.println("-----------------------");
-			// System.out.println(" lookit : " + predicate);
+			// System.out.println(" lookit : " + predicate);*/
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
-
 			if (size > 0) {
 				coverage = PredicateCount / size;
-
-				// System.out.println(" ckcpppa PredicateCount :" + PredicateCount);
-
-				// System.out.println(" ckcpppa size :" + size);
-				// System.out.println(" ckcpppa coverage :" + coverage);
-				// System.out.println(" ckcpppa check :" + PredicateCount / size);
-
 			} else {
 				coverage = 0;
 			}
@@ -1072,7 +1041,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		});
 
-		System.out.println("propertiesListTemp url: " + propertiesListTemp);
+		System.out.println("***************************************");
+		System.out
+				.println("getPropertiesFromURL -> endpoint: " + path + " - " + restriction + " - " + maximumProperties);
+		System.out.println("getPropertiesFromURL -> Total instance of '" + restriction + "' is : " + size);
+		System.out.println("getPropertiesFromURL -> The Property List From URL Endpoint: " + propertiesListTemp);
+		System.out.println("***************************************");
 
 		return propertiesListTemp;
 	}
@@ -1085,6 +1059,27 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		model.add(stmt);
 	}
 
+	
+	/*
+	 * PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbon: <http://dbpedia.org/ontology/>
+PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpr: <http://dbpedia.org/property/>
+PREFIX xmfo: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX url: <http://schema.org/>
+SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5
+WHERE {
+?t rdf:type url:Movie .
+?t w3200:label ?v1 .
+?t dbon:abstract ?v2 .
+?t w3200:comment ?v3 .
+?t dbpr:starring ?v4 .
+?t xmfo:name ?v5 .
+ } LIMIT 1
+ 
+ 
+ THis query is working*/
 	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
 
 		StringBuilder varibleQueryPart = new StringBuilder();
