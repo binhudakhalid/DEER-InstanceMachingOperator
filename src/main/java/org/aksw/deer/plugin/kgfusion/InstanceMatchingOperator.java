@@ -429,7 +429,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		conf.addPrefix("url", "http://schema.org/");
-		conf.addPrefix("yago", "http://yago-knowledge.org/resource/");
+		//conf.addPrefix("yago", "http://yago-knowledge.org/resource/");
 
 		KBInfo src = new KBInfo();
 
@@ -461,7 +461,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		prefixes.put("url", "http://schema.org/");
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		prefixes.put("yago", "http://yago-knowledge.org/resource/");
+		//prefixes.put("yago", "http://yago-knowledge.org/resource/");
 		// setting prefix for source
 		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
@@ -1105,7 +1105,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		System.out.println("your ended here");
 
-		System.exit(0);
+		//System.exit(0);
 		return true;
 
 	}
