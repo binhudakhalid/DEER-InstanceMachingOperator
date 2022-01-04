@@ -75,20 +75,18 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
 	private HashMap<String, Resource> tabuTargetProperty = new HashMap<String, Resource>();;
 
-	public static Property COVERAGE = DEER.property("coverage");
-	public static Property MAX_LIMIT = DEER.property("maxLimit");
-	public static Property TEST = DEER.property("test");
-	public static Property TYPE = DEER.property("type");
-	public static Property SOURCE = DEER.property("source");
-	public static Property TARGET = DEER.property("target");
-	public static Property SOURCE_RESTRICTION = DEER.property("sourceRestriction");
-	public static Property TARGET_RESTRICTION = DEER.property("targetRestriction");
-	public static Property TABU_SOURCE_PROPERTY = DEER.property("tabuSourceProperty");
-	public static Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
-	public static Property DEBUG_LOGS = DEER.property("debugLogs");
-
+	public static final Property COVERAGE = DEER.property("coverage");
+	public static final Property MAX_LIMIT = DEER.property("maxLimit");
+	public static final Property TEST = DEER.property("test");
+	public static final Property TYPE = DEER.property("type");
+	public static final Property SOURCE = DEER.property("source");
+	public static final Property TARGET = DEER.property("target");
+	public static final Property SOURCE_RESTRICTION = DEER.property("sourceRestriction");
+	public static final Property TARGET_RESTRICTION = DEER.property("targetRestriction");
+	public static final Property TABU_SOURCE_PROPERTY = DEER.property("tabuSourceProperty");
+	public static final Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
+	public static final Property DEBUG_LOGS = DEER.property("debugLogs");
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
-
 	List<Model> outputList = new ArrayList<>();;
 
 	public InstanceMatchingOperator() {
@@ -110,10 +108,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
-
 		String test = getParameterMap().getOptional(TEST).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("false");
-
 		String type = getParameterMap().getOptional(TYPE).map(RDFNode::asLiteral).map(Literal::getString)
 				.orElse("fileType");
 		String source = getParameterMap().getOptional(SOURCE).map(RDFNode::asLiteral).map(Literal::getString)
@@ -245,7 +241,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
 
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
-			
 
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
@@ -269,9 +264,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			}
 
 			// Check if the data is available, if we query it with following properties
-			// isDataAvailableURL(sourceEndpoint, sourceRestrictions, propertiesListSource1);
-			 isDataAvailableURL(targetEndpoint, targetRestrictions,
-			 propertiesListTarget1);
+			// isDataAvailableURL(sourceEndpoint, sourceRestrictions,
+			// propertiesListSource1);
+			isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
 
 			// check
 
@@ -859,40 +854,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		return totalInstances;
 	}
 
-	public Set<String> getEntitiesFromFile(String link) {
-		entityListFile = new HashSet<String>();
-		double size = 0;
-
-		Model model = ModelFactory.createDefaultModel();
-		RDFDataMgr.read(model, link, Lang.NTRIPLES);
-
-		size = model.size();
-		System.out.println("size :::: " + size);
-		if (size < 1) {
-			System.out.println("File is empty. size :" + size);
-		}
-
-		Property predicateRDFType = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-
-		StmtIterator iter = model.listStatements();
-
-		while (iter.hasNext()) {
-			Statement stmt = iter.nextStatement();
-			Resource subject = stmt.getSubject();
-			Property predicate = stmt.getPredicate();
-			RDFNode object = stmt.getObject();
-
-			if (predicate.toString().equals(predicateRDFType.toString())) {
-				System.out.println("found enitity : ");
-				entityListFile.add(object.toString());
-			}
-			System.out.println("predicate : " + predicate);
-		}
-		System.out.println(" entity list : " + entityListFile);
-
-		return entityListFile;
-	}
-
 	/*
 	 * Takes entity as input return list of properties from file. Listing properties
 	 * with their counts
@@ -1021,11 +982,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-/*			System.out.println("-----------------------");
-			System.out.println(" predicate: " + predicate);
-			System.out.println(" PredicateCount: " + PredicateCount);
-			System.out.println("-----------------------");
-			// System.out.println(" lookit : " + predicate);*/
+			/*
+			 * System.out.println("-----------------------");
+			 * System.out.println(" predicate: " + predicate);
+			 * System.out.println(" PredicateCount: " + PredicateCount);
+			 * System.out.println("-----------------------"); //
+			 * System.out.println(" lookit : " + predicate);
+			 */
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
@@ -1059,27 +1022,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		model.add(stmt);
 	}
 
-	
 	/*
-	 * PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbon: <http://dbpedia.org/ontology/>
-PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbpr: <http://dbpedia.org/property/>
-PREFIX xmfo: <http://xmlns.com/foaf/0.1/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX url: <http://schema.org/>
-SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5
-WHERE {
-?t rdf:type url:Movie .
-?t w3200:label ?v1 .
-?t dbon:abstract ?v2 .
-?t w3200:comment ?v3 .
-?t dbpr:starring ?v4 .
-?t xmfo:name ?v5 .
- } LIMIT 1
- 
- 
- THis query is working*/
+	 * PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dbon:
+	 * <http://dbpedia.org/ontology/> PREFIX w3200:
+	 * <http://www.w3.org/2000/01/rdf-schema#> PREFIX dbpr:
+	 * <http://dbpedia.org/property/> PREFIX xmfo: <http://xmlns.com/foaf/0.1/>
+	 * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX url:
+	 * <http://schema.org/> SELECT DISTINCT ?t ?v1 ?v2 ?v3 ?v4 ?v5 WHERE { ?t
+	 * rdf:type url:Movie . ?t w3200:label ?v1 . ?t dbon:abstract ?v2 . ?t
+	 * w3200:comment ?v3 . ?t dbpr:starring ?v4 . ?t xmfo:name ?v5 . } LIMIT 1
+	 * 
+	 * 
+	 * THis query is working
+	 */
 	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
 
 		StringBuilder varibleQueryPart = new StringBuilder();
@@ -1094,19 +1049,24 @@ WHERE {
 					.append("?t " + propertyEntity.key + ":" + propertyEntity.propertyName + " ?v" + i + " . \n");
 			i++;
 		}
-		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
-				+ propertyQueryPart + " } LIMIT 1";
 
-		System.out.println("queryString 090: propertyEntities \n" + propertyEntities);
-		System.out.println("queryString 090:  \n" + queryString);
-		System.out.println("queryString 090 url:  " + url);
-		System.out.println("queryString 090 restriction:  " + restriction);
+		// restriction
 
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 
 		// Adding restriction prefix and restriction
 		String restrictionPrefix = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value
-				+ ">";
+				+ "> \n";
+
+		String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ "PREFIX url: <http://schema.org/> \n " + restrictionPrefix + prefixQueryPart + "SELECT DISTINCT ?t "
+				+ varibleQueryPart + "\nWHERE { \n " + " ?t rdf:type url:Movie ." + "\n" + propertyQueryPart + " } LIMIT 1";
+
+		System.out.println("queryString 090: propertyEntities \n" + propertyEntities);
+		System.out.println("queryString 090: restriction \n" + restriction);
+		System.out.println("queryString 091:  \n" + queryString);
+		System.out.println("queryString 090 url:  " + url);
+		System.out.println("queryString 090 restriction:  " + restriction);
 
 		// "t v0"
 
@@ -1122,8 +1082,20 @@ WHERE {
 		System.out.println("queryString 090 restriction: toString " + restrictionPrefixEntity.toString());
 
 		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(url, qtest);
+		qe = QueryExecutionFactory.sparqlService(url, queryString);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
+		
+		
+		if (resultOne.hasNext() == false) {
+			System.out.println("*****************************************");
+			System.out.println(" !! No data avaible for following query for "  + " !! ");
+			System.out.println(" URL Enpoint: " + url);
+			System.out.println(" Query String: " + "\n" + queryString + "\n");
+			System.out.println(" It might give null point exception in LIMES \n");
+			System.out.println("*****************************************");
+
+		}
+		
 		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
 
