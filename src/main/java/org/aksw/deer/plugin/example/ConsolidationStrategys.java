@@ -133,8 +133,11 @@ public class ConsolidationStrategys {
   // not completly right
   public static Literal computeFusionForStringConcat(List<Literal> alternatives){
     return ResourceFactory.createStringLiteral(
-       alternatives.stream().toArray().toString()
+      (alternatives.get(0).toString() + alternatives.get(1).toString())
     );
+
+    //return ResourceFactory.createStringLiteral(       alternatives.stream().toArray().toString()
+    // );
   }
 
   /*
@@ -195,7 +198,6 @@ public class ConsolidationStrategys {
   static {
     /**
     FallBack , if not specified use fallBackFusion
-
      */
 
     dispatchMapExpertiseSource.put(
@@ -280,6 +282,9 @@ public class ConsolidationStrategys {
     //
   }
 
+  /**
+   * For each Strategy map it to the dispatchmap used for it
+   */
   static {
     strategyMapping.put(
       FusionStrategy.standard, dispatchMapStandard

@@ -6,7 +6,8 @@ Questions:
 
 
 Todos:
-
+- [ ] add skeleton for writing
+- [ ] Future work (what can be done next with this project)
 - [ ]  export fusion/consolidation and use it as class !
 - [ ] Timing Test
 - [x] Add Endpoints (atm just file) (should be via config)

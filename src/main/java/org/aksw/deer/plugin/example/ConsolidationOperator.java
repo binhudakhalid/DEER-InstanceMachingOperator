@@ -437,19 +437,6 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
   }
 
   /**
-   * Add provenance.
-   *
-   * @param model the model
-   * @param stm   the stm
-   */
-  public void AddProvenance(Model model, SourceTargetMatch stm){
-    // model.add()
-  }
-
-
-
-
-  /**
    * Add to source target map.
    *
    * @param key       the key
