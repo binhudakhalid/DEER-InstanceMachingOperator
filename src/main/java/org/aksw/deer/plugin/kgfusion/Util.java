@@ -21,11 +21,12 @@ public class Util {
 					+ restrictionObject.key + ":" + restrictionObject.name;
 			System.out.println("s1 " + s1);
 
+			System.out.println(" s1s1 var :"+ variable + " : " + s1);
 			sourceResObj.restrictionList.add(s1);
 			sourceResObj.restrictionPrefixEntity.add(restrictionPredicate);
 			sourceResObj.restrictionPrefixEntity.add(restrictionObject);
 		}
-
+		
 		System.out.println("see : " + sourceResObj.restrictionList);
 		System.out.println("see restrictionPrefixEntity: " + sourceResObj.restrictionPrefixEntity);
 

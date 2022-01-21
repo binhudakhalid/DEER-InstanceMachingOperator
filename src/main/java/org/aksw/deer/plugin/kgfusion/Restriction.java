@@ -10,7 +10,9 @@ public class Restriction {
 	// Set<String> letter = new HashSet<String>();
 	Set<PrefixEntity> restrictionPrefixEntity;
 	Set<String> restrictionString;
-	List<String> restrictionList;
+	ArrayList<String> restrictionList;
+  
+
 
 	Restriction() {
 		restrictionList = new ArrayList<>();

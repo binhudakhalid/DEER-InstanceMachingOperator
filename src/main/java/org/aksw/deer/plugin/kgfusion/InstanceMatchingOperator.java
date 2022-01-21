@@ -88,6 +88,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property DEBUG_LOGS = DEER.property("debugLogs");
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
 	List<Model> outputList = new ArrayList<>();;
+	Restriction sourceResObj;
+	Restriction targetResObj;
 
 	public InstanceMatchingOperator() {
 		super();
@@ -102,48 +104,37 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.declareValidationShape(getValidationModelFor(InstanceMatchingOperator.class)).build();
 	}
 
-	
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		 
-			
-		
 		String string1 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 		String string1a = "http://schema.org/Movie";
 
 		String string2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-		String string2a ="http://dbpedia.org/ontology/Film";
-		
-		String string3 = "http://schema.org/actor"; 
+		String string2a = "http://schema.org/Movie";//"http://dbpedia.org/ontology/Movie";
+
+		String string3 = "http://schema.org/actor";
 		String string3a = "http://yago-knowledge.org/resource/Jennifer_Aniston";
-		   
-			  
 
 		HashMap<String, String> sourceRestrictionPredicateMap = new HashMap<String, String>();
 		sourceRestrictionPredicateMap.put(string1, string1a);
-		
-		HashMap<String, String> targetRestrictionPredicateMap = new HashMap<String, String>();
+
+		HashMap<String, String> targetRestrictionPredicateMap =  new LinkedHashMap<String, String>();
 		targetRestrictionPredicateMap.put(string2, string2a);
 		targetRestrictionPredicateMap.put(string3, string3a);
-
+		
 		// Set<String> prefixURIs = new HashSet<String>();
 		// prefixURIs.add(string1);
 		// prefixURIs.add(string2);
-		
+
 		Util util = new Util();
-		Restriction sourceResObj;
-		Restriction targetResObj;
 
 		sourceResObj = util.restrictionUriToString(sourceRestrictionPredicateMap, "s");
 		targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, "t");
 
 		System.out.println("sourceResObj : " + sourceResObj.restrictionPrefixEntity);
 		System.out.println("targetResObj : " + targetResObj.restrictionPrefixEntity);
-
-
-		
-
+	
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
@@ -489,7 +480,10 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// "?s rdf:type " + srcRestrictionPrefixEntity.key + ":" +
 		// srcRestrictionPrefixEntity.name })));
 
-		src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] { "?s rdf:type url:Movie" })));
+		// System.out.println( new ArrayList<String>(Arrays.asList(new String[] { "?s
+		// rdf:type url:Movie" })));
+		// System.out.println( sourceResObj.restrictionList);
+		src.setRestrictions(sourceResObj.restrictionList);
 		src.setProperties(srcPropertylist);
 		// src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		src.setType(type);
@@ -508,6 +502,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("scotlandyard - prefixes -: " + list.key + list.value);
 
 			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
+		}
+		// Setting Prefix for source restriction
+		for (PrefixEntity list : sourceResObj.restrictionPrefixEntity) {
+			prefixes.put(list.key, list.value);
+			System.out.println(" *ali* :" + list.key + list.value);
 		}
 
 		System.out.println(" polp ");
@@ -566,8 +565,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setPageSize(-1);
 
 		PrefixEntity targetRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(targetRestrictions);
-		target.setRestrictions(new ArrayList<String>(
-				Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t  url:actor yago:Jennifer_Aniston" })));
+		
+		System.out.println("targetResObj.restrictionList ::" + targetResObj.restrictionList);
+		//System.exit(0);
+		target.setRestrictions(targetResObj.restrictionList);
+		
+		// Setting Prefix for target restriction
+		for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
+			targetPrefixesMap.put(list.key, list.value);
+			System.out.println(" *ali* :" + list.key + list.value);
+		}
+
+		// target.setRestrictions(new ArrayList<String>(
+		 //Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t url:actor yago:Jennifer_Aniston" })));
 		// target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
 		// "?t rdf:type " + targetRestrictionPrefixEntity.key + ":" +
 		// targetRestrictionPrefixEntity.name })));
