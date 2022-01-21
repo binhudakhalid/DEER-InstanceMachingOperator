@@ -102,8 +102,47 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.declareValidationShape(getValidationModelFor(InstanceMatchingOperator.class)).build();
 	}
 
+	
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+
+		 
+			
+		
+		String string1 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+		String string1a = "http://schema.org/Movie";
+
+		String string2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+		String string2a ="http://dbpedia.org/ontology/Film";
+		
+		String string3 = "http://schema.org/actor"; 
+		String string3a = "http://yago-knowledge.org/resource/Jennifer_Aniston";
+		   
+			  
+
+		HashMap<String, String> sourceRestrictionPredicateMap = new HashMap<String, String>();
+		sourceRestrictionPredicateMap.put(string1, string1a);
+		
+		HashMap<String, String> targetRestrictionPredicateMap = new HashMap<String, String>();
+		targetRestrictionPredicateMap.put(string2, string2a);
+		targetRestrictionPredicateMap.put(string3, string3a);
+
+		// Set<String> prefixURIs = new HashSet<String>();
+		// prefixURIs.add(string1);
+		// prefixURIs.add(string2);
+		
+		Util util = new Util();
+		Restriction sourceResObj;
+		Restriction targetResObj;
+
+		sourceResObj = util.restrictionUriToString(sourceRestrictionPredicateMap, "s");
+		targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, "t");
+
+		System.out.println("sourceResObj : " + sourceResObj.restrictionPrefixEntity);
+		System.out.println("targetResObj : " + targetResObj.restrictionPrefixEntity);
+
+
+		
 
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
@@ -429,7 +468,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		conf.addPrefix("url", "http://schema.org/");
-		//conf.addPrefix("yago", "http://yago-knowledge.org/resource/");
+		// conf.addPrefix("yago", "http://yago-knowledge.org/resource/");
 
 		KBInfo src = new KBInfo();
 
@@ -461,7 +500,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		prefixes.put("url", "http://schema.org/");
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		//prefixes.put("yago", "http://yago-knowledge.org/resource/");
+		// prefixes.put("yago", "http://yago-knowledge.org/resource/");
 		// setting prefix for source
 		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
@@ -1060,7 +1099,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
 				+ "PREFIX url: <http://schema.org/> \n " + restrictionPrefix + prefixQueryPart + "SELECT DISTINCT ?t "
-				+ varibleQueryPart + "\nWHERE { \n " + " ?t rdf:type url:Movie ." + "\n" + propertyQueryPart + " } LIMIT 1";
+				+ varibleQueryPart + "\nWHERE { \n " + " ?t rdf:type url:Movie ." + "\n" + propertyQueryPart
+				+ " } LIMIT 1";
 
 		System.out.println("queryString 090: propertyEntities \n" + propertyEntities);
 		System.out.println("queryString 090: restriction \n" + restriction);
@@ -1084,18 +1124,17 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(url, queryString);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		
-		
+
 		if (resultOne.hasNext() == false) {
 			System.out.println("*****************************************");
-			System.out.println(" !! No data avaible for following query for "  + " !! ");
+			System.out.println(" !! No data avaible for following query for " + " !! ");
 			System.out.println(" URL Enpoint: " + url);
 			System.out.println(" Query String: " + "\n" + queryString + "\n");
 			System.out.println(" It might give null point exception in LIMES \n");
 			System.out.println("*****************************************");
 
 		}
-		
+
 		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
 
@@ -1105,7 +1144,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		System.out.println("your ended here");
 
-		//System.exit(0);
+		// System.exit(0);
 		return true;
 
 	}

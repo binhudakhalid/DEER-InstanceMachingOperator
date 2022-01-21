@@ -22,7 +22,7 @@
  deer:source "data/data_nobelprize_org.nt";
  deer:target "data/lov_linkeddata_es_dataset_lov.nt";
  
- deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
+ deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person1>;
  deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
  
  deer:tabuSourceProperty [ deer:propertyURI <http://xmlns.com/foaf/0.1/gender> ],
