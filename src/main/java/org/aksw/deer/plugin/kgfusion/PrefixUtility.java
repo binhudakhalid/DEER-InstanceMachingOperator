@@ -75,11 +75,9 @@ public class PrefixUtility {
 			}
 	 }
 	
-	private HashMap<String,String> extractPrefixFromFile() {
-		HashMap<String, String> TempHashMap = null;
-		return TempHashMap;
-	}
-
+	/*
+	 * TODO
+	 */
 	public void removeUnecessayPrefix(String sparqlQuery) {
 	}
 }

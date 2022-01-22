@@ -182,7 +182,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		debug = true;
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "fileTyp2e") {
+		if (inputEndpoint == "fileType") {
 			System.out.println(" ENDPOINT: FILE");
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
