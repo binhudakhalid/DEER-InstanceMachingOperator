@@ -160,10 +160,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
 
 		String inputEndpoint = "fileType";
-		String sourceFilePath = "data/data_nobelprize_org.nt";
-		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
-		String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+	//	String sourceFilePath = "data/data_nobelprize_org.nt";
+		String sourceFilePath = "data/cdrewu_eagle-i_net_sparqler.nt";
+//		String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
+		String targetFilePath = "data/harvard_eagle-i_net_sparqler.nt";
+		String sourceRestrictions = "http://vivoweb.org/ontology/core#Laboratory";//"http://xmlns.com/foaf/0.1/Person"; //"http://xmlns.com/foaf/0.1/Agent";
+		String targetRestrictions = "http://vivoweb.org/ontology/core#CoreLaboratory";// "http://purl.org/dc/terms/Agent";
 
 		debug = true;
 
@@ -549,7 +551,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
 		// Acceptance
-		conf.setAcceptanceThreshold(0.8);
+		conf.setAcceptanceThreshold(0.5);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
@@ -891,6 +893,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				+ "  ?instance ?predicate ?o .\r\n" + "  FILTER(isLiteral(?o)) \r\n" + "} \r\n"
 				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
 
+		System.out.println("queryString1 ::" +  queryString1);
 		// url1:Person
 //		http://xmlns.com/foaf/0.1/Person
 
