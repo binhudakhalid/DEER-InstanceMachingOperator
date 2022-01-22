@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Util {
-	
-	public Restriction restrictionUriToString(HashMap<String, String> sourceRestriction, String variable) {
+
+	public Restriction restrictionUriToString(HashMap<String, String> sourceRestriction, Restriction sourceResObj) {
 		System.out.println("prefixURIs :" + sourceRestriction);
 		// prefixURIs.
 
-		Restriction sourceResObj = new Restriction();
+		
 
 		for (Map.Entry<String, String> entry : sourceRestriction.entrySet()) {
 			String key = entry.getKey();
@@ -17,16 +17,16 @@ public class Util {
 			PrefixEntity restrictionPredicate = PrefixUtility.splitPreficFromProperty(key);
 			PrefixEntity restrictionObject = PrefixUtility.splitPreficFromProperty(value);
 
-			String s1 = "?" + variable + " " + restrictionPredicate.key + ":" + restrictionPredicate.name + " "
+			String s1 = "?" + sourceResObj.variable + " " + restrictionPredicate.key + ":" + restrictionPredicate.name + " "
 					+ restrictionObject.key + ":" + restrictionObject.name;
 			System.out.println("s1 " + s1);
 
-			System.out.println(" s1s1 var :"+ variable + " : " + s1);
+			System.out.println(" s1s1 var :" + sourceResObj.variable + " : " + s1);
 			sourceResObj.restrictionList.add(s1);
 			sourceResObj.restrictionPrefixEntity.add(restrictionPredicate);
 			sourceResObj.restrictionPrefixEntity.add(restrictionObject);
 		}
-		
+
 		System.out.println("see : " + sourceResObj.restrictionList);
 		System.out.println("see restrictionPrefixEntity: " + sourceResObj.restrictionPrefixEntity);
 
@@ -42,10 +42,21 @@ public class Util {
 		 */
 		// PrefixEntity targetRestrictionPrefixEntity =
 		// PrefixUtility.splitPreficFromProperty(prefixURIs);
-		
+
 		return sourceResObj;
 
 	}
 
+	public void restrictionUriToQueryString(Restriction targetResObj) {
+		String s;
+		String tmp;
+		for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
+
+			System.out.println(" *ali* :" + list);
+			//tmp = "  ?s rdf:type url:Movie .\r\n" +
+			
+		}
+
+	}
 
 }

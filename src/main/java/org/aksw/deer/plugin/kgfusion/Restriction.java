@@ -8,15 +8,21 @@ import java.util.Set;
 public class Restriction {
 
 	// Set<String> letter = new HashSet<String>();
-	Set<PrefixEntity> restrictionPrefixEntity;
+	ArrayList<PrefixEntity> restrictionPrefixEntity;
 	Set<String> restrictionString;
 	ArrayList<String> restrictionList;
-  
+	String variable;
 
+	@Override
+	public String toString() {
+		return "Restriction [restrictionPrefixEntity=" + restrictionPrefixEntity + ", restrictionString="
+				+ restrictionString + ", restrictionList=" + restrictionList + ", variable=" + variable + "]";
+	}
 
-	Restriction() {
+	Restriction(String variable) {
+		this.variable = variable;
 		restrictionList = new ArrayList<>();
-		restrictionPrefixEntity = new HashSet<PrefixEntity>();
+		restrictionPrefixEntity = new ArrayList<>();
 	}
 
 }

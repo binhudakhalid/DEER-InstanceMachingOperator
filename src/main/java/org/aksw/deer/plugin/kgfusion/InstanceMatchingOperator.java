@@ -111,7 +111,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		String string1a = "http://schema.org/Movie";
 
 		String string2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-		String string2a = "http://schema.org/Movie";//"http://dbpedia.org/ontology/Movie";
+		String string2a = "http://schema.org/Movie";// "http://dbpedia.org/ontology/Movie";
 
 		String string3 = "http://schema.org/actor";
 		String string3a = "http://yago-knowledge.org/resource/Jennifer_Aniston";
@@ -119,22 +119,32 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		HashMap<String, String> sourceRestrictionPredicateMap = new HashMap<String, String>();
 		sourceRestrictionPredicateMap.put(string1, string1a);
 
-		HashMap<String, String> targetRestrictionPredicateMap =  new LinkedHashMap<String, String>();
+		HashMap<String, String> targetRestrictionPredicateMap = new LinkedHashMap<String, String>();
 		targetRestrictionPredicateMap.put(string2, string2a);
 		targetRestrictionPredicateMap.put(string3, string3a);
-		
+
 		// Set<String> prefixURIs = new HashSet<String>();
 		// prefixURIs.add(string1);
 		// prefixURIs.add(string2);
 
 		Util util = new Util();
-
-		sourceResObj = util.restrictionUriToString(sourceRestrictionPredicateMap, "s");
-		targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, "t");
+		Restriction sourceResObj= new Restriction("s");
+		Restriction targetResObj= new Restriction("t");
+		
+		sourceResObj= util.restrictionUriToString(sourceRestrictionPredicateMap,sourceResObj);
+		targetResObj= util.restrictionUriToString(targetRestrictionPredicateMap,targetResObj);
+		
+	
+		//System.out.println(" =asdasdasd- v" + sourceResObj.variable);
+		//System.exit(0);
+		System.out.println(" =asdasdasd- ");
+		
+		// util.restrictionUriToQueryString(targetResObj);
+		// System.exit(0);
 
 		System.out.println("sourceResObj : " + sourceResObj.restrictionPrefixEntity);
 		System.out.println("targetResObj : " + targetResObj.restrictionPrefixEntity);
-	
+
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
@@ -234,11 +244,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
 			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target");
 
-			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
-					targetRestrictions, "NT");
+		//	Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
+			//		targetRestrictions, "NT");
 
 			System.out.println("callLimes before");
-			callLimes(con);
+		//	callLimes(con);
 			System.out.println("callLimes after ");
 
 			System.out.println("--> In Output Generating Phase");
@@ -268,10 +278,18 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			System.out.println(" kkkk000 ");
 
-			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceRestrictions, maxLimit);
+			for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
 
-			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetRestrictions, maxLimit);
+				// System.out.println(" *ali* :" + list.key + list.value);
+			}
+			// System.exit(0);
 
+			
+			
+			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceResObj, maxLimit, "s");
+			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetResObj, maxLimit, "t");
+			System.out.println("propertiesListSource1 old: " + propertiesListTarget1);
+			
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
@@ -286,23 +304,25 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			// configuration.ttl)
 			// then it thought a exception
 			// propertiesListTarget1.remove(0);
+			
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
 				System.out.println(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
+		
 
 			// Check if the data is available, if we query it with following properties
 			// isDataAvailableURL(sourceEndpoint, sourceRestrictions,
 			// propertiesListSource1);
-			isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
+		//	isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
 
 			// check
-
+			
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
-					targetRestrictions, "sparql");
-
+					targetRestrictions, "sparql", sourceResObj, targetResObj);
+			
 			System.out.println("see 0011 " + con);
 			callLimes(con);
 			System.out.println("see 0012 ");
@@ -439,7 +459,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
-			String targetRestrictions, String type) {
+			String targetRestrictions, String type, Restriction sourceResObj2, Restriction targetResObj2) {
 
 		srcEndpoint = "http://dbpedia.org/sparql";
 		srcRestrictions = "?s rdf:type url:Movie";
@@ -454,6 +474,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			conf.addPrefix(list.key, list.value);
 			srcPropertylist.add(list.key + ":" + list.propertyName);
 		}
+		
+		
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -466,7 +488,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setId("sourceId");
 		src.setEndpoint(srcEndpoint);
 		src.setVar("?s");
-		src.setPageSize(-1);
+		src.setPageSize(10000);
 
 		// PrefixEntity srcRestrictionPrefixEntity =
 		// PrefixUtility.splitPreficFromProperty(srcRestrictions);
@@ -483,11 +505,15 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// System.out.println( new ArrayList<String>(Arrays.asList(new String[] { "?s
 		// rdf:type url:Movie" })));
 		// System.out.println( sourceResObj.restrictionList);
-		src.setRestrictions(sourceResObj.restrictionList);
+		System.out.println("sourceResObj2 : + " +sourceResObj2);
+		//System.exit(0);
+
+		//System.out.println("asdasd + "+  sourceResObj2.restrictionList);
+		src.setRestrictions(sourceResObj2.restrictionList);
 		src.setProperties(srcPropertylist);
 		// src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		src.setType(type);
-
+		
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
@@ -496,6 +522,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		// prefixes.put("yago", "http://yago-knowledge.org/resource/");
 		// setting prefix for source
+		System.out.println("asdasd331");
 		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
 			prefixes.put(list.key, list.value);
@@ -503,11 +530,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
+		System.out.println("asdasd332");
 		// Setting Prefix for source restriction
-		for (PrefixEntity list : sourceResObj.restrictionPrefixEntity) {
+		for (PrefixEntity list : sourceResObj2.restrictionPrefixEntity) {
 			prefixes.put(list.key, list.value);
 			System.out.println(" *ali* :" + list.key + list.value);
 		}
+		
 
 		System.out.println(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
@@ -562,22 +591,23 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setId("targetId");
 		target.setEndpoint(targetEndpoint);
 		target.setVar("?t");
-		target.setPageSize(-1);
+		target.setPageSize(10000);
 
 		PrefixEntity targetRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(targetRestrictions);
-		
-		System.out.println("targetResObj.restrictionList ::" + targetResObj.restrictionList);
-		//System.exit(0);
-		target.setRestrictions(targetResObj.restrictionList);
-		
+
+		System.out.println("targetResObj2.restrictionList ::" + targetResObj2.restrictionList);
+		// System.exit(0);
+		target.setRestrictions(targetResObj2.restrictionList);
+
 		// Setting Prefix for target restriction
-		for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
+		for (PrefixEntity list : targetResObj2.restrictionPrefixEntity) {
 			targetPrefixesMap.put(list.key, list.value);
 			System.out.println(" *ali* :" + list.key + list.value);
 		}
 
 		// target.setRestrictions(new ArrayList<String>(
-		 //Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t url:actor yago:Jennifer_Aniston" })));
+		// Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t url:actor
+		// yago:Jennifer_Aniston" })));
 		// target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
 		// "?t rdf:type " + targetRestrictionPrefixEntity.key + ":" +
 		// targetRestrictionPrefixEntity.name })));
@@ -994,12 +1024,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 * Takes entity as input return list of properties from file. Listing properties
 	 * with their counts
 	 */
-	public List<PropertyEntity> getPropertiesFromURL(String path, String restriction, int maximumProperties) {
+	public List<PropertyEntity> getPropertiesFromURL(String path, Restriction resObj, int maximumProperties,
+			String variable) {
 
-		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
+		// PrefixEntity restrictionPrefixEntity =
+		// PrefixUtility.splitPreficFromProperty(restriction);
 		InstanceCount instanceCount = new InstanceCount();
-		double size = instanceCount.countInstanceFromURL(path, restrictionPrefixEntity);
+
+		// System.out.println("swarestriction: " + restrictionPrefixEntity);
+		System.out.println("swarestriction:1 " + resObj.restrictionPrefixEntity.get(1));
+		 
+		double size = instanceCount.countInstanceFromURL(path, resObj.restrictionPrefixEntity.get(1), resObj);
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
+System.out.println("size::" + size);
 
 		// This query not working after the update on DBpedia.com
 		// QueryExecution qe = null;
@@ -1017,15 +1054,58 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		 * "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" +
 		 * "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties);
 		 */
+		// targetResObj.restrictionList
 
-		QueryExecution qe = QueryExecutionFactory.sparqlService(path,
-				"PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n "
-						+ "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
-						+ "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n"
-						+ " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n"
-						+ "order by desc ( ?count )" + " LIMIT " + maximumProperties);
+		String restrictionQuery = "";
+		for (String list : resObj.restrictionList) {
+			restrictionQuery = restrictionQuery + list + " .\r\n";
+			// ?t w3199:type scMo:Movie
+			// System.out.println(" *ali* :" +list);
+
+			// System.out.println(" *ali* :" + list.key + list.value);
+		}
+		System.out.println("restrictionQuery: \n" + restrictionQuery);
+
+//------------------------
+
+		String restrictionQueryPrefix = "";
+		for (PrefixEntity list : resObj.restrictionPrefixEntity) {
+			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
+		}
+		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
+
+		String getPropertiesFromURLString = restrictionQueryPrefix
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n "
+				+ "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n" +
+				// + " ?" + variable + " rdf:type url:Movie .\r\n" + " ?"+ variable
+				restrictionQuery + "?" + variable + " ?predicate ?o .\r\n" + " FILTER(isLiteral(?o) ). \r\n " + "} \r\n"
+				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )" + " LIMIT " + maximumProperties;
+
+		System.out.println("end \n" + getPropertiesFromURLString + "\n e \n");
+
+		/*
+		 * System.out.println( "PREFIX " + restrictionPrefixEntity.key + ": <" +
+		 * restrictionPrefixEntity.value + ">\r\n" +
+		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
+		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
+		 * "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
+		 * + "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n" +
+		 * " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n" +
+		 * "order by desc ( ?count )" + " LIMIT " + maximumProperties);
+		 */
+		QueryExecution qe = QueryExecutionFactory.sparqlService(path, getPropertiesFromURLString);
+
+		/*
+		 * QueryExecution qe = QueryExecutionFactory.sparqlService(path, "PREFIX " +
+		 * restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
+		 * + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
+		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
+		 * "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
+		 * + "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n" +
+		 * " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n" +
+		 * "order by desc ( ?count )" + " LIMIT " + maximumProperties);
+		 */
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> {
@@ -1054,9 +1134,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		});
 
 		System.out.println("***************************************");
-		System.out
-				.println("getPropertiesFromURL -> endpoint: " + path + " - " + restriction + " - " + maximumProperties);
-		System.out.println("getPropertiesFromURL -> Total instance of '" + restriction + "' is : " + size);
+		// System.out
+		// .println("getPropertiesFromURL -> endpoint: " + path + " - " + restriction +
+		// " - " + maximumProperties);
+		// System.out.println("getPropertiesFromURL -> Total instance of '" + resObj. +
+		// "' is : " + size);
 		System.out.println("getPropertiesFromURL -> The Property List From URL Endpoint: " + propertiesListTemp);
 		System.out.println("***************************************");
 
