@@ -1,20 +1,13 @@
 package org.aksw.deer.plugin.kgfusion;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.aksw.deer.enrichments.AbstractParameterizedEnrichmentOperator;
@@ -28,7 +21,6 @@ import org.aksw.limes.core.io.serializer.ISerializer;
 import org.aksw.limes.core.io.serializer.SerializerFactory;
 import org.aksw.limes.core.ml.algorithm.LearningParameter;
 import org.aksw.limes.core.ml.algorithm.MLImplementationType;
-import org.apache.jena.base.Sys;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -41,14 +33,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ReifiedStatement;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.vocabulary.VCARD;
-import org.jgap.gp.terminal.False;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,24 +110,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		targetRestrictionPredicateMap.put(string2, string2a);
 		targetRestrictionPredicateMap.put(string3, string3a);
 
-		// Set<String> prefixURIs = new HashSet<String>();
-		// prefixURIs.add(string1);
-		// prefixURIs.add(string2);
-
 		Util util = new Util();
-		Restriction sourceResObj= new Restriction("s");
-		Restriction targetResObj= new Restriction("t");
-		
-		sourceResObj= util.restrictionUriToString(sourceRestrictionPredicateMap,sourceResObj);
-		targetResObj= util.restrictionUriToString(targetRestrictionPredicateMap,targetResObj);
-		
-	
-		//System.out.println(" =asdasdasd- v" + sourceResObj.variable);
-		//System.exit(0);
-		System.out.println(" =asdasdasd- ");
-		
-		// util.restrictionUriToQueryString(targetResObj);
-		// System.exit(0);
+		Restriction sourceResObj = new Restriction("s");
+		Restriction targetResObj = new Restriction("t");
+
+		sourceResObj = util.restrictionUriToString(sourceRestrictionPredicateMap, sourceResObj);
+		targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, targetResObj);
 
 		System.out.println("sourceResObj : " + sourceResObj.restrictionPrefixEntity);
 		System.out.println("targetResObj : " + targetResObj.restrictionPrefixEntity);
@@ -180,21 +155,23 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
 		});
 		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
-		printOut("tabuSourceProperty tsp : " + tabuSourceProperty);
 
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
 			tabuTargetProperty.put(propertyUri.toString(), propertyUri);
 		});
 
-		System.out.println(" drecipient-dc coverage: " + coverage);
-		System.out.println(" drecipient-dm maxLimit: " + maxLimit);
-		System.out.println(" drecipient-dc test: " + test);
-		System.out.println(" drecipient-dc type: " + type);
-		System.out.println(" drecipient-dc source: " + source);
-		System.out.println(" drecipient-dc target: " + target);
-		System.out.println(" drecipient-dc sourceRestriction: " + sourceRestriction);
-		System.out.println(" drecipient-dc targetRestriction: " + targetRestriction);
+		System.out.println(" --------Logging Parameters-------------");
+
+		System.out.println(" coverage: " + coverage);
+		System.out.println(" maxLimit: " + maxLimit);
+		System.out.println(" test: " + test);
+		System.out.println(" type: " + type);
+		System.out.println(" source: " + source);
+		System.out.println(" target: " + target);
+		System.out.println(" sourceRestriction: " + sourceRestriction);
+		System.out.println(" targetRestriction: " + targetRestriction);
+		System.out.println(" -------------------------");
 
 		String inputEndpoint = "fileType";
 		String sourceFilePath = "data/data_nobelprize_org.nt";
@@ -206,6 +183,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		// if the endpoint is filetype
 		if (inputEndpoint == "fileTyp2e") {
+			System.out.println(" ENDPOINT: FILE");
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceRestrictions, maxLimit);
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetRestrictions, maxLimit);
@@ -244,11 +222,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
 			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target");
 
-		//	Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
-			//		targetRestrictions, "NT");
+			// Configuration con = createLimeConfigurationFile(sourceFilePath,
+			// sourceRestrictions, targetFilePath,
+			// targetRestrictions, "NT");
 
 			System.out.println("callLimes before");
-		//	callLimes(con);
+			// callLimes(con);
 			System.out.println("callLimes after ");
 
 			System.out.println("--> In Output Generating Phase");
@@ -262,13 +241,10 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		} // if the endpoint is url
 		else { // if (inputEndpoint == "url") {
 
-			System.out.println(" we are in else");
+			System.out.println(" ENDPOINT: URL");
 
 			String sourceEndpoint = "http://dbpedia.org/sparql";
 			String targetEndpoint = "https://yago-knowledge.org/sparql/query";
-
-			sourceRestrictions = "http://schema.org/Movie";
-			targetRestrictions = "http://schema.org/Movie";
 
 			// String inputEndpoint = "fileType";
 			// String sourceFilePath = "data/data_nobelprize_org.nt";
@@ -276,20 +252,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
 			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
 
-			System.out.println(" kkkk000 ");
-
-			for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
-
-				// System.out.println(" *ali* :" + list.key + list.value);
-			}
-			// System.exit(0);
-
-			
-			
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceResObj, maxLimit, "s");
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetResObj, maxLimit, "t");
-			System.out.println("propertiesListSource1 old: " + propertiesListTarget1);
-			
+
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
@@ -297,6 +262,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
+
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
@@ -304,102 +270,38 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			// configuration.ttl)
 			// then it thought a exception
 			// propertiesListTarget1.remove(0);
-			
+
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
 				System.out.println(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
 			}
-		
 
 			// Check if the data is available, if we query it with following properties
 			// isDataAvailableURL(sourceEndpoint, sourceRestrictions,
 			// propertiesListSource1);
-		//	isDataAvailableURL(targetEndpoint, targetRestrictions, propertiesListTarget1);
+			// isDataAvailableURL(targetEndpoint, targetRestrictions,
+			// propertiesListTarget1);
 
 			// check
-			
+
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
 					targetRestrictions, "sparql", sourceResObj, targetResObj);
-			
-			System.out.println("see 0011 " + con);
+
+			System.out.println("BEFORE Calling LIMES \n " + con);
 			callLimes(con);
-			System.out.println("see 0012 ");
+			System.out.println("After Calling LIMES \n ");
 
 			System.out.println("--> In Output Generating Phase");
-
-			System.out.println("--> In Output Generating Phase");
-
 			OutputUtility ouputUtility = new OutputUtility();
 
 			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceRestrictions, targetRestrictions,
 					sourceFilePath, targetFilePath, "File");
 
 			return l1;
-
 		}
-//		 
-
-		// countEntityPredicate();
-
-		// calculateCoverage
-//		calculateCoverage();
-//		System.out.println(" coverageMap1 " + coverageMap);
-
-		/*
-		 * int tempTotal = totalInstance("Movie"); System.out.println("THe Count is: " +
-		 * tempTotal); countEntityPredicate();
-		 */
-
-		// dynamicPrefix(); for sparlEndpoint
-
-		// Querying through Sparql to count the number of predicate of the entity
-		// -countEntityPredicate();
-
-		// Model model = ModelFactory.createDefaultModel();
-
-		// String sourceType = "NT";
-		// tring targetType = "NT";
-
-		// sourceTarget is NT File
-		/*
-		 * if (sourceType == "NT") { //
-		 * calculateCoverageForNTFile("data/dbtune_org_magnatune_sparqlCut1.nt"); } else
-		 * if (sourceType == "SPARQL") {
-		 * 
-		 * }
-		 * 
-		 * if (targetType == "NT") { //
-		 * calculateCoverageForNTFile("data/lov_linkeddata_es_dataset_lov.nt"); } else
-		 * if (targetType == "SPARQL") {
-		 * 
-		 * }
-		 * 
-		 * // int abc = totalInstanceTarget("Movie"); // System.out.println("abcd : " +
-		 * abc);
-		 * 
-		 * // countEntityPredicateTarget();
-		 * 
-		 * //Configuration con = createLimeConfigurationFile(); //callLimes(con);
-		 * 
-		 * // File initialFile = new File("001accepted.nt"); // InputStream targetStream
-		 * = null;
-		 * 
-		 * // 002accepted.nt file contains the output of LIMES // between movies from
-		 * yago and films from Dbpedia /* String filename = "002accepted.nt"; File file
-		 * = new File(filename); String content = null; try { content =
-		 * FileUtils.readFileToString(file, "UTF-8"); FileUtils.write(file, content,
-		 * "UTF-8"); System.out.println(" a nc d a-2 "); } catch (IOException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); }
-		 */
-		// Model ourModel = RDFDataMgr.loadModel("002accepted.nt");
-
-//		Model model1 = ModelFactory.createDefaultModel();
-//		RDFDataMgr.read(model1, "accepted.nt", Lang.NT); // RDFDataMgr.read(model, inputStream, ) ;
-//		System.out.println(" Model1a " + model1 );
-
-		// return outputList;
+       
 	}
 
 	private void removeTabuProperties(HashMap<String, Resource> tabuSourceProperty,
@@ -474,8 +376,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			conf.addPrefix(list.key, list.value);
 			srcPropertylist.add(list.key + ":" + list.propertyName);
 		}
-		
-		
 
 		conf.addPrefix("owl", "http://www.w3.org/2002/07/owl#");
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -505,15 +405,15 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// System.out.println( new ArrayList<String>(Arrays.asList(new String[] { "?s
 		// rdf:type url:Movie" })));
 		// System.out.println( sourceResObj.restrictionList);
-		System.out.println("sourceResObj2 : + " +sourceResObj2);
-		//System.exit(0);
+		System.out.println("sourceResObj2 : + " + sourceResObj2);
+		// System.exit(0);
 
-		//System.out.println("asdasd + "+  sourceResObj2.restrictionList);
+		// System.out.println("asdasd + "+ sourceResObj2.restrictionList);
 		src.setRestrictions(sourceResObj2.restrictionList);
 		src.setProperties(srcPropertylist);
 		// src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		src.setType(type);
-		
+
 		Map<String, String> prefixes = new HashMap<String, String>();
 
 		prefixes.put("owl", "http://www.w3.org/2002/07/owl#");
@@ -536,7 +436,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			prefixes.put(list.key, list.value);
 			System.out.println(" *ali* :" + list.key + list.value);
 		}
-		
 
 		System.out.println(" polp ");
 //		System.out.println("prefixMap length : " + prefixMap.size());
@@ -672,13 +571,16 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// Output format CSV etc
 		conf.setOutputFormat("TAB"); // NT or TTL
 
-		System.out.println("lool me conf " + conf);
+		System.out.println(" The Configuration Object: \n" + conf + " \n");
 		return conf;
 	}
 
+	/*
+	 * This is the function where the configuration object is given to the LIMES
+	 * and The LIMES will automatically save the output in the accepted.nt and
+	 * review.nt files.
+	 */
 	public void callLimes(Configuration config) {
-
-		System.out.println("00000000001 :" + config + "\n 00000000001");
 
 		String limesOutputLocation = new File("").getAbsolutePath();
 
@@ -697,242 +599,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		output.writeToFile(mappings.getAcceptanceMapping(), config.getAcceptanceRelation(),
 				acceptanceFile.getAbsolutePath());
-
-		System.out.println(" doe  done ");
-		// System.exit(0);
 	}
-
-	// finding the number of records having the specific property
-	// save it to hashMap.
-	// Query returns the number of times every property is present in all records.
-	public void countEntityPredicate() {
-
-		propertyMap = new HashMap<String, Integer>();
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService(
-
-				"http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n"
-						+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n" + "{\r\n"
-						+ "  ?instance rdf:type url:Movie .\r\n" + "  ?instance ?predicate ?o .\r\n"
-						+ "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
-						+ "order by desc ( ?count )\r\n" + "LIMIT 10");
-
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-
-		resultOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
-			String predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
-			URL aURL = null;
-			if (predicate.contains("#")) {
-				// http://www.w3.org/2002/07/owl#sameAs=903475
-				// System.out.println("****************-URL with Hash********************");
-				// System.out.println("predicate : " + predicate);
-
-				predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
-
-				/// creating prefix key
-				aURL = null;
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-				System.out.println("-------------------------------------------------");
-			} else {
-				// System.out.println("****************-URL without Hash********************");
-				// System.out.println("predicate : " + predicate);
-
-				// predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
-
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
-				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
-
-			}
-
-			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-			// System.out.println("propertyMap10 : " +
-			// qsol.getResource("predicate").toString());
-
-		});
-
-		System.out.println("Here is the log propertyMap : " + propertyMap);
-
-		resultOne.forEachRemaining(qsol -> System.out.println("khad2 : " + qsol.getLiteral("predicate").getInt()));
-		ResultSet results = qe.execSelect();
-		ResultSetFormatter.out(System.out, results);
-		qe.close();
-
-	}
-
-	// finding the number of records having the specific property
-	// save it to hashMap.
-	// Query returns the number of times every property is present in all records.
-	public void countEntityPredicateTarget() {
-
-		propertiesPrefixesSource = new ArrayList<PrefixEntity>();
-		propertyMap = new HashMap<String, Integer>();
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("https://yago-knowledge.org/sparql/query",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n"
-						+ "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE{\r\n"
-						+ "?instance rdf:type url:Movie . \r\n" + "?instance ?predicate ?o .\r\n"
-						+ "FILTER(isLiteral(?o))   \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n"
-						+ "order by desc ( ?count ) \r\n" + "LIMIT 10");
-
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-
-		resultOne.forEachRemaining(qsol -> {
-			String predicate = qsol.getResource("predicate").toString();
-			int PredicateCount = qsol.getLiteral("count").getInt();
-			String predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2;
-			URL aURL = null;
-			if (predicate.contains("#")) {
-				// http://www.w3.org/2002/07/owl#sameAs=903475
-
-				predicatePrefixValue2 = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
-
-				/// creating prefix key
-				aURL = null;
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				predicatePrefixValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
-				PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
-
-				propertiesPrefixesSource.add(prefix);
-
-			} else {
-				// "****************-URL without Hash********************");
-
-				try {
-					aURL = new URL(predicate);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				/// creating predicate Prefix Key
-				if (aURL.getHost().contains("www.")) {
-					predicatePrefixKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
-				} else {
-					predicatePrefixKey = aURL.getHost().substring(0, 2) + aURL.getPath().substring(1, 4);
-				}
-
-				String temp = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath();
-				predicatePrefixValue = temp.substring(0, temp.lastIndexOf('/') + 1);
-				predicatePrefixValue2 = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
-
-				System.out.println("predicatePrefixValue : " + predicatePrefixValue);
-				System.out.println("predicatePrefixValue2 : " + predicatePrefixValue2);
-				System.out.println("predicatePrefixKey : " + predicatePrefixKey);
-				PrefixEntity prefix = new PrefixEntity(predicatePrefixKey, predicatePrefixValue, predicatePrefixValue2);
-				propertiesPrefixesSource.add(prefix);
-
-			}
-			propertyMap.put(qsol.getResource("predicate").toString(), qsol.getLiteral("count").getInt());
-
-		});
-
-		ResultSet results = qe.execSelect();
-		ResultSetFormatter.out(System.out, results);
-		System.out.println("after countEntityPredicate");
-		qe.close();
-
-	}
-
-	// Calculating coverage and putting it in "coverageMap" hashMap
-	public void calculateCoverage() {
-
-		coverageMap = new HashMap<String, Double>();
-
-		double tempTotal = totalInstance("Movie");
-		System.out.println("tempTotal : " + tempTotal);
-		System.out.println(" H1e1r1e is the log propertyMap : " + propertyMap);
-
-		for (Entry<String, Integer> entry : propertyMap.entrySet()) {
-			String prefixName = entry.getKey();
-			int prefixValue = entry.getValue();
-			// prefixes.put(prefixName, prefixValue);
-			// calculate coverage
-			Double tempCoverage = (double) prefixValue / tempTotal;
-			coverageMap.put(prefixName, tempCoverage);
-
-		}
-
-	}
-
-	// Finding total number of instances of an entity like Movie, Film, Book
-	public int totalInstance(String instanceType) {
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
-						+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
-
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
-		qe.close();
-
-		return totalInstances;
-	}
-
-	// Finding total number of instances of an entity like Movie, Film, Book
-	public int totalInstanceTarget(String instanceType) {
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("https://yago-knowledge.org/sparql/query",
-				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-						+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { \r\n" + "?s rdf:type url:"
-						+ instanceType + " .\r\n" + "}");
-
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
-		qe.close();
-
-		return totalInstances;
-	}
-
+	 
 	/*
 	 * Takes entity as input return list of properties from file. Listing properties
 	 * with their counts
@@ -1027,52 +695,20 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public List<PropertyEntity> getPropertiesFromURL(String path, Restriction resObj, int maximumProperties,
 			String variable) {
 
-		// PrefixEntity restrictionPrefixEntity =
-		// PrefixUtility.splitPreficFromProperty(restriction);
 		InstanceCount instanceCount = new InstanceCount();
 
-		// System.out.println("swarestriction: " + restrictionPrefixEntity);
-		System.out.println("swarestriction:1 " + resObj.restrictionPrefixEntity.get(1));
-		 
 		double size = instanceCount.countInstanceFromURL(path, resObj.restrictionPrefixEntity.get(1), resObj);
 		List<PropertyEntity> propertiesListTemp = new ArrayList<PropertyEntity>();
-System.out.println("size::" + size);
-
-		// This query not working after the update on DBpedia.com
-		// QueryExecution qe = null;
-		/*
-		 * qe = QueryExecutionFactory.sparqlService(path, "PREFIX " +
-		 * restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
-		 * + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
-		 * "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n" +
-		 * "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n"
-		 * + "{\r\n" + "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" +
-		 * restrictionPrefixEntity.name + " .\r\n" + "  ?instance ?predicate ?o .\r\n" +
-		 * "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" +
-		 * "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties);
-		 */
-		// targetResObj.restrictionList
 
 		String restrictionQuery = "";
 		for (String list : resObj.restrictionList) {
 			restrictionQuery = restrictionQuery + list + " .\r\n";
-			// ?t w3199:type scMo:Movie
-			// System.out.println(" *ali* :" +list);
-
-			// System.out.println(" *ali* :" + list.key + list.value);
 		}
-		System.out.println("restrictionQuery: \n" + restrictionQuery);
-
-//------------------------
 
 		String restrictionQueryPrefix = "";
 		for (PrefixEntity list : resObj.restrictionPrefixEntity) {
 			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
 		}
-		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
 
 		String getPropertiesFromURLString = restrictionQueryPrefix
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -1082,30 +718,7 @@ System.out.println("size::" + size);
 				restrictionQuery + "?" + variable + " ?predicate ?o .\r\n" + " FILTER(isLiteral(?o) ). \r\n " + "} \r\n"
 				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )" + " LIMIT " + maximumProperties;
 
-		System.out.println("end \n" + getPropertiesFromURLString + "\n e \n");
-
-		/*
-		 * System.out.println( "PREFIX " + restrictionPrefixEntity.key + ": <" +
-		 * restrictionPrefixEntity.value + ">\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
-		 * "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
-		 * + "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n" +
-		 * " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n" +
-		 * "order by desc ( ?count )" + " LIMIT " + maximumProperties);
-		 */
 		QueryExecution qe = QueryExecutionFactory.sparqlService(path, getPropertiesFromURLString);
-
-		/*
-		 * QueryExecution qe = QueryExecutionFactory.sparqlService(path, "PREFIX " +
-		 * restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value + ">\r\n"
-		 * + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n " +
-		 * "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n"
-		 * + "  ?s rdf:type url:Movie .\r\n" + "  ?s ?predicate ?o .\r\n" +
-		 * " FILTER(isLiteral(?o) ). \r\n " + "} \r\n" + "GROUP BY ?predicate\r\n" +
-		 * "order by desc ( ?count )" + " LIMIT " + maximumProperties);
-		 */
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> {
@@ -1134,37 +747,20 @@ System.out.println("size::" + size);
 		});
 
 		System.out.println("***************************************");
-		// System.out
-		// .println("getPropertiesFromURL -> endpoint: " + path + " - " + restriction +
-		// " - " + maximumProperties);
-		// System.out.println("getPropertiesFromURL -> Total instance of '" + resObj. +
-		// "' is : " + size);
+		System.out.println("getPropertiesFromURL -> endpoint: " + path + " - " + resObj.restrictionPrefixEntity + " - "
+				+ maximumProperties);
+		System.out.println("getPropertiesFromURL -> Total instance is : " + size);
 		System.out.println("getPropertiesFromURL -> The Property List From URL Endpoint: " + propertiesListTemp);
 		System.out.println("***************************************");
 
 		return propertiesListTemp;
 	}
 
-	public void addStatement(String s, String p, String o, Model model) {
-		Resource subject = model.createResource(s);
-		Property predicate = model.createProperty(p);
-		RDFNode object = model.createResource(o);
-		Statement stmt = model.createStatement(subject, predicate, object);
-		model.add(stmt);
-	}
-
+ 
 	/*
-	 * PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dbon:
-	 * <http://dbpedia.org/ontology/> PREFIX w3200:
-	 * <http://www.w3.org/2000/01/rdf-schema#> PREFIX dbpr:
-	 * <http://dbpedia.org/property/> PREFIX xmfo: <http://xmlns.com/foaf/0.1/>
-	 * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX url:
-	 * <http://schema.org/> SELECT DISTINCT ?t ?v1 ?v2 ?v3 ?v4 ?v5 WHERE { ?t
-	 * rdf:type url:Movie . ?t w3200:label ?v1 . ?t dbon:abstract ?v2 . ?t
-	 * w3200:comment ?v3 . ?t dbpr:starring ?v4 . ?t xmfo:name ?v5 . } LIMIT 1
-	 * 
-	 * 
-	 * THis query is working
+	 * This function is only for debugging purposes
+	 * sometime there is no data available for a class on the endpoint.
+	 * If we do not get any data then there will be a null pointer exception in LIMES
 	 */
 	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
 
@@ -1317,22 +913,8 @@ System.out.println("size::" + size);
 			String predicate = qsol.getLiteral("v1").toString();
 			System.out.println(" lookit : " + predicate);
 		});
-		// resultsOne.getRowNumber()
 
 		return true;
 	}
-
-	public void printOut(Object toBePrinted) {
-		if (debugLogs)
-			System.out.println(toBePrinted);
-	}
-
-	/*
-	 * HashMap tabuPropertiesToList(String propertyString ){
-	 * 
-	 * return HashMap;
-	 * 
-	 * }
-	 */
 
 }
