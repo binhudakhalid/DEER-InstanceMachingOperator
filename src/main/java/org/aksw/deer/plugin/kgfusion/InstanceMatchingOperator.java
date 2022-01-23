@@ -202,13 +202,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceResObj, maxLimit);
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetResObj, maxLimit);
-			
-			
+
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
-			
+
 			/*
 			 * Remove tabu properties
 			 */
@@ -234,24 +233,20 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				// if the above if is true then the execution should be stopped.
 				return null;
 			}
-			
-		
 
 			// check if we get any data if query with following property list
 			isDataAvailableFile(sourceFilePath, sourceRestrictions, maxLimit, propertiesListSource1, "source");
 			isDataAvailableFile(targetFilePath, targetRestrictions, maxLimit, propertiesListTarget1, "target");
 
-			
-		 
 			// Configuration con = createLimeConfigurationFile(sourceEndpoint,
 			// sourceRestrictions, targetEndpoint,
 			// targetRestrictions, "sparql", sourceResObj, targetResObj);
 
-			Configuration con = createLimeConfigurationFile(sourceFilePath, sourceRestrictions, targetFilePath,
-					targetRestrictions, "NT", sourceResObj, targetResObj);
+			Configuration con = createLimeConfigurationFile(sourceFilePath, targetFilePath, "NT", sourceResObj,
+					targetResObj);
 
 			System.out.println("callLimes before");
-			// callLimes(con);
+			callLimes(con);
 			System.out.println("callLimes after ");
 
 			System.out.println("--> In Output Generating Phase");
@@ -310,8 +305,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			// check
 
-			Configuration con = createLimeConfigurationFile(sourceEndpoint, sourceRestrictions, targetEndpoint,
-					targetRestrictions, "sparql", sourceResObj, targetResObj);
+			Configuration con = createLimeConfigurationFile(sourceEndpoint, targetEndpoint, "sparql", sourceResObj,
+					targetResObj);
 
 			System.out.println("BEFORE Calling LIMES \n " + con);
 			callLimes(con);
@@ -384,12 +379,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println("removePropertiesHavingLowerCoverage -> list after = " + tempPropertiesListSource);
 	}
 
-	public Configuration createLimeConfigurationFile(String srcEndpoint, String srcRestrictions, String targetEndpoint,
-			String targetRestrictions, String type, Restriction sourceResObj2, Restriction targetResObj2) {
-
-		srcEndpoint = "http://dbpedia.org/sparql";
-		srcRestrictions = "?s rdf:type url:Movie";
-		targetEndpoint = "https://yago-knowledge.org/sparql/query";
+	public Configuration createLimeConfigurationFile(String srcEndpoint, String targetEndpoint, String type,
+			Restriction sourceResObj2, Restriction targetResObj2) {
 
 		Configuration conf = new Configuration();
 
@@ -414,28 +405,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setVar("?s");
 		src.setPageSize(10000);
 
-		// PrefixEntity srcRestrictionPrefixEntity =
-		// PrefixUtility.splitPreficFromProperty(srcRestrictions);
-
-		// System.out.println(" srcRestrictionPrefixEntity1 " +
-		// srcRestrictionPrefixEntity);
-		// System.out.println("?s rdf:type " + srcRestrictionPrefixEntity.key
-		// +":"+srcRestrictionPrefixEntity.name);
-		// System.exit(1);
-		// src.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
-		// "?s rdf:type " + srcRestrictionPrefixEntity.key + ":" +
-		// srcRestrictionPrefixEntity.name })));
-
-		// System.out.println( new ArrayList<String>(Arrays.asList(new String[] { "?s
-		// rdf:type url:Movie" })));
-		// System.out.println( sourceResObj.restrictionList);
 		System.out.println("sourceResObj2 : + " + sourceResObj2);
-		// System.exit(0);
-
-		// System.out.println("asdasd + "+ sourceResObj2.restrictionList);
 		src.setRestrictions(sourceResObj2.restrictionList);
 		src.setProperties(srcPropertylist);
-		// src.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
 		src.setType(type);
 
 		Map<String, String> prefixes = new HashMap<String, String>();
@@ -444,17 +416,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		prefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		prefixes.put("url", "http://schema.org/");
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		// prefixes.put("yago", "http://yago-knowledge.org/resource/");
-		// setting prefix for source
-		System.out.println("asdasd331");
+
 		for (PropertyEntity list : propertiesListSource1) {
 			// adding Prefix
 			prefixes.put(list.key, list.value);
-			System.out.println("scotlandyard - prefixes -: " + list.key + list.value);
-
 			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
-		System.out.println("asdasd332");
+
 		// Setting Prefix for source restriction
 		for (PrefixEntity list : sourceResObj2.restrictionPrefixEntity) {
 			prefixes.put(list.key, list.value);
@@ -462,25 +430,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 
 		System.out.println(" polp ");
-//		System.out.println("prefixMap length : " + prefixMap.size());
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		prefixes.put("url", "http://schema.org/");
-		// prefixes.put("", "http://purl.org/ontology/mo/");
-
-		// Setting prefix for source restriction
-		// PrefixEntity sourceRestrictionPrefixEntity =
-		// PrefixUtility.splitPreficFromProperty(srcRestrictions);
-		// prefixes.put(sourceRestrictionPrefixEntity.key,
-		// sourceRestrictionPrefixEntity.value);
-
-		// THis is okay
 
 		src.setPrefixes(prefixes);
 
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		tempHashMap.put("rdfs:label", "");
 		LinkedHashMap<String, Map<String, String>> functions = new LinkedHashMap<String, Map<String, String>>();
-		// functions.put("rdfs:label", tempHashMap);
 		src.setFunctions(functions);
 
 		conf.setSourceInfo(src);
@@ -491,11 +448,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		targetPrefixesMap.put("url", "http://schema.org/");
 		targetPrefixesMap.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		targetPrefixesMap.put("yago", "http://yago-knowledge.org/resource/");
-		// targetPrefixesMap.put("", "http://purl.org/ontology/mo/");
-
-		// Setting prefix for target restriction
-		PrefixEntity targetRestrictionPrefix = PrefixUtility.splitPreficFromProperty(targetRestrictions);
-		targetPrefixesMap.put(targetRestrictionPrefix.key, targetRestrictionPrefix.value);
 
 		// setting prefix for target
 		for (PropertyEntity list : propertiesListTarget1) {
@@ -516,10 +468,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setVar("?t");
 		target.setPageSize(10000);
 
-		PrefixEntity targetRestrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(targetRestrictions);
-
 		System.out.println("targetResObj2.restrictionList ::" + targetResObj2.restrictionList);
-		// System.exit(0);
 		target.setRestrictions(targetResObj2.restrictionList);
 
 		// Setting Prefix for target restriction
@@ -527,13 +476,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			targetPrefixesMap.put(list.key, list.value);
 			System.out.println(" *ali* :" + list.key + list.value);
 		}
-
-		// target.setRestrictions(new ArrayList<String>(
-		// Arrays.asList(new String[] { "?t rdf:type url:Movie", " ?t url:actor
-		// yago:Jennifer_Aniston" })));
-		// target.setRestrictions(new ArrayList<String>(Arrays.asList(new String[] {
-		// "?t rdf:type " + targetRestrictionPrefixEntity.key + ":" +
-		// targetRestrictionPrefixEntity.name })));
 
 		/*
 		 * There is a problem when we have an entity has lot of properties but all
@@ -548,16 +490,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		 */
 
 		ArrayList<String> al1 = new ArrayList<String>();
-		// al1.add("xmfo:name");
-		// al1.add("");
 		target.setProperties(targetPropertylist);
-		// target.setProperties(Arrays.asList(new String[] { "rdfs:label" }));
-		// target.setProperties(al1);
-		// target.setOptionalProperties(targetPropertylist);
-
 		target.setPrefixes(targetPrefixesMap);
-
-		// target.setFunctions(functions);
 
 		target.setType(type);
 		conf.setTargetInfo(target);
@@ -653,8 +587,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n "
 				+ "SELECT ?predicate (COUNT(?predicate) as ?count)\r\n" + "WHERE\r\n" + "{\r\n" +
 				// + " ?" + variable + " rdf:type url:Movie .\r\n" + " ?"+ variable
-				restrictionQuery + "?" + resObj.variable + " ?predicate ?o .\r\n" + " FILTER(isLiteral(?o) ). \r\n " + "} \r\n"
-				+ "GROUP BY ?predicate\r\n" + "order by desc ( ?count )" + " LIMIT " + maximumProperties;
+				restrictionQuery + "?" + resObj.variable + " ?predicate ?o .\r\n" + " FILTER(isLiteral(?o) ). \r\n "
+				+ "} \r\n" + "GROUP BY ?predicate\r\n" + "order by desc ( ?count )" + " LIMIT " + maximumProperties;
 
 		Model model = ModelFactory.createDefaultModel();
 
