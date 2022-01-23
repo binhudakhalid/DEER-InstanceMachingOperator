@@ -19,19 +19,32 @@ public class InstanceCount {
 
 	private int totalInstances;
 
-	public int countInstanceFromFile(String path, PrefixEntity prefixEntity) {
+	public int countInstanceFromFile(String path, Restriction resObj) {
+
+		String restrictionQuery = "";
+		for (String list : resObj.restrictionList) {
+			restrictionQuery = restrictionQuery + list + " .\r\n";
+		}
+
+		String restrictionQueryPrefix = "";
+		for (PrefixEntity list : resObj.restrictionPrefixEntity) {
+			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
+		}
+		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
+
+		System.out.println(restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+				+ "WHERE { " + restrictionQuery + "}");
+		String instanceCountString = restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?" + resObj.variable
+				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
+
+		System.out.println("instanceCountString : \n" + instanceCountString);
 
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, path, Lang.NTRIPLES);
 
-		String queryString = "PREFIX " + prefixEntity.key + ": <" + prefixEntity.value + ">\r\n"
-				+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX url: <http://schema.org/>\r\n"
-				+ "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { ?s rdf:type " + prefixEntity.key + ":"
-				+ prefixEntity.name + ". } ";
-
-		Query query = QueryFactory.create(queryString);
+		Query query = QueryFactory.create(instanceCountString);
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
 
 		ResultSet resultsOne = ResultSetFactory.copyResults(qexec.execSelect());
@@ -61,36 +74,32 @@ public class InstanceCount {
 			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
 		}
 		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
-		
-		System.out.println(restrictionQueryPrefix
-				  		+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-						+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + 
-						"WHERE { " + restrictionQuery + "}");
-		String instanceCountString = restrictionQueryPrefix
-		  		+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-				+ "SELECT (COUNT(?"+resObj.variable+ ") AS ?totalInstances)\r\n" + 
-				"WHERE { " + restrictionQuery + "}" ;
-		
+
+		System.out.println(restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
+				+ "WHERE { " + restrictionQuery + "}");
+		String instanceCountString = restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?" + resObj.variable
+				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
 
 		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url),instanceCountString);
+		qe = QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url), instanceCountString);
 
 		System.out.println("urlurl:" + url);
 
 		System.out.println("instanceCountStringinstanceCountString:\n" + instanceCountString);
-/*
-		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url),
-				restrictionQueryPrefix
-				  		+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-						+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + 
-						"WHERE { " + restrictionQuery + "}" );*/
-		
-		//System.exit(0);
-		
+		/*
+		 * QueryExecution qe = null; qe =
+		 * QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url),
+		 * restrictionQueryPrefix +
+		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
+		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" +
+		 * "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery +
+		 * "}" );
+		 */
+
+		// System.exit(0);
+
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
 		qe.close();
