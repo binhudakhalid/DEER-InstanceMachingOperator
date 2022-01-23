@@ -23,20 +23,25 @@ import org.apache.jena.rdf.model.Statement;
 
 public class OutputUtility {
 
-	public List<Model> createOuput(String limeOutputfile, String sourceRestrictions, String targetRestrictions,
-			String sourceFilePath, String targetFilePath , String type) {
+	public List<Model> createOuput(String limeOutputfile,
+			String sourceFilePath, String targetFilePath, String type, Restriction sourceResObj,
+			Restriction targetResObj) {
 
+		System.out.println("sourceResObj ::" + sourceResObj);
+
+		// [restrictionPrefixEntity=[PrefixEntity
+
+		// ------------
 		List<Model> InstanceMatcherOutputList = new ArrayList<>();
 
 		//// information about entities and class
 		Model info = ModelFactory.createDefaultModel();
-		addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions, info);
-		addStatement("DEER:targetClass", "DEER:is", targetRestrictions, info);
+		//addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions, info);
+		//addStatement("DEER:targetClass", "DEER:is", targetRestrictions, info);
 
 		addStatement("DEER:dataSourceType", "DEER:is", type, info);
-		//addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
-		//addStatement("DEER:targetDataSource", "DEER:is", "4", info);
-
+		// addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
+		// addStatement("DEER:targetDataSource", "DEER:is", "4", info);
 
 		// load accepted.nt into Jena model
 		Model limesOutputModel = ModelFactory.createDefaultModel();
@@ -90,13 +95,32 @@ public class OutputUtility {
 		addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
 				finalOuputModel);
 
-		// Adding subject type, or source restriction
-		addStatement("https://w3id.org/deer/subjectType", "https://w3id.org/deer/is", sourceRestrictions,
-				finalOuputModel);
+		// Adding subject types, or source restrictions
+		int i = 1;
+		for (PrefixEntity rpe : sourceResObj.restrictionPrefixEntity) {
+			System.out.println("str" + rpe);
 
-		// Adding object type, or target restriction
-		addStatement("https://w3id.org/deer/objectType", "https://w3id.org/deer/is", targetRestrictions,
-				finalOuputModel);
+			System.out.println("aaaa:: " + rpe.value + rpe.name);
+			String tmpObj = rpe.value + rpe.name;
+			String tmpSub = "https://w3id.org/deer/subjectType#" + i;
+			addStatement(tmpSub, "https://w3id.org/deer/is", tmpObj, finalOuputModel);
+			// Do something
+			i++;
+		}
+
+		// Adding object types, or target restrictions
+		int j = 1;
+		for (PrefixEntity rpe : targetResObj.restrictionPrefixEntity) {
+			System.out.println("str" + rpe);
+
+			System.out.println("aaaa:: " + rpe.value + rpe.name);
+			String tmpObj = rpe.value + rpe.name;
+			String tmpSub = "https://w3id.org/deer/objectType#" + j;
+			addStatement(tmpSub, "https://w3id.org/deer/is", tmpObj, finalOuputModel);
+			// Do something
+			j++;
+		}
+		
 
 		// Add info model
 		finalOuputModel.add(info);
@@ -104,7 +128,7 @@ public class OutputUtility {
 		// Add Reified statements to final model
 		finalOuputModel.add(limeOutputModel);
 		InstanceMatcherOutputList.add(finalOuputModel);
-		//System.out.println(" ZGreat: " + InstanceMatcherOutputList);
+		// System.out.println(" ZGreat: " + InstanceMatcherOutputList);
 
 		return InstanceMatcherOutputList;
 

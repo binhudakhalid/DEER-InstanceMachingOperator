@@ -1,9 +1,5 @@
 package org.aksw.deer.plugin.kgfusion;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -83,7 +79,7 @@ public class InstanceCount {
 				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
 
 		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url), instanceCountString);
+		qe = QueryExecutionFactory.sparqlService(Util.getFinalRedirectedUrl(url), instanceCountString);
 
 		System.out.println("urlurl:" + url);
 
@@ -105,85 +101,6 @@ public class InstanceCount {
 		qe.close();
 
 		return totalInstances;
-	}
-
-	public long instanceCount(String instanceType, String knowledgeGraphName) {
-		long count = 0;
-
-		if (knowledgeGraphName == "dbpedia") {
-			count = totalInstanceDbpedia(instanceType);
-		} else if (knowledgeGraphName == "yago") {
-			count = totalInstanceYago(instanceType);
-		}
-		return count;
-
-	}
-
-	private int totalInstanceYago(String instanceType) {
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("https://yago-knowledge.org/sparql/query",
-				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n"
-						+ "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { \r\n" + "?s rdf:type url:"
-						+ instanceType + " .\r\n" + "}");
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
-		qe.close();
-		return totalInstances;
-	}
-
-	private int totalInstanceDbpedia(String instanceType) {
-
-		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql",
-				"PREFIX dbpo: <http://dbpedia.org/ontology/>\r\n" + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n"
-						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-						+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
-						+ "WHERE { ?s rdf:type url:" + instanceType + ". } ");
-		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
-		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
-		qe.close();
-		return totalInstances;
-	}
-
-	public static String getRedirectedUrl(String url) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
-		con.setConnectTimeout(1000);
-		con.setReadTimeout(1000);
-		con.setRequestProperty("User-Agent", "Googlebot");
-		con.setInstanceFollowRedirects(false);
-		con.connect();
-		String headerField = con.getHeaderField("Location");
-		return headerField == null ? url : headerField;
-
-	}
-
-	public static String getFinalRedirectedUrl(String url) {
-		String finalRedirectedUrl = url;
-		try {
-			HttpURLConnection connection;
-			do {
-				connection = (HttpURLConnection) new URL(finalRedirectedUrl).openConnection();
-				connection.setInstanceFollowRedirects(false);
-				connection.setUseCaches(false);
-				connection.setRequestMethod("GET");
-				connection.connect();
-				int responseCode = connection.getResponseCode();
-				if (responseCode >= 300 && responseCode < 400) {
-					String redirectedUrl = connection.getHeaderField("Location");
-					if (null == redirectedUrl) {
-						break;
-					}
-					finalRedirectedUrl = redirectedUrl;
-				} else
-					break;
-			} while (connection.getResponseCode() != HttpURLConnection.HTTP_OK);
-			connection.disconnect();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return finalRedirectedUrl;
 	}
 
 }

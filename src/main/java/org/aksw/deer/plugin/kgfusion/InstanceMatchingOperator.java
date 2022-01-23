@@ -176,7 +176,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
 		targetResObj = util.restrictionUriToString(tarRes_temp, targetResObj);
 
-	
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
@@ -213,16 +212,20 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" \n sourceResObj1:: : \n " + sourceResObj.restrictionPrefixEntity);
 		System.out.println("\n targetResObj : \n  " + targetResObj.restrictionPrefixEntity);
 
-		
-
 		System.out.println(" -------------------------");
-		//System.exit(0);
+		// System.exit(0);
 
 		String inputEndpoint = "file";
 		String sourceFilePath = source;
 		String targetFilePath = target;
-		//String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		//String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
+		// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
+
+		// OutputUtility o = new OutputUtility();
+		// List<Model> l12 = o.createOuput("accepted.nt", "sourceRestrictions",
+		// "targetRestrictions",
+		// sourceFilePath, targetFilePath, "File",sourceResObj );
+		// System.exit(0);
 
 		debug = true;
 
@@ -289,8 +292,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			OutputUtility ouputUtility = new OutputUtility();
 
-			List<Model> l1 = ouputUtility.createOuput("accepted.nt", "sourceRestrictions", "targetRestrictions",
-					sourceFilePath, targetFilePath, "File");
+			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceFilePath, targetFilePath, "File",
+					sourceResObj, targetResObj);
 
 			return l1;
 		} // if the endpoint is url
@@ -351,8 +354,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("--> In Output Generating Phase");
 			OutputUtility ouputUtility = new OutputUtility();
 
-			List<Model> l1 = ouputUtility.createOuput("accepted.nt", "sourceRestrictions", "targetRestrictions",
-					sourceFilePath, targetFilePath, "File");
+			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceFilePath, targetFilePath, "File",
+					sourceResObj, targetResObj);
 
 			return l1;
 		}
