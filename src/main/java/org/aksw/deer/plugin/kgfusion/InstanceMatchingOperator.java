@@ -215,7 +215,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" -------------------------");
 		// System.exit(0);
 
-		String inputEndpoint = "file";
+		String inputEndpoint = type;
 		String sourceFilePath = source;
 		String targetFilePath = target;
 		// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
