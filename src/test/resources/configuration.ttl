@@ -16,26 +16,23 @@
 :matcher   #add source and target and restriction(read from output of ontology matching group)
  a deer:InstanceMatchingOperator ;
  deer:coverage "0.70" ;		   #Coverage of a Property     #propteryCount/TotalInstanceCount #Default=90%
- deer:maxLimit "1";           #Maximum number of Properties #Default=3
+ deer:maxLimit "5";           #Maximum number of Properties #Default=3
  deer:test "true"; 			   #Default=false
- deer:type "endpoint";              #It can be "file" or "endpoint
- deer:source "http://dbpedia.org/sparql";
- deer:target "https://yago-knowledge.org/sparql/query";
+ deer:type "file";              #It can be "file" or "endpoint
+ deer:source "data/cdrewu_eagle-i_net_sparqler.nt";
+ deer:target "data/harvard_eagle-i_net_sparqler.nt";
  
  #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
  #deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
 
  deer:sourceRestriction [ deer:restrictionPredicateURI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>;
-		                   deer:restrictionURI <http://schema.org/Movie>;
+		                   deer:restrictionURI <http://vivoweb.org/ontology/core#CoreLaboratory>;
 						    deer:restrictionOrder <https://w3id.org/deer/Order/1>;];
 
  
  deer:targetRestriction [ deer:restrictionPredicateURI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>;
-		                   deer:restrictionURI <http://schema.org/Movie>;
-						   deer:restrictionOrder <https://w3id.org/deer/Order/1>;],
-						 [ deer:restrictionPredicateURI <http://schema.org/actor>;
-						  deer:restrictionURI <http://yago-knowledge.org/resource/Jennifer_Aniston>;
-						  deer:restrictionOrder <https://w3id.org/deer/Order/2>;];
+		                   deer:restrictionURI <http://vivoweb.org/ontology/core#Laboratory>;
+						   deer:restrictionOrder <https://w3id.org/deer/Order/1>;];
 						 						 
  
  deer:tabuSourceProperty [ deer:propertyURI <http://xmlns.com/foaf/0.1/gender> ],
