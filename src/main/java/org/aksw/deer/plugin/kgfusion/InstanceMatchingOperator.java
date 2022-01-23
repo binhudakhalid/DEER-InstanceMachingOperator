@@ -230,7 +230,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		debug = true;
 
 		// if the endpoint is filetype
-		if (inputEndpoint == "file") {
+		if (inputEndpoint.equals("file")) {
 			System.out.println(" ENDPOINT: FILE");
 
 			System.out.println(" sourceResObj, targetResObj);");
