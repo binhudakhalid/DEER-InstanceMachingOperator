@@ -1,19 +1,18 @@
 package org.aksw.deer.plugin.kgfusion;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Util {
 
-	public Restriction restrictionUriToString(HashMap<String, String> sourceRestriction, Restriction sourceResObj) {
-		System.out.println("prefixURIs :" + sourceRestriction);
-		// prefixURIs.
-
+	public Restriction restrictionUriToString(List<RestrictionEntity> list, Restriction sourceResObj) {
+	
 		
-
-		for (Map.Entry<String, String> entry : sourceRestriction.entrySet()) {
-			String key = entry.getKey();
-			String value = entry.getValue();
+		for (RestrictionEntity i : list) {
+			
+			String key = i.getPredicate();
+			String value = i.getName();
 			PrefixEntity restrictionPredicate = PrefixUtility.splitPreficFromProperty(key);
 			PrefixEntity restrictionObject = PrefixUtility.splitPreficFromProperty(value);
 
@@ -25,8 +24,10 @@ public class Util {
 			sourceResObj.restrictionList.add(s1);
 			sourceResObj.restrictionPrefixEntity.add(restrictionPredicate);
 			sourceResObj.restrictionPrefixEntity.add(restrictionObject);
+			
+			
+		    // Do something
 		}
-
 		System.out.println("see : " + sourceResObj.restrictionList);
 		System.out.println("see restrictionPrefixEntity: " + sourceResObj.restrictionPrefixEntity);
 

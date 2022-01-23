@@ -2,6 +2,7 @@ package org.aksw.deer.plugin.kgfusion;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -74,9 +75,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
 	public static final Property DEBUG_LOGS = DEER.property("debugLogs");
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
+
+	
+	public static final Property RESTRICTION_PREDICATE_URI = DEER.property("restrictionPredicateURI");
+	public static final Property RESTRICTION_URI = DEER.property("restrictionURI");
+	public static final Property RESTRICTION_ORDER = DEER.property("restrictionOrder");
+	
+	
+	
+	
 	List<Model> outputList = new ArrayList<>();;
 	Restriction sourceResObj;
 	Restriction targetResObj;
+	RestrictionEntity restrictionEntity;
 
 	public InstanceMatchingOperator() {
 		super();
@@ -88,11 +99,44 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.declareProperty(TEST).declareProperty(TYPE).declareProperty(SOURCE).declareProperty(TARGET)
 				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION)
 				.declareProperty(TABU_SOURCE_PROPERTY).declareProperty(TABU_TARGET_PROPERTY).declareProperty(DEBUG_LOGS)
-				.declareValidationShape(getValidationModelFor(InstanceMatchingOperator.class)).build();
+				.declareProperty(RESTRICTION_PREDICATE_URI).declareProperty(RESTRICTION_URI).declareProperty(RESTRICTION_ORDER).declareValidationShape(getValidationModelFor(InstanceMatchingOperator.class)).build();
 	}
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
+
+       // List<TimeValue> timeValues = new ArrayList<>();
+
+		List< RestrictionEntity> srcRes_temp = new ArrayList<RestrictionEntity>();
+		List< RestrictionEntity> tarRes_temp = new ArrayList<RestrictionEntity>();
+
+
+		getParameterMap().listPropertyObjects(TARGET_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
+			final Resource res_pre_uri = op.getPropertyResourceValue(RESTRICTION_PREDICATE_URI).asResource();
+			final Resource res_uri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
+			final Resource res_order = op.getPropertyResourceValue(RESTRICTION_ORDER).asResource();
+
+			String res_order_string = res_order.toString();
+			int order = Integer.parseInt(res_order_string.substring(res_order_string.lastIndexOf('/') + 1).trim());
+			
+			restrictionEntity = new RestrictionEntity(order, res_pre_uri.toString(), res_uri.toString() );
+
+			srcRes_temp.add(restrictionEntity);
+		});
+
+		 
+		
+		System.out.println("restrictionEntity Before \n" + srcRes_temp);
+		
+		 
+		Comparator<RestrictionEntity> c = (s1, s2) -> s1.order.compareTo(s2.order);
+		srcRes_temp.sort(c);
+
+		System.out.println("restrictionEntity After \n" + srcRes_temp);
+		System.out.println("restrictionEntity After \n" + srcRes_temp);
+	
+		
+		
 
 		/*
 		 * String string1 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"; String
@@ -123,10 +167,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Restriction sourceResObj = new Restriction("s");
 		Restriction targetResObj = new Restriction("t");
 
-		sourceResObj = util.restrictionUriToString(sourceRestrictionPredicateMap, sourceResObj);
-		targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, targetResObj);
+		sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
+		
+		System.out.println("sourceResObj1:: :" + sourceResObj.restrictionPrefixEntity);
 
-		System.out.println("sourceResObj : " + sourceResObj.restrictionPrefixEntity);
+		System.exit(0);
+		
+	//	targetResObj = util.restrictionUriToString(targetRestrictionPredicateMap, targetResObj);
+
 		System.out.println("targetResObj : " + targetResObj.restrictionPrefixEntity);
 
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
@@ -873,5 +921,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		return true;
 	}
+
+	 
 
 }
