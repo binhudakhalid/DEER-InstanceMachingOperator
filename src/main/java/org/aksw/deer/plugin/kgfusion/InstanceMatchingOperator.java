@@ -216,9 +216,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		
 
 		System.out.println(" -------------------------");
-		System.exit(0);
+		//System.exit(0);
 
-		String inputEndpoint = "fileType";
+		String inputEndpoint = "file";
 		String sourceFilePath = source;
 		String targetFilePath = target;
 		//String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
@@ -298,8 +298,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			System.out.println(" ENDPOINT: URL");
 
-			String sourceEndpoint = "http://dbpedia.org/sparql";
-			String targetEndpoint = "https://yago-knowledge.org/sparql/query";
+			String sourceEndpoint = source;
+			String targetEndpoint = target;
 
 			// String inputEndpoint = "fileType";
 			// String sourceFilePath = "data/data_nobelprize_org.nt";
