@@ -41,6 +41,27 @@ Resut
 
 ![Alt text](/screenshot/exampl1.png?raw=true "Title")
 
+Output: At the you get the Reificated output as a jena model.
+Here we are only showing simplified output. The entity ***http://www.inf.kcl.ac.uk/staff/simonm/*** is matching with ***http://data.nobelprize.org/resource/laureate/680*** and
+the confidence is ***0.7071067811865475***
+
+    [f9069a7b-5f4e-4081-a118-26d2dc1258ab, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement] 
+
+    [f9069a7b-5f4e-4081-a118-26d2dc1258ab, http://www.w3.org/1999/02/22-rdf-syntax-ns#subject, http://data.nobelprize.org/resource/laureate/680]
+
+    [f9069a7b-5f4e-4081-a118-26d2dc1258ab, http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate, http://www.w3.org/2002/07/owl#sameAs] 
+
+    [f9069a7b-5f4e-4081-a118-26d2dc1258ab, http://www.w3.org/1999/02/22-rdf-syntax-ns#object, http://www.inf.kcl.ac.uk/staff/simonm/] 
+
+    [f9069a7b-5f4e-4081-a118-26d2dc1258ab, https://w3id.org/deer/confidence, "0.7071067811865475"] 
+    
+    [https://w3id.org/deer/datasetTarget, https://w3id.org/deer/path, data/lov_linkeddata_es_dataset_lov.nt]
+    [https://w3id.org/deer/datasetSource, https://w3id.org/deer/path, data/data_nobelprize_org.nt]
+    [https://w3id.org/deer/objectType#1, https://w3id.org/deer/is, http://www.w3.org/1999/02/22-rdf-syntax-ns#type] 
+    [https://w3id.org/deer/objectType#2, https://w3id.org/deer/is, http://xmlns.com/foaf/0.1/Person] 
+    [https://w3id.org/deer/subjectType#1, https://w3id.org/deer/is, http://www.w3.org/1999/02/22-rdf-syntax-ns#type]
+    [https://w3id.org/deer/subjectType#2, https://w3id.org/deer/is, http://xmlns.com/foaf/0.1/Person] 
+
 **Note**: if you are on windows please use docker for running DEER  because sometimes it has issue on windows.
 
 
