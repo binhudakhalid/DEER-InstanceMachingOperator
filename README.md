@@ -5,7 +5,7 @@ It is sub-task of Knowledge Graph Fusion.
 In the example folder you can find the example of DEER instance matching operator. The folder contains source data, target data
 and plugin jar file. In this example we are comparing **"foaf:Person"** in **"data_nobelprize_org.nt"** with **"foaf:Person"** in **"lov_linkeddata_es_dataset_lov.nt"**.
 
-Step 1: Clone the repo and change branch to typeDrivenWombatSimple
+Step 1: Clone the repo and change branch to instanceMatch
 
 
     git clone https://github.com/binhudakhalid/DEER-InstanceMachingOperator.git --branch instanceMatch
