@@ -1,7 +1,7 @@
 # DEER Instance Matching Operator
-It is sub-task of instance matching operator.
+It is sub-task of Knowledge Graph Fusion.
 
-## How to run the example
+## Guide: How to the example
 In the example folder you can find the example of DEER instance matching operator. The folder contains source data, target data
 and plugin jar file. In this example we are comparing **"foaf:Person"** in **"data_nobelprize_org.nt"** with **"foaf:Person"** in **"lov_linkeddata_es_dataset_lov.nt"**.
 
@@ -63,7 +63,7 @@ The DEER operator requires multiple parametes such as type, source data, target 
 
 ![Alt text](/screenshot/configurationSample.png?raw=true "Title")
 
-***coverage:*** You can set the coverage of each property
+***coverage:*** You can set the coverage of each property. Calulated by "propteryCount/TotalInstanceCount"
 
 ***maxLimit:*** Set the maximum number of properties use for comparision
 
