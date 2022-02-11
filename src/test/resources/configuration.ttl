@@ -10,8 +10,14 @@
   a deer:SparqlModelReader ;
   deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
   deer:fromEndpoint <http://dbpedia.org/sparql> ;
-  fcage:hasOutput :matcher ;
+  fcage:hasOutput :ontology ;
 .
+
+:ontology
+ a deer:OntologyOperator ;
+ fcage:hasInput :reader ; 
+.
+  
 
 :matcher   #add source and target and restriction(read from output of ontology matching group)
  a deer:InstanceMatchingOperator ;
@@ -21,6 +27,7 @@
  deer:type "file";              #It can be "file" or "endpoint
  deer:source "data/data_nobelprize_org.nt";
  deer:target "data/lov_linkeddata_es_dataset_lov.nt";
+ deer:ontologyInput "false"; # if values is "yes" then the operator take the input from ontology operator # default is "false"
  
  #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
  #deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
@@ -40,7 +47,7 @@
   
  deer:tabuTargetProperty [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsee1Target> ],
                          [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsaw2Target> ];
- fcage:hasInput :reader ; 
+ fcage:hasInput :ontology ; 
  deer:debugLogs "true" ;
 .
  

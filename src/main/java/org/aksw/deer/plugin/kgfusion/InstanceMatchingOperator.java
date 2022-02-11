@@ -35,6 +35,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.pf4j.Extension;
@@ -80,11 +82,17 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property RESTRICTION_URI = DEER.property("restrictionURI");
 	public static final Property RESTRICTION_ORDER = DEER.property("restrictionOrder");
 	public static final Property SOURCE_R = DEER.property("sourceR");
+	public static final Property ONTOLOGYINPUT = DEER.property("ontologyInput");
+	String ontologyInputSubject = null;
+	String ontologyInputObject = null;
+	String ontologyInputSubjectEndpoint = null;
+	String ontologyInputObjectEndpoint = null;
 
 	List<Model> outputList = new ArrayList<>();;
 	Restriction sourceResObj;
 	Restriction targetResObj;
 	RestrictionEntity restrictionEntity;
+	RestrictionEntity temp;
 
 	public InstanceMatchingOperator() {
 		super();
@@ -97,13 +105,15 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION)
 				.declareProperty(TABU_SOURCE_PROPERTY).declareProperty(TABU_TARGET_PROPERTY).declareProperty(DEBUG_LOGS)
 				.declareProperty(RESTRICTION_PREDICATE_URI).declareProperty(RESTRICTION_URI)
-				.declareProperty(RESTRICTION_ORDER).declareProperty(SOURCE_R)
+				.declareProperty(RESTRICTION_ORDER).declareProperty(SOURCE_R).declareProperty(ONTOLOGYINPUT)
 				.declareValidationShape(getValidationModelFor(InstanceMatchingOperator.class)).build();
 	}
 
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
+		/* output from ontology operator */
+		Model ontologyModel = models.get(0);
 		List<RestrictionEntity> srcRes_temp = new ArrayList<RestrictionEntity>();
 		List<RestrictionEntity> tarRes_temp = new ArrayList<RestrictionEntity>();
 
@@ -119,6 +129,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			tarRes_temp.add(restrictionEntity);
 		});
+
+		String ontologyInput = getParameterMap().getOptional(ONTOLOGYINPUT).map(RDFNode::asLiteral)
+				.map(Literal::getString).orElse("false");
 
 		Comparator<RestrictionEntity> c = (s1, s2) -> s1.order.compareTo(s2.order);
 		tarRes_temp.sort(c);
@@ -173,8 +186,70 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Restriction sourceResObj = new Restriction("s");
 		Restriction targetResObj = new Restriction("t");
 
-		sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
-		targetResObj = util.restrictionUriToString(tarRes_temp, targetResObj);
+		System.out.println("before sourceResObj234 :: " + sourceResObj);
+		System.out.println("before targetResObj234 :: " + targetResObj);
+
+		System.out.println("before srcRes_temp :: " + srcRes_temp);
+		System.out.println("before srcRes_temp :: ");
+
+		/**
+		 * only execute if you want to take input from ontology operator
+		 */
+		if (ontologyInput.equals("true")) {
+
+			StmtIterator it = ontologyModel.listStatements();
+			while (it.hasNext()) {
+				Statement stmt = it.next();
+				System.out.println("stmt.getPredicate().toString()" + stmt.getPredicate().toString());
+
+				/* Get Source Restriction http://www.w3.org/1999/02/22-rdf-syntax-ns#subject */
+				if (stmt.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")) {
+					ontologyInputSubject = stmt.getObject().toString();
+				}
+
+				/* Get Target Restriction http://www.w3.org/1999/02/22-rdf-syntax-ns#object */
+				if (stmt.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#object")) {
+					ontologyInputObject = stmt.getObject().toString();
+				}
+
+				/* Get https://w3id.org/deer/SubjectEndPoint */
+				if (stmt.getPredicate().toString().equals("https://w3id.org/deer/SubjectEndPoint")) {
+					ontologyInputSubjectEndpoint = stmt.getObject().toString();
+					// get object
+				}
+
+				/* Get https://w3id.org/deer/ObjectEndPoint */
+				if (stmt.getPredicate().toString().equals("https://w3id.org/deer/ObjectEndPoint")) {
+					ontologyInputObjectEndpoint = stmt.getObject().toString();
+					// get object
+				}
+			}
+
+			//
+			temp = new RestrictionEntity(1, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", ontologyInputSubject);
+			srcRes_temp.clear();
+			srcRes_temp.add(temp);
+
+			sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
+
+			temp = new RestrictionEntity(1, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", ontologyInputObject);
+			tarRes_temp.clear();
+			tarRes_temp.add(temp);
+
+			targetResObj = util.restrictionUriToString(tarRes_temp, targetResObj);
+
+			System.out.println("see above");
+
+		} else { /* else it will take the input from configuration file */
+			sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
+			targetResObj = util.restrictionUriToString(tarRes_temp, targetResObj);
+
+		}
+
+		// System.exit(0);
+
+		System.out.println("sourceResObj234 00 :: " + sourceResObj);
+		System.out.println("targetResObj234 00 :: " + targetResObj);
 
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
@@ -232,6 +307,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		// if the endpoint is filetype
 		if (inputEndpoint.equals("file")) {
 			System.out.println(" ENDPOINT: FILE");
+
+			if (ontologyInput.equals("true")) {
+				sourceFilePath = ontologyInputSubjectEndpoint;
+				targetFilePath = ontologyInputObjectEndpoint;
+			}
 
 			System.out.println(" sourceResObj, targetResObj);");
 			System.out.println(sourceResObj + "--- \n " + targetResObj);
@@ -303,6 +383,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 			String sourceEndpoint = source;
 			String targetEndpoint = target;
+			
+			if (ontologyInput.equals("true")) {
+				sourceEndpoint = ontologyInputSubjectEndpoint;
+				targetEndpoint = ontologyInputObjectEndpoint;
+			}
+			
 
 			// String inputEndpoint = "fileType";
 			// String sourceFilePath = "data/data_nobelprize_org.nt";
