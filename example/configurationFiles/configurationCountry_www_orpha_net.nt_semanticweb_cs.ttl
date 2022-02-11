@@ -1,0 +1,57 @@
+@prefix : <urn:example:plugin-demo/> .
+@prefix fcage: <https://w3id.org/fcage/> .
+@prefix deer: <https://w3id.org/deer/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geos: <http://www.opengis.net/ont/geosparql#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:reader                #will be replaced with the output of ontology operator
+  a deer:SparqlModelReader ;
+  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Khipro> ;
+  deer:fromEndpoint <http://dbpedia.org/sparql> ;
+  fcage:hasOutput :matcher ;
+.
+
+:matcher   #add source and target and restriction(read from output of ontology matching group)
+ a deer:InstanceMatchingOperator ;
+ deer:coverage "0.5" ;		   #Coverage of a Property     #propteryCount/TotalInstanceCount #Default=90%
+ deer:maxLimit "10";           #Maximum number of Properties #Default=3
+ deer:test "true"; 			   #Default=false
+ deer:type "file";              #It can be "file" or "endpoint
+ deer:source "data/www_orpha_net.nt"; #data_nobelprize_org.nt";
+ deer:target "data/semanticweb_cs_vu_nl_verrijktkoninkrijk_sparql.nt"; #eu_dbpedia_org.nt";
+ 
+ #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
+ #deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
+
+ deer:sourceRestriction [ deer:restrictionPredicateURI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>;
+		                   deer:restrictionURI <http://www.w3.org/2002/07/owl#Class>;
+						    deer:restrictionOrder <https://w3id.org/deer/Order/1>;];
+
+ 
+ deer:targetRestriction [ deer:restrictionPredicateURI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>;
+		                   deer:restrictionURI <http://www.w3.org/2004/02/skos/core#Concept>;
+						   deer:restrictionOrder <https://w3id.org/deer/Order/1>;];
+						 						 
+ 
+ deer:tabuSourceProperty [ deer:propertyURI <http://purl.org/collections/nl/niod/vol> ],
+                         [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/second> ];
+  
+ deer:tabuTargetProperty [ deer:propertyURI <http://purl.org/collections/nl/niod/vol> ],
+                         [ deer:propertyURI <http://xmasdlns.com/foaf/0.1/idsaw2Target> ];
+ fcage:hasInput :reader ; 
+ deer:debugLogs "true" ;
+.
+ 
+ 
+:consolidation
+ a deer:ConsolidationOperator ;
+ fcage:hasInput :matcher ; 
+.
+  
+
+:writer
+  a deer:StdOutModelWriter ;
+  fcage:hasInput :consolidation ;
+.
