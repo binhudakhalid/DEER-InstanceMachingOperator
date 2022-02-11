@@ -1,0 +1,15 @@
+<https://w3id.org/deer/Match1>
+        <https://w3id.org/deer/found>  [ a       <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> ;
+                                         <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+                                                 <http://schema.org/Movie> ;
+                                         <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate>
+                                                 <https://w3id.org/deer/matchesWith> ;
+                                         <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject>
+                                                 <http://schema.org/Movie> ;
+                                         <https://w3id.org/deer/ObjectEndPoint>
+                                                 <https://yago-knowledge.org/sparql/query> ;
+                                         <https://w3id.org/deer/SubjectEndPoint>
+                                                 <http://dbpedia.org/sparql> ;
+                                         <https://w3id.org/deer/confidenceValue>
+                                                 "0.6"
+                                       ] .

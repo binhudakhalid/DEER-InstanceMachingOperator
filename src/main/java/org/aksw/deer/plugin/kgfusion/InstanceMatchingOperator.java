@@ -44,11 +44,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class create the DEER Operator for instance matching Operator. It the
+ * entry point for the operator.
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
  */
 @Extension
 public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOperator {
 
+	/**
+	 * The constant logger.
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(InstanceMatchingOperator.class);
+
+	/**
+	 * Declaring the variables
+	 */
 	public HashMap<String, String> prefixMap;
 	public HashMap<String, Integer> propertyMap;
 	public HashMap<String, Double> coverageMap;
@@ -65,6 +77,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	private HashMap<String, Resource> tabuSourceProperty = new HashMap<String, Resource>();
 	private HashMap<String, Resource> tabuTargetProperty = new HashMap<String, Resource>();;
 
+	/**
+	 * Declaring the variables from DEER configuration file. 
+	 */
 	public static final Property COVERAGE = DEER.property("coverage");
 	public static final Property MAX_LIMIT = DEER.property("maxLimit");
 	public static final Property TEST = DEER.property("test");
@@ -77,7 +92,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	public static final Property TABU_TARGET_PROPERTY = DEER.property("tabuTargetProperty");
 	public static final Property DEBUG_LOGS = DEER.property("debugLogs");
 	public static final Property PROPERTY_URI = DEER.property("propertyURI");
-
 	public static final Property RESTRICTION_PREDICATE_URI = DEER.property("restrictionPredicateURI");
 	public static final Property RESTRICTION_URI = DEER.property("restrictionURI");
 	public static final Property RESTRICTION_ORDER = DEER.property("restrictionOrder");
@@ -98,8 +112,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		super();
 	}
 
+	/** createParameterMap */
 	@Override
-	public ValidatableParameterMap createParameterMap() { // 2
+	public ValidatableParameterMap createParameterMap() {
 		return ValidatableParameterMap.builder().declareProperty(COVERAGE).declareProperty(MAX_LIMIT)
 				.declareProperty(TEST).declareProperty(TYPE).declareProperty(SOURCE).declareProperty(TARGET)
 				.declareProperty(SOURCE_RESTRICTION).declareProperty(TARGET_RESTRICTION)
@@ -112,11 +127,15 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		/* output from ontology operator */
+		/** output from ontology operator */
 		Model ontologyModel = models.get(0);
+
 		List<RestrictionEntity> srcRes_temp = new ArrayList<RestrictionEntity>();
 		List<RestrictionEntity> tarRes_temp = new ArrayList<RestrictionEntity>();
 
+		/**
+		 * Getting restrictions for target data set from configuration file.
+		 */
 		getParameterMap().listPropertyObjects(TARGET_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
 			final Resource res_pre_uri = op.getPropertyResourceValue(RESTRICTION_PREDICATE_URI).asResource();
 			final Resource res_uri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
@@ -136,13 +155,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Comparator<RestrictionEntity> c = (s1, s2) -> s1.order.compareTo(s2.order);
 		tarRes_temp.sort(c);
 
-		// ------------
+		/**
+		 * Getting source restriction for target data set from configuration file.
+		 */
 		getParameterMap().listPropertyObjects(SOURCE_RESTRICTION).map(RDFNode::asResource).forEach(op -> {
 			final Resource res_pre_uri = op.getPropertyResourceValue(RESTRICTION_PREDICATE_URI).asResource();
 			final Resource res_uri = op.getPropertyResourceValue(RESTRICTION_URI).asResource();
 			final Resource res_order = op.getPropertyResourceValue(RESTRICTION_ORDER).asResource();
 
-			System.out.println("kkk " + res_pre_uri);
 			String res_order_string = res_order.toString();
 			int order = Integer.parseInt(res_order_string.substring(res_order_string.lastIndexOf('/') + 1).trim());
 
@@ -154,46 +174,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Comparator<RestrictionEntity> d = (s1, s2) -> s1.order.compareTo(s2.order);
 		srcRes_temp.sort(d);
 
-		// System.out.println("3443443" + tarRes_temp);
-		/*
-		 * String string1 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"; String
-		 * string1a = "http://schema.org/Movie";
-		 * 
-		 * String string2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"; String
-		 * string2a = "http://schema.org/Movie";// "http://dbpedia.org/ontology/Movie";
-		 * 
-		 * String string3 = "http://schema.org/actor"; String string3a =
-		 * "http://yago-knowledge.org/resource/Jennifer_Aniston";
-		 */
-
-		// file
-		// String string1 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-		// String string1a = "http://xmlns.com/foaf/0.1/Person";
-
-		// String string2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-		// String string2a = "http://xmlns.com/foaf/0.1/Person";
-
-		// HashMap<String, String> sourceRestrictionPredicateMap = new HashMap<String,
-		// String>();
-		// sourceRestrictionPredicateMap.put(string1, string1a);
-
-		// HashMap<String, String> targetRestrictionPredicateMap = new
-		// LinkedHashMap<String, String>();
-		// targetRestrictionPredicateMap.put(string2, string2a);
-		// targetRestrictionPredicateMap.put(string3, string3a);
-
 		Util util = new Util();
 		Restriction sourceResObj = new Restriction("s");
 		Restriction targetResObj = new Restriction("t");
 
-		System.out.println("before sourceResObj234 :: " + sourceResObj);
-		System.out.println("before targetResObj234 :: " + targetResObj);
-
-		System.out.println("before srcRes_temp :: " + srcRes_temp);
-		System.out.println("before srcRes_temp :: ");
-
 		/**
-		 * only execute if you want to take input from ontology operator
+		 * only execute if you want to take input from ontology operator.
 		 */
 		if (ontologyInput.equals("true")) {
 
@@ -225,20 +211,19 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				}
 			}
 
-			//
+			/* Creating restriction entity for source */
 			temp = new RestrictionEntity(1, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", ontologyInputSubject);
 			srcRes_temp.clear();
 			srcRes_temp.add(temp);
 
 			sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
 
+			/* Creating restriction entity for target */
 			temp = new RestrictionEntity(1, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", ontologyInputObject);
 			tarRes_temp.clear();
 			tarRes_temp.add(temp);
 
 			targetResObj = util.restrictionUriToString(tarRes_temp, targetResObj);
-
-			System.out.println("see above");
 
 		} else { /* else it will take the input from configuration file */
 			sourceResObj = util.restrictionUriToString(srcRes_temp, sourceResObj);
@@ -246,11 +231,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		}
 
-		// System.exit(0);
-
-		System.out.println("sourceResObj234 00 :: " + sourceResObj);
-		System.out.println("targetResObj234 00 :: " + targetResObj);
-
+		/* Getting the input from configuration file */
 		double coverage = getParameterMap().getOptional(COVERAGE).map(RDFNode::asLiteral).map(Literal::getDouble)
 				.orElse(0.90);
 		int maxLimit = getParameterMap().getOptional(MAX_LIMIT).map(RDFNode::asLiteral).map(Literal::getInt).orElse(3);
@@ -264,47 +245,35 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				.orElse("smapleTarget");
 		debugLogs = getParameterMap().getOptional(DEBUG_LOGS).map(RDFNode::asLiteral).map(Literal::getBoolean)
 				.orElse(false);
-
 		getParameterMap().listPropertyObjects(TABU_SOURCE_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
 			tabuSourceProperty.put(propertyUri.toString(), propertyUri);
 		});
-		System.out.println("tabuSourceProperty : " + tabuSourceProperty);
-
 		getParameterMap().listPropertyObjects(TABU_TARGET_PROPERTY).map(RDFNode::asResource).forEach(op -> {
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
 			tabuTargetProperty.put(propertyUri.toString(), propertyUri);
 		});
 
+		/**
+		 * only debugging
+		 */
 		System.out.println(" --------Logging Parameters-------------");
-
-		System.out.println(" coverage: " + coverage);
-		System.out.println(" maxLimit: " + maxLimit);
-		System.out.println(" test: " + test);
-		System.out.println(" type: " + type);
-		System.out.println(" source: " + source);
-		System.out.println(" target: " + target);
-		System.out.println(" \n sourceResObj1:: : \n " + sourceResObj.restrictionPrefixEntity);
-		System.out.println("\n targetResObj : \n  " + targetResObj.restrictionPrefixEntity);
-
+		System.out.println(" Coverage: " + coverage);
+		System.out.println(" MaxLimit: " + maxLimit);
+		System.out.println(" Test: " + test);
+		System.out.println(" Type: " + type);
+		System.out.println(" Source: " + source);
+		System.out.println(" Target: " + target);
+		System.out.println(" \n SourceResObj1:: : \n " + sourceResObj.restrictionPrefixEntity);
+		System.out.println("\n TargetResObj : \n  " + targetResObj.restrictionPrefixEntity);
 		System.out.println(" -------------------------");
-		// System.exit(0);
 
 		String inputEndpoint = type;
 		String sourceFilePath = source;
 		String targetFilePath = target;
-		// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
-		// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
-
-		// OutputUtility o = new OutputUtility();
-		// List<Model> l12 = o.createOuput("accepted.nt", "sourceRestrictions",
-		// "targetRestrictions",
-		// sourceFilePath, targetFilePath, "File",sourceResObj );
-		// System.exit(0);
-
 		debug = true;
 
-		// if the endpoint is filetype
+		/* if the end point is a file */
 		if (inputEndpoint.equals("file")) {
 			System.out.println(" ENDPOINT: FILE");
 
@@ -313,13 +282,16 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				targetFilePath = ontologyInputObjectEndpoint;
 			}
 
-			System.out.println(" sourceResObj, targetResObj);");
-			System.out.println(sourceResObj + "--- \n " + targetResObj);
 
-			// propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceResObj,
-			// maxLimit, "s");
-
+			/**
+			 * Getting properties from source file
+			 * 
+			 */
 			propertiesListSource1 = getPropertiesFromFile(sourceFilePath, sourceResObj, maxLimit);
+
+			/**
+			 * Getting properties from target file
+			 */
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetResObj, maxLimit);
 
 			System.out.println("------------------------------------------------");
@@ -327,23 +299,38 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
 
-			/*
-			 * Remove tabu properties
+			/**
+			 * Remove tabu properties for source
 			 */
-
 			removeTabuProperties(tabuSourceProperty, propertiesListSource1);
+			
+			/**
+			 * Remove tabu properties for target
+			 */
 			removeTabuProperties(tabuTargetProperty, propertiesListTarget1);
 
+			/**
+			 * Remove properties that have less coverage for source than coverage parameter(Set in
+		     * configuration.ttl)
+			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
+			
+			/**
+			 * Remove properties that have less coverage for target than coverage parameter(Set in
+		     * configuration.ttl)
+			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
 
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
-			// If no property have the coverage than the coverage parameter(Set in
-			// configuration.ttl)
-			// then it thought a exception
-			// propertiesListTarget1.remove(0);
+			// 
+			
+
+			/**
+			 *If no property have the coverage than the coverage parameter(Set in
+			 * configuration.ttl) then it will stop the execution
+			 */
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
 				System.out.println(
@@ -353,32 +340,38 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				return null;
 			}
 
-			// check if we get any data if query with following property list
+			
+			/**
+			 * Check if we get any data if query with following property list for source.
+			 */
 			isDataAvailableFile(sourceFilePath, sourceResObj, maxLimit, propertiesListSource1, "source");
+			
+			/**
+			 * Check if we get any data if query with following property list for target.
+			 */
 			isDataAvailableFile(targetFilePath, targetResObj, maxLimit, propertiesListTarget1, "target");
 
-			// Configuration con = createLimeConfigurationFile(sourceEndpoint,
-			// sourceRestrictions, targetEndpoint,
-			// targetRestrictions, "sparql", sourceResObj, targetResObj);
-
+			/**
+			 * Creating configuration object for LIMES.
+			 */
 			Configuration con = createLimeConfigurationFile(sourceFilePath, targetFilePath, "NT", sourceResObj,
 					targetResObj);
 
-			System.out.println("callLimes before");
+			/** Calling LIMES */
 			callLimes(con);
-			System.out.println("callLimes after ");
-
+			
 			System.out.println("--> In Output Generating Phase");
 
 			OutputUtility ouputUtility = new OutputUtility();
-
+			
+			/** Creating Reificated output*/
 			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceFilePath, targetFilePath, "File",
 					sourceResObj, targetResObj);
-
+			
+			/** Returing the output to consolidation operator  */
 			return l1;
-		} // if the endpoint is url
-		else { // if (inputEndpoint == "url") {
-
+		} 
+		else { /** if the endpoint is url */
 			System.out.println(" ENDPOINT: URL");
 
 			String sourceEndpoint = source;
@@ -388,15 +381,18 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				sourceEndpoint = ontologyInputSubjectEndpoint;
 				targetEndpoint = ontologyInputObjectEndpoint;
 			}
+
 			
-
-			// String inputEndpoint = "fileType";
-			// String sourceFilePath = "data/data_nobelprize_org.nt";
-			// String targetFilePath = "data/lov_linkeddata_es_dataset_lov.nt";
-			// String sourceRestrictions = "http://xmlns.com/foaf/0.1/Person";
-			// String targetRestrictions = "http://xmlns.com/foaf/0.1/Person";
-
+			/**
+			 * Getting properties from Url end-point for source
+			 * 
+			 */
 			propertiesListSource1 = getPropertiesFromURL(sourceEndpoint, sourceResObj, maxLimit, "s");
+			
+			/**
+			 * Getting properties from Url end-point for target
+			 * 
+			 */
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetResObj, maxLimit, "t");
 
 			System.out.println("------------------------------------------------");
@@ -404,17 +400,28 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
 
+			
+			/**
+			 * Remove properties that have less coverage for target than coverage parameter(Set in
+		     * configuration.ttl) for source
+			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
+		
+			
+			/**
+			 * Remove properties that have less coverage for target than coverage parameter(Set in
+		     * configuration.ttl) for target
+			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
 
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
-			// If no property have the coverage than the coverage parameter(Set in
-			// configuration.ttl)
-			// then it thought a exception
-			// propertiesListTarget1.remove(0);
-
+			 
+			/**
+			 *If no property have the coverage than the coverage parameter(Set in
+			 * configuration.ttl) then it will stop the execution
+			 */
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
 				System.out.println(
@@ -428,26 +435,33 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			// isDataAvailableURL(targetEndpoint, targetRestrictions,
 			// propertiesListTarget1);
 
-			// check
-
+			/**
+			 * Creating configuration object for LIMES.
+			 */
 			Configuration con = createLimeConfigurationFile(sourceEndpoint, targetEndpoint, "sparql", sourceResObj,
 					targetResObj);
 
-			System.out.println("BEFORE Calling LIMES \n " + con);
+			/** Calling LIMES */
 			callLimes(con);
-			System.out.println("After Calling LIMES \n ");
 
 			System.out.println("--> In Output Generating Phase");
 			OutputUtility ouputUtility = new OutputUtility();
 
+			/** Creating Reificated output*/
 			List<Model> l1 = ouputUtility.createOuput("accepted.nt", sourceFilePath, targetFilePath, "File",
 					sourceResObj, targetResObj);
-
+			/** Returing the output to consolidation operator  */
 			return l1;
 		}
 
 	}
 
+	 /**
+	   * Remove tabu properties.
+	   *
+	   * @param tabuSourceProperty  the tabu properties list
+	   * @param propertiesList the properties list
+	   */
 	private void removeTabuProperties(HashMap<String, Resource> tabuSourceProperty,
 			List<PropertyEntity> propertiesList) {
 
@@ -485,6 +499,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	 * remove properties that have lower coverage than Coverage parameter (the
 	 * Parameter set from Configura.ttl file)
 	 */
+
+	
+	 /**
+	   * Remove properties that have lower coverage.
+	   *
+	   * @param coverage  the coverage
+	   * @param tempPropertiesListSource the property list
+	   */
 	private void removePropertiesHavingLowerCoverage(double coverage, List<PropertyEntity> tempPropertiesListSource) {
 		System.out.println(" ahsan tempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
 
@@ -504,6 +526,17 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println("removePropertiesHavingLowerCoverage -> list after = " + tempPropertiesListSource);
 	}
 
+	
+	 /**
+	   * Create LIMES Configuration.
+	   *
+	   * @param srcEndpoint  the source end-point
+	   * @param targetEndpoint the target end-point
+	   * @param type  the type (URL or File). 
+	   * @param targetEndpoint the target end-point
+	   * @param sourceResObj2 the source restriction
+	   * @param targetResObj2 the target restriction
+	   */
 	public Configuration createLimeConfigurationFile(String srcEndpoint, String targetEndpoint, String type,
 			Restriction sourceResObj2, Restriction targetResObj2) {
 
@@ -521,7 +554,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		conf.addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		conf.addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		conf.addPrefix("url", "http://schema.org/");
-		// conf.addPrefix("yago", "http://yago-knowledge.org/resource/");
 
 		KBInfo src = new KBInfo();
 
@@ -530,7 +562,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		src.setVar("?s");
 		src.setPageSize(10000);
 
-		System.out.println("sourceResObj2 : + " + sourceResObj2);
 		src.setRestrictions(sourceResObj2.restrictionList);
 		src.setProperties(srcPropertylist);
 		src.setType(type);
@@ -543,18 +574,16 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 
 		for (PropertyEntity list : propertiesListSource1) {
-			// adding Prefix
+			/** adding Prefix */
 			prefixes.put(list.key, list.value);
 			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
 
-		// Setting Prefix for source restriction
+		/** Setting Prefix for source restriction */
 		for (PrefixEntity list : sourceResObj2.restrictionPrefixEntity) {
 			prefixes.put(list.key, list.value);
-			System.out.println(" *ali* :" + list.key + list.value);
 		}
 
-		System.out.println(" polp ");
 		prefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		prefixes.put("url", "http://schema.org/");
 
@@ -580,9 +609,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			conf.addPrefix(list.key, list.value);
 
 			targetPrefixesMap.put(list.key, list.value);
-			System.out.println("scotlandyard - targetPrefixesMap -: " + list.key + list.value);
-
 			targetPropertylist.add(list.key + ":" + list.propertyName);
+			/** For debugging */
 			System.out.println(
 					"debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
 		}
@@ -593,26 +621,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setVar("?t");
 		target.setPageSize(10000);
 
-		System.out.println("targetResObj2.restrictionList ::" + targetResObj2.restrictionList);
 		target.setRestrictions(targetResObj2.restrictionList);
 
-		// Setting Prefix for target restriction
+		/** Setting Prefix for target restriction */
 		for (PrefixEntity list : targetResObj2.restrictionPrefixEntity) {
 			targetPrefixesMap.put(list.key, list.value);
-			System.out.println(" *ali* :" + list.key + list.value);
 		}
-
-		/*
-		 * There is a problem when we have an entity has lot of properties but all
-		 * instances don't have all those properties then the Sparql query return 0
-		 * instance.
-		 * 
-		 * By reading the LIMES documentation we came to know that we can use optional
-		 * for properties but the method "target.setOptionalProperties(list)" is not
-		 * working either.
-		 * 
-		 * For now we have hard coded the one property "xmfo:name"
-		 */
 
 		ArrayList<String> al1 = new ArrayList<String>();
 		target.setProperties(targetPropertylist);
@@ -621,7 +635,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		target.setType(type);
 		conf.setTargetInfo(target);
 
-		// Set either Metric or MLALGORITHM
+		/** Set either Metric or MLALGORITHM */
 		MLImplementationType mlImplementationType = MLImplementationType.UNSUPERVISED;
 		conf.setMlAlgorithmName("wombat simple");
 		conf.setMlImplementationType(mlImplementationType);
@@ -635,23 +649,23 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		conf.setMlAlgorithmParameters(mlAlgorithmParameters);
 
-		// Acceptance
+		/** Acceptance */
 		conf.setAcceptanceThreshold(0.6);
 
 		conf.setAcceptanceFile("accepted.nt");
 		conf.setAcceptanceRelation("owl:sameAs");
 
-		// Review
+		/** Review */
 		conf.setVerificationThreshold(0.2);
 		conf.setVerificationFile("reviewme.nt");
 		conf.setVerificationRelation("owl:sameAs");
 
-		// EXECUTION
+		/** EXECUTION */
 		conf.setExecutionRewriter("default");
 		conf.setExecutionPlanner("default");
 		conf.setExecutionEngine("default");
 
-		// Output format CSV etc
+		/** Output format */
 		conf.setOutputFormat("TAB"); // NT or TTL
 
 		System.out.println(" The Configuration Object: \n" + conf + " \n");
@@ -659,9 +673,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	/*
-	 * This is the function where the configuration object is given to the LIMES and
-	 * The LIMES will automatically save the output in the accepted.nt and review.nt
-	 * files.
+	 * This is the function where the configuration object is given to the LIMES.
+	 * @param config The LIMES configuration Object
 	 */
 	public void callLimes(Configuration config) {
 
@@ -685,10 +698,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	/*
-	 * Takes entity as input return list of properties from file. Listing properties
-	 * with their counts
+	 * Takes entity/restriction as input return list of properties from file. Listing properties
+	 * with their counts.
+	 *
+	 * @param path the path to the file
+	 * @param resObj the Restriction object
+	 * @param maximumProperties the maximum amount of properties
+	 * @return PropertyEntity the list of PropertyEntity
 	 */
-
 	public List<PropertyEntity> getPropertiesFromFile(String path, Restriction resObj, int maximumProperties) {
 
 		InstanceCount instanceCount = new InstanceCount();
@@ -718,27 +735,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Model model = ModelFactory.createDefaultModel();
 
 		RDFDataMgr.read(model, path, Lang.NTRIPLES);
-		/*
-		 * String queryString1 = "PREFIX " + restrictionPrefixEntity.key + ": <" +
-		 * restrictionPrefixEntity.value + ">\r\n" +
-		 * "PREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n" +
-		 * "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" +
-		 * "PREFIX url1: <http://xmlns.com/foaf/0.1/>\r\n" +
-		 * "SELECT  (COUNT(Distinct ?instance) as ?count) ?predicate\r\n" + "WHERE\r\n"
-		 * + "{\r\n" + "  ?instance rdf:type " + restrictionPrefixEntity.key + ":" +
-		 * restrictionPrefixEntity.name + " .\r\n" + "  ?instance ?predicate ?o .\r\n" +
-		 * "  FILTER(isLiteral(?o)) \r\n" + "} \r\n" + "GROUP BY ?predicate\r\n" +
-		 * "order by desc ( ?count )\r\n" + "LIMIT " + maximumProperties;
-		 */
-
+		 
 		// JUST FOR DEBUG remove before commit
 		Query query1 = QueryFactory.create(getPropertiesFromURLString);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
 		ResultSet results = qexec1.execSelect();
 
-		System.out.println("result 009 The output of sparql query : " + results);
+		System.out.println(" The result sparql query : " + results);
 		ResultSetFormatter.out(System.out, results);
 
 		Query query = QueryFactory.create(getPropertiesFromURLString);
@@ -754,7 +757,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
-
+			
+			/** Calculating coverage */
 			if (size > 0) {
 				coverage = PredicateCount / size;
 			} else {
@@ -772,8 +776,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	}
 
 	/*
-	 * Takes entity as input return list of properties from file. Listing properties
-	 * with their counts
+	 * Takes entity/restriction as input return list of properties from file. Listing properties
+	 * with their counts.
+	 *
+	 * @param path the path to the file
+	 * @param resObj the Restriction object
+	 * @param maximumProperties the maximum amount of properties
+	 * @return PropertyEntity the list of PropertyEntity
 	 */
 	public List<PropertyEntity> getPropertiesFromURL(String path, Restriction resObj, int maximumProperties,
 			String variable) {
@@ -839,10 +848,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		return propertiesListTemp;
 	}
 
-	/*
-	 * This function is only for debugging purposes sometime there is no data
-	 * available for a class on the endpoint. If we do not get any data then there
-	 * will be a null pointer exception in LIMES
+	/**
+	 * Check if the data is available for following restriction
+	 *
+	 * @param url the url of end-point
+	 * @param restriction the Restriction
+	 * @param propertyEntities the property entities
+	 * @return boolean true if data available
 	 */
 	private boolean isDataAvailableURL(String url, String restriction, List<PropertyEntity> propertyEntities) {
 
@@ -859,11 +871,10 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			i++;
 		}
 
-		// restriction
-
+		/** restriction */
 		PrefixEntity restrictionPrefixEntity = PrefixUtility.splitPreficFromProperty(restriction);
 
-		// Adding restriction prefix and restriction
+		/** Adding restriction prefix and restriction */
 		String restrictionPrefix = "PREFIX " + restrictionPrefixEntity.key + ": <" + restrictionPrefixEntity.value
 				+ "> \n";
 
@@ -872,14 +883,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				+ varibleQueryPart + "\nWHERE { \n " + " ?t rdf:type url:Movie ." + "\n" + propertyQueryPart
 				+ " } LIMIT 1";
 
-		System.out.println("queryString 090: propertyEntities \n" + propertyEntities);
-		System.out.println("queryString 090: restriction \n" + restriction);
-		System.out.println("queryString 091:  \n" + queryString);
-		System.out.println("queryString 090 url:  " + url);
-		System.out.println("queryString 090 restriction:  " + restriction);
-
-		// "t v0"
-
+		
 		String qtest = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "PREFIX url: <http://schema.org/>\r\n" + "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
 				+ "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX scac: <http://schema.org/>\r\n"
@@ -902,26 +906,23 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			System.out.println(" Query String: " + "\n" + queryString + "\n");
 			System.out.println(" It might give null point exception in LIMES \n");
 			System.out.println("*****************************************");
-
 		}
 
 		System.out.println(" Output from  isDataAvailableURL : " + resultOne);
 		ResultSetFormatter.out(System.out, resultOne);
-
-		// resultOne.forEachRemaining(qsol -> totalInstances =
-		// qsol.getLiteral("totalInstances").getInt());
 		qe.close();
-
-		System.out.println("your ended here");
-
-		// System.exit(0);
 		return true;
-
 	}
 
-	/*
+	/**
 	 * Checking if the data is available in the data set, if we do a query with
 	 * specific properties
+	 * @param path the path
+	 * @param res the restriction object
+	 * @param maximumProperties the number of maximum properties
+	 * @param propertyEntities propertyEntities
+	 * @param tag the tag
+	 * @return boolean true if data is present
 	 */
 	public boolean isDataAvailableFile(String path, Restriction res, int maximumProperties,
 			List<PropertyEntity> propertyEntities, String tag) {
@@ -946,33 +947,21 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		String queryString = prefixQueryPart + "SELECT DISTINCT ?t " + varibleQueryPart + "\nWHERE {" + "\n"
 				+ propertyQueryPart + " } LIMIT 1";
 
-		System.out.println("queryString:  \n" + queryString);
-
-		/*
-		 * 
-		 * // JUST FOR DEBUG remove before commit Query query1 =
-		 * QueryFactory.create(queryString1); QueryExecution qexec1 =
-		 * QueryExecutionFactory.create(query1, model); ResultSet results =
-		 * qexec1.execSelect(); // System.out.println("result 009 : " + results); //
-		 * ResultSetFormatter.out(System.out, results); ///
-		 */
-
-		String a = "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+		/**String a = "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
 				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
 				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX dbpr: <http://dbpedia.org/property/>\r\n"
 				+ "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n" + "PREFIX xmfo: <http://xmlns.com/foaf/0.1/>\r\n"
 				+ "SELECT DISTINCT ?t  ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7\r\n" + "WHERE {\r\n" + "?t w3200:label ?v1 .\r\n"
 				+ "?t xmfo:gender ?v2 .\r\n" + "?t xmfo:givenName ?v3 .\r\n" + "?t xmfo:nasdame ?v4 .\r\n"
 				+ "?t dbpr:dateOfBirth ?v5 .\r\n" + "?t xmfo:birthday ?v6 .\r\n" + "?t xmfo:familyName ?v7 .\r\n"
-				+ " } LIMIT 1";
+				+ " } LIMIT 1"; */
 
-		Query query = QueryFactory.create(queryString); // queryString, a
+		Query query = QueryFactory.create(queryString);
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
 		ResultSet results = qexec.execSelect();
-		// results.
-		System.out.println(" 099kkhan bhai : " + results.toString());
-		System.out.println(" 099kkhan bhai getRowNumber : " + results.getRowNumber());
-		System.out.println(" 099kkhan bhai hasNext : " + results.hasNext());
+		
+		/** results */
+		System.out.println(" Results : " + results.toString());
 
 		if (results.hasNext() == false) {
 			System.out.println(" !! No data avaible for following query for " + tag + " !! ");
@@ -984,7 +973,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		}
 
 		if (debug) {
-			System.out.println("result 0019 show data that is return after query : " + results); //
+			System.out.println("Result: " + results); //
 			ResultSetFormatter.out(System.out, results);
 		}
 
