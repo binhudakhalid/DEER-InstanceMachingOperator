@@ -81,6 +81,13 @@ The DEER operator requires multiple parametes such as type, source data, target 
 
 ***tabuTargetProperty:*** Source tabu properties are those properties that we don't want to use them for instance matching
 
+### Example: 
+
+Example configuration files can found at ***DEER-InstanceMachingOperator\example\configurationFiles***.
+
+The data set can be downloaded from 
+https://hobbitdata.informatik.uni-leipzig.de/teaching/theses/skuhlmann/query_models/
+https://hobbitdata.informatik.uni-leipzig.de/teaching/theses/skuhlmann/link_models/
 
 # How to build Instance Matching Operator
 
