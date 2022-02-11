@@ -61,7 +61,7 @@ the confidence is ***0.7071067811865475***
 
 The DEER operator requires multiple parametes such as type, source data, target data, sourceRestriction and targetRestriction. Additional parameters are tabuSourceProperty, tabuTargetProperty and coverage, maxLimit.
 
-![Alt text](/screenshot/configurationSample.png?raw=true "Title")
+![Alt text](/screenshot/configurationSample1.png?raw=true "Title")
 
 ***coverage:*** You can set the coverage of each property. Calulated by "propteryCount/TotalInstanceCount"
 
