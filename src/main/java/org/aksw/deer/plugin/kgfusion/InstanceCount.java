@@ -86,7 +86,7 @@ public class InstanceCount {
 				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
 
 		QueryExecution qe = null;
-		qe = QueryExecutionFactory.sparqlService(Util.getFinalRedirectedUrl(url), instanceCountString);
+		qe = QueryExecutionFactory.sparqlService(Util.returnRedirectedURL(url), instanceCountString);
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());

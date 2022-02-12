@@ -42,52 +42,41 @@ public class Util {
 
 	}
 
-	public void restrictionUriToQueryString(Restriction targetResObj) {
-		String s;
-		String tmp;
-		for (PrefixEntity list : targetResObj.restrictionPrefixEntity) {
-			// System.out.println(" *ali* :" + list);
-			// tmp = " ?s rdf:type url:Movie .\r\n" +
-		}
-	}
 
-	public static String getRedirectedUrl(String url) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
-		con.setConnectTimeout(1000);
-		con.setReadTimeout(1000);
-		con.setRequestProperty("User-Agent", "Googlebot");
-		con.setInstanceFollowRedirects(false);
-		con.connect();
-		String headerField = con.getHeaderField("Location");
-		return headerField == null ? url : headerField;
+	/**
+	 * @param inputURL the url
+	 * @return the redirected url
+	 */
+	public static String returnRedirectedURL(String inputURL) {
+		String finalURL = inputURL;
+		int multipleResponseStatusCode = 300;
+		int badRequestResponseStatusCode = 400;
 
-	}
-
-	public static String getFinalRedirectedUrl(String url) {
-		String finalRedirectedUrl = url;
 		try {
-			HttpURLConnection connection;
+			HttpURLConnection urlCon;
 			do {
-				connection = (HttpURLConnection) new URL(finalRedirectedUrl).openConnection();
-				connection.setInstanceFollowRedirects(false);
-				connection.setUseCaches(false);
-				connection.setRequestMethod("GET");
-				connection.connect();
-				int responseCode = connection.getResponseCode();
-				if (responseCode >= 300 && responseCode < 400) {
-					String redirectedUrl = connection.getHeaderField("Location");
-					if (null == redirectedUrl) {
+				urlCon = (HttpURLConnection) new URL(finalURL).openConnection();
+			
+				urlCon.setUseCaches(false);
+				urlCon.setInstanceFollowRedirects(false);
+				urlCon.connect();
+				urlCon.setRequestMethod("GET");
+
+				int resCode = urlCon.getResponseCode();
+				if (resCode >= multipleResponseStatusCode && resCode < badRequestResponseStatusCode) {
+					String redirectUrl = urlCon.getHeaderField("Location");
+					if (redirectUrl == null) {
 						break;
 					}
-					finalRedirectedUrl = redirectedUrl;
+					finalURL = redirectUrl;
 				} else
 					break;
-			} while (connection.getResponseCode() != HttpURLConnection.HTTP_OK);
-			connection.disconnect();
-		} catch (Exception e) {
-			e.printStackTrace();
+			} while (urlCon.getResponseCode() != HttpURLConnection.HTTP_OK);
+			urlCon.disconnect();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		return finalRedirectedUrl;
+		return finalURL;
 	}
 
 }
