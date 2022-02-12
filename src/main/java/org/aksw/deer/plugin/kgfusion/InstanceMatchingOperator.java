@@ -178,6 +178,8 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Restriction sourceResObj = new Restriction("s");
 		Restriction targetResObj = new Restriction("t");
 
+		
+	
 		/**
 		 * only execute if you want to take input from ontology operator.
 		 */
@@ -186,8 +188,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			StmtIterator it = ontologyModel.listStatements();
 			while (it.hasNext()) {
 				Statement stmt = it.next();
-				System.out.println("stmt.getPredicate().toString()" + stmt.getPredicate().toString());
-
+				
 				/* Get Source Restriction http://www.w3.org/1999/02/22-rdf-syntax-ns#subject */
 				if (stmt.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")) {
 					ontologyInputSubject = stmt.getObject().toString();
@@ -253,10 +254,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			final Resource propertyUri = op.getPropertyResourceValue(PROPERTY_URI).asResource();
 			tabuTargetProperty.put(propertyUri.toString(), propertyUri);
 		});
-
+		 
 		/**
 		 * only debugging
 		 */
+		if(debugLogs) {
 		System.out.println(" --------Logging Parameters-------------");
 		System.out.println(" Coverage: " + coverage);
 		System.out.println(" MaxLimit: " + maxLimit);
@@ -267,7 +269,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		System.out.println(" \n SourceResObj1:: : \n " + sourceResObj.restrictionPrefixEntity);
 		System.out.println("\n TargetResObj : \n  " + targetResObj.restrictionPrefixEntity);
 		System.out.println(" -------------------------");
-
+		}
 		String inputEndpoint = type;
 		String sourceFilePath = source;
 		String targetFilePath = target;
@@ -294,11 +296,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			 */
 			propertiesListTarget1 = getPropertiesFromFile(targetFilePath, targetResObj, maxLimit);
 
+			if(debugLogs) {
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
-
+			}
 			/**
 			 * Remove tabu properties for source
 			 */
@@ -395,11 +398,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			 */
 			propertiesListTarget1 = getPropertiesFromURL(targetEndpoint, targetResObj, maxLimit, "t");
 
+			if(debugLogs) {
 			System.out.println("------------------------------------------------");
 			System.out.println("propertiesListSource from source -->: " + propertiesListSource1);
 			System.out.println("propertiesListTarget from target -->: " + propertiesListTarget1);
 			System.out.println("------------------------------------------------");
-
+			}
 			
 			/**
 			 * Remove properties that have less coverage for target than coverage parameter(Set in
@@ -479,12 +483,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				for (int i = 0; i < propertiesList.size(); i++) {
 					if (propertiesList.get(i).propertyName.equals(property)
 							&& propertiesList.get(i).value.equals(value)) {
+						if(debugLogs) {
 						System.out
 								.println("propertiesList.get(i).propertyName : " + propertiesList.get(i).propertyName);
 						System.out.println("property : " + property);
 						System.out.println(" propertiesList.get(i).value : " + propertiesList.get(i).value);
 						System.out.println("value : " + value);
 						System.out.println(" *matched* ");
+						}
 						propertiesList.remove(i);
 					}
 				}
@@ -508,10 +514,12 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	   * @param tempPropertiesListSource the property list
 	   */
 	private void removePropertiesHavingLowerCoverage(double coverage, List<PropertyEntity> tempPropertiesListSource) {
-		System.out.println(" ahsan tempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
+		if(debugLogs) {
+		System.out.println(" TempCoverage = " + coverage + " ++ \n " + tempPropertiesListSource);
 
 		System.out.println("removePropertiesHavingLowerCoverage -> Total Properties before comparing with Coverage: "
 				+ tempPropertiesListSource.size());
+		}
 		Iterator itr = tempPropertiesListSource.iterator();
 
 		while (itr.hasNext()) {
@@ -576,7 +584,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		for (PropertyEntity list : propertiesListSource1) {
 			/** adding Prefix */
 			prefixes.put(list.key, list.value);
-			System.out.println("debug new prefixes.put key: + " + list.key + " value: " + list.value);
 		}
 
 		/** Setting Prefix for source restriction */
@@ -611,9 +618,11 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			targetPrefixesMap.put(list.key, list.value);
 			targetPropertylist.add(list.key + ":" + list.propertyName);
 			/** For debugging */
+			if(debugLogs) {
 			System.out.println(
 					"debug new target  : list.key  + " + list.key + " list.propertyName:  " + list.propertyName);
 		}
+			}
 
 		KBInfo target = new KBInfo();
 		target.setId("targetId");
@@ -740,8 +749,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		Query query1 = QueryFactory.create(getPropertiesFromURLString);
 		QueryExecution qexec1 = QueryExecutionFactory.create(query1, model);
 		ResultSet results = qexec1.execSelect();
-
+		if(debugLogs) {
 		System.out.println(" The result sparql query : " + results);
+		}
 		ResultSetFormatter.out(System.out, results);
 
 		Query query = QueryFactory.create(getPropertiesFromURLString);
@@ -770,8 +780,9 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			propertiesListTemp.add(p1);
 
 		});
-
+		if(debugLogs) {
 		System.out.println("propertiesListTemp: " + propertiesListTemp);
+		}
 		return propertiesListTemp;
 	}
 
@@ -816,13 +827,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		resultOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getResource("predicate").toString();
 			int PredicateCount = qsol.getLiteral("count").getInt();
-			/*
-			 * System.out.println("-----------------------");
-			 * System.out.println(" predicate: " + predicate);
-			 * System.out.println(" PredicateCount: " + PredicateCount);
-			 * System.out.println("-----------------------"); //
-			 * System.out.println(" lookit : " + predicate);
-			 */
 			PrefixEntity prefixEntity = PrefixUtility.splitPreficFromProperty(predicate);
 
 			double coverage;
@@ -837,14 +841,14 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			propertiesListTemp.add(p1);
 
 		});
-
+		if(debugLogs) {
 		System.out.println("***************************************");
 		System.out.println("getPropertiesFromURL -> endpoint: " + path + " - " + resObj.restrictionPrefixEntity + " - "
 				+ maximumProperties);
 		System.out.println("getPropertiesFromURL -> Total instance is : " + size);
 		System.out.println("getPropertiesFromURL -> The Property List From URL Endpoint: " + propertiesListTemp);
 		System.out.println("***************************************");
-
+		}
 		return propertiesListTemp;
 	}
 
@@ -883,18 +887,10 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				+ varibleQueryPart + "\nWHERE { \n " + " ?t rdf:type url:Movie ." + "\n" + propertyQueryPart
 				+ " } LIMIT 1";
 
+		if(debugLogs) {
+		System.out.println("queryString " + restrictionPrefixEntity.toString());
+		}
 		
-		String qtest = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX w3200: <http://www.w3.org/2000/01/rdf-schema#>\r\n" + "PREFIX scac: <http://schema.org/>\r\n"
-				+ "PREFIX w3199: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "PREFIX scsa: <http://schema.org/>\r\n" + "SELECT DISTINCT ?t ?v0 ?v1 ?v2 ?v3 ?v4 ?v5\r\n"
-				+ "WHERE {\r\n" + "?t rdf:type url:Movie  .\r\n" + "?t w3200:comment ?v1 .\r\n"
-				+ "?t w3200:label ?v2 .\r\n" + "?t scac:actor ?v3 .\r\n" + "?t w3199:type ?v4 .\r\n"
-				+ "?t scsa:sameAs ?v5 .\r\n" + " } LIMIT 1";
-
-		System.out.println("queryString 090 restriction: toString " + restrictionPrefixEntity.toString());
-
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(url, queryString);
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
@@ -972,7 +968,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 
 		}
 
-		if (debug) {
+		if(debugLogs) {
 			System.out.println("Result: " + results); //
 			ResultSetFormatter.out(System.out, results);
 		}
@@ -982,7 +978,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		ResultSet resultsOne = ResultSetFactory.copyResults(qexec2.execSelect());
 		resultsOne.forEachRemaining(qsol -> {
 			String predicate = qsol.getLiteral("v1").toString();
-			System.out.println(" lookit : " + predicate);
 		});
 
 		return true;
