@@ -19,8 +19,9 @@
  deer:maxLimit "10";           #Maximum number of Properties #Default=3
  deer:test "true"; 			   #Default=false
  deer:type "file";              #It can be "file" or "endpoint
- deer:source "data/data_nobelprize_org.nt";
- deer:target "data/lov_linkeddata_es_dataset_lov.nt";
+ deer:source "data/data_nobelprize_org.nt"; # source data set
+ deer:target "data/lov_linkeddata_es_dataset_lov.nt"; # target data set
+ deer:ontologyInput "false"; # if the value is true then it take input from ontology operator
  
  #deer:sourceRestriction <http://xmlns.com/foaf/0.1/Person>;
  #deer:targetRestriction <http://xmlns.com/foaf/0.1/Person>;
