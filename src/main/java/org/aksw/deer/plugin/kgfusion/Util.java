@@ -5,8 +5,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+
+/**
+ * This utility class for operator
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class Util {
 
+	
+	/**
+	 * @param list the restriction entity list 
+	 * @param sourceResObj the source restriction object
+	 * @return return source Restriction Object
+	 */
 	public Restriction restrictionUriToString(List<RestrictionEntity> list, Restriction sourceResObj) {
 
 		for (RestrictionEntity i : list) {
@@ -18,17 +31,13 @@ public class Util {
 
 			String s1 = "?" + sourceResObj.variable + " " + restrictionPredicate.key + ":" + restrictionPredicate.name
 					+ " " + restrictionObject.key + ":" + restrictionObject.name;
-			System.out.println("s1 " + s1);
 
-			System.out.println(" s1s1 var :" + sourceResObj.variable + " : " + s1);
 			sourceResObj.restrictionList.add(s1);
 			sourceResObj.restrictionPrefixEntity.add(restrictionPredicate);
 			sourceResObj.restrictionPrefixEntity.add(restrictionObject);
 
 		}
-		System.out.println("see : " + sourceResObj.restrictionList);
-		System.out.println("see restrictionPrefixEntity: " + sourceResObj.restrictionPrefixEntity);
-
+		
 		return sourceResObj;
 
 	}
