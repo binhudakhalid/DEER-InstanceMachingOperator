@@ -11,10 +11,22 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
+
+/**
+ * This class is use to count the instance of an entity
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class InstanceCount {
 
 	private int totalInstances;
 
+	/**
+	 * @param path the path of the file
+	 * @param resObj the restrictions
+	 * @return
+	 */
 	public int countInstanceFromFile(String path, Restriction resObj) {
 
 		String restrictionQuery = "";
@@ -26,16 +38,12 @@ public class InstanceCount {
 		for (PrefixEntity list : resObj.restrictionPrefixEntity) {
 			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
 		}
-		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
 
-		System.out.println(restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
-				+ "WHERE { " + restrictionQuery + "}");
-		String instanceCountString = restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
+		 String instanceCountString = restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
 				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?" + resObj.variable
 				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
 
-		System.out.println("instanceCountString : \n" + instanceCountString);
+		System.out.println("instanceCountString : " + instanceCountString);
 
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, path, Lang.NTRIPLES);
@@ -50,51 +58,35 @@ public class InstanceCount {
 
 		return totalInstances;
 	}
+	
+	
 
+	/**
+	 * It count the number of instance from URL end-point.
+	 * 
+	 * @param url the url of path
+	 * @param prefixEntity the prefix of entity
+	 * @param resObj the restriction object
+	 * @return count the count of instances
+	 */
 	public int countInstanceFromURL(String url, PrefixEntity prefixEntity, Restriction resObj) {
 
 		String restrictionQuery = "";
 		for (String list : resObj.restrictionList) {
 			restrictionQuery = restrictionQuery + list + " .\r\n";
-			// ?t w3199:type scMo:Movie
-			// System.out.println(" *ali* :" +list);
-
-			// System.out.println(" *ali* :" + list.key + list.value);
 		}
-		System.out.println("restrictionQuery: \n" + restrictionQuery);
-
-//------------------------
 
 		String restrictionQueryPrefix = "";
 		for (PrefixEntity list : resObj.restrictionPrefixEntity) {
 			restrictionQueryPrefix = restrictionQueryPrefix + "PREFIX " + list.key + ": <" + list.value + ">\r\n";
 		}
-		System.out.println("restrictionQueryPrefix: \n" + restrictionQueryPrefix);
 
-		System.out.println(restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
-				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?s) AS ?totalInstances)\r\n"
-				+ "WHERE { " + restrictionQuery + "}");
 		String instanceCountString = restrictionQueryPrefix + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n"
 				+ "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" + "SELECT (COUNT(?" + resObj.variable
 				+ ") AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery + "}";
 
 		QueryExecution qe = null;
 		qe = QueryExecutionFactory.sparqlService(Util.getFinalRedirectedUrl(url), instanceCountString);
-
-		System.out.println("urlurl:" + url);
-
-		System.out.println("instanceCountStringinstanceCountString:\n" + instanceCountString);
-		/*
-		 * QueryExecution qe = null; qe =
-		 * QueryExecutionFactory.sparqlService(getFinalRedirectedUrl(url),
-		 * restrictionQueryPrefix +
-		 * "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n" +
-		 * "PREFIX url: <http://schema.org/>\r\n" + "\r\n" + "\r\n" +
-		 * "SELECT (COUNT(?s) AS ?totalInstances)\r\n" + "WHERE { " + restrictionQuery +
-		 * "}" );
-		 */
-
-		// System.exit(0);
 
 		ResultSet resultOne = ResultSetFactory.copyResults(qe.execSelect());
 		resultOne.forEachRemaining(qsol -> totalInstances = qsol.getLiteral("totalInstances").getInt());
