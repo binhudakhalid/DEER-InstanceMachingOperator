@@ -1,5 +1,5 @@
 # DEER Instance Matching Operator
-It is sub-task of Knowledge Graph Fusion.
+It is a sub-task of Knowledge Graph Fusion.
 
 ## Guide: How to the example
 In the example folder you can find the example of DEER instance matching operator. The folder contains source data, target data
@@ -19,7 +19,7 @@ Step 3:
     
     cd example/
 
-Step 4: run the instance matching operator through docker
+Step 4: Run the instance matching operator through docker
 
 For windows:
 
@@ -33,9 +33,9 @@ Resut
 
 ![Alt text](/screenshot/exampl1.png?raw=true "Title")
 
-***Output:*** At the end you will get the Reificated output as a jena model.
+***Output:*** In the end you will get the Reificated output as a jena model.
 Here we are only showing simplified output. The entity ***http://www.inf.kcl.ac.uk/staff/simonm/*** is matching with ***http://data.nobelprize.org/resource/laureate/680*** and
-the confidence is ***0.7071067811865475***
+the confidence is ***0.707***
 
     [f9069a7b-5f4e-4081-a118-26d2dc1258ab, http://www.w3.org/1999/02/22-rdf-syntax-ns#type, http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement] 
 
@@ -59,34 +59,36 @@ the confidence is ***0.7071067811865475***
 
 # Configuration file
 
-The DEER operator requires multiple parametes such as type, source data, target data, sourceRestriction and targetRestriction. Additional parameters are tabuSourceProperty, tabuTargetProperty and coverage, maxLimit.
+The DEER operator requires multiple parametes such as type, source data, target data, sourceRestriction and targetRestriction. Additional parameters are tabuSourceProperty, tabuTargetProperty, coverage and maxLimit.
 
 ![Alt text](/screenshot/configurationSample1.png?raw=true "Title")
 
-***coverage:*** You can set the coverage of each property. Calulated by "propteryCount/TotalInstanceCount"
+***coverage:*** You can set the coverage of each property. Calulated by "number of instances with this proptery/Total number of Instances".
 
-***maxLimit:*** Set the maximum number of properties use for comparision
+***maxLimit:*** Set the maximum number of properties to used for comparision,
 
-***type:*** The type of input data. It can file or url endpoint.
+***type:*** The type of input data. It can be file or url endpoint.
 
-***source:*** path to data file or url of endpoint.
+***source:*** Path to data file or url of endpoint.
 
-***target:*** path to data file or url of endpoint.
+***target:*** Path to data file or url of endpoint.
 
-***sourceRestriction:*** set the restrictions for source data 
+***sourceRestriction:*** Set the restrictions for source data 
 
-***targetRestriction:*** set the restrictions for targer data 
+***targetRestriction:*** Set the restrictions for target data 
 
-***tabuSourceProperty:*** Source tabu properties are those properties that we don't want to use them for instance matching
+***tabuSourceProperty:*** Source tabu properties are those properties that we don't want to use for instance matching
 
-***tabuTargetProperty:*** Source tabu properties are those properties that we don't want to use them for instance matching
+***tabuTargetProperty:*** Source tabu properties are those properties that we don't want to use for instance matching
 
 ### Example: 
 
 Example configuration files can found at ***DEER-InstanceMachingOperator\example\configurationFiles***.
 
-The data set can be downloaded from 
+The data set can be downloaded from:
+
 https://hobbitdata.informatik.uni-leipzig.de/teaching/theses/skuhlmann/query_models/
+
 https://hobbitdata.informatik.uni-leipzig.de/teaching/theses/skuhlmann/link_models/
 
 # How to build Instance Matching Operator
@@ -117,11 +119,11 @@ docker run -it --rm -v $(pwd)/data:/data -v $(pwd)/plugins:/plugins -v $(pwd)/:/
 
 ## For Windows
 
-1. you need to create a folder `plugins` inside deer-plugin-starter directory.
+1. You need to create a folder `plugins` inside deer-plugin-starter directory.
 
-2. copy the newly generated plugin under `./target/plugin-starter-${version}-plugin.jar` to `plugins` folder.
+2. Copy the newly generated plugin under `./target/plugin-starter-${version}-plugin.jar` to `plugins` folder.
 
-3. run the docker command from the deer-plugin-starter directory.
+3. Run the docker command from the deer-plugin-starter directory.
 
 
 ```cmd
