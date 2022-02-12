@@ -1,5 +1,11 @@
 package org.aksw.deer.plugin.kgfusion;
 
+/**
+ * This is the entity class for properties/ predicate
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class PropertyEntity {
 	String key;
 	String value;
@@ -7,6 +13,13 @@ public class PropertyEntity {
 	int count;
 	double coverage;
 
+	/**
+	 * @param key the key
+	 * @param value the value of property
+	 * @param propertyName the name of property
+	 * @param count the count
+	 * @param coverage the coverage of property
+	 */
 	public PropertyEntity(String key, String value, String propertyName, int count, double coverage) {
 		super();
 		this.key = key;

@@ -1,5 +1,12 @@
 package org.aksw.deer.plugin.kgfusion;
 
+
+/**
+ * This is the entity class for Restriction
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class RestrictionEntity {
 	String predicate;
 	String name;
