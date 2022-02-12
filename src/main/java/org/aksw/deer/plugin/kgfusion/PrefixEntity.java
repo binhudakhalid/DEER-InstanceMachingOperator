@@ -1,17 +1,25 @@
 package org.aksw.deer.plugin.kgfusion;
 
+/**
+ * This an entity class for prefix.
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class PrefixEntity {
 
 	String key;
 	String value;
 	String name;
 
-	public PrefixEntity()
-	{
-		
-	}
+	public PrefixEntity(){}
 	
 
+	/**
+	 * @param key the key
+	 * @param value the value of prefix
+	 * @param name the name of predic
+	 */
 	public PrefixEntity(String key, String value, String name) {
 		super();
 		this.key = key;

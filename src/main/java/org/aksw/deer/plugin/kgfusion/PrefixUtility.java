@@ -7,17 +7,26 @@ import java.util.Random;
 
 import org.apache.jena.query.ResultSet;
 
+/**
+ * This is the utility class for prefix entity
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class PrefixUtility {
 
+	
+	/**
+	 * @param predicate the predicate
+	 * @return prefix entity
+	 */
 	public static PrefixEntity splitPreficFromProperty(String predicate) {
 		String propertyKey, properyValue, propertyName;
 		URL aURL = null;
 
-		// http://www.w3.org/2002/07/owl#sameAs=903475
+		/** http://www.w3.org/2002/07/owl#sameAs=903475 */
 		if (predicate.contains("#")) {
-			// System.out.println("****************-URL0 with Hash********************");
-			// System.out.println("predicate : " + predicate);
-
+			 
 			propertyName = predicate.substring(predicate.indexOf("#") + 1, predicate.length());
 
 			aURL = null;
@@ -27,7 +36,7 @@ public class PrefixUtility {
 				e.printStackTrace();
 			}
 
-			/// creating predicate Prefix Key
+			/** creating predicate Prefix Key */
 			if (aURL.getHost().contains("www.")) {
 				propertyKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 4);
 			} else {
@@ -35,31 +44,22 @@ public class PrefixUtility {
 			}
 			properyValue = aURL.getProtocol() + "://" + aURL.getHost() + aURL.getPath() + "#";
 
-			// System.out.println("properyValue l20 : " + properyValue);
-			// System.out.println("propertyName l20 : " + propertyName);
-			// System.out.println("propertyKey l20: " + propertyKey);
-
-			// Random number to prfixKey
+			/** Random number to prfixKey */
 			Random random = new Random();
 			int ran = random.nextInt(599) + 1;
 			propertyKey = propertyKey + ran;
-
 
 			PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
 			return prefix;
 
 		} else {
-			// System.out.println("****************-URL without Hash********************");
-			// System.out.println("predicate : " + predicate);
-
-			// propertyKey, predicatePrefixValue, propertyName;
-
+			
 			try {
 				aURL = new URL(predicate);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
-			/// creating predicate Prefix Key
+			/** creating predicate Prefix Key */
 			if (aURL.getHost().contains("www.")) {
 				propertyKey = aURL.getHost().substring(4, 6) + aURL.getPath().substring(1, 3);
 			} else {
@@ -70,25 +70,13 @@ public class PrefixUtility {
 			properyValue = temp.substring(0, temp.lastIndexOf('/') + 1);
 			propertyName = predicate.substring(predicate.lastIndexOf("/") + 1, predicate.length());
 
-			// System.out.println("properyValue l22 : " + properyValue);
-			// System.out.println("propertyName l22 : " + propertyName);
-			// System.out.println("propertyKey l22: " + propertyKey);
-
-			// Random number to prfixKey
+			/** Random number to prfixKey */
 			Random random = new Random();
 			int ran = random.nextInt(599) + 1;
 			propertyKey = propertyKey + ran;
 
 			PrefixEntity prefix = new PrefixEntity(propertyKey, properyValue, propertyName);
-			// propertiesPrefixesSource.add(prefix);
-
 			return prefix;
 		}
-	}
-
-	/*
-	 * TODO
-	 */
-	public void removeUnecessayPrefix(String sparqlQuery) {
 	}
 }
