@@ -5,6 +5,12 @@ import org.pf4j.PluginWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This plugin wrapper for InstanceMatchingOperator class
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class InstanceMatchingPlugin extends Plugin {
 
   private static final Logger logger = LoggerFactory.getLogger(InstanceMatchingPlugin.class);

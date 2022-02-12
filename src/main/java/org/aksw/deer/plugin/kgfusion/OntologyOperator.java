@@ -23,6 +23,11 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a mockup ontology operator class. Which helping us to simulate
+ * the integration with actual consolidation operator
+ * 
+ * */
 @Extension
 public class OntologyOperator extends AbstractParameterizedEnrichmentOperator {
 
@@ -34,15 +39,15 @@ public class OntologyOperator extends AbstractParameterizedEnrichmentOperator {
 	}
 
 	@Override
-	public ValidatableParameterMap createParameterMap() { // 2
+	public ValidatableParameterMap createParameterMap() { 
 		return ValidatableParameterMap.builder()
 				.declareValidationShape(getValidationModelFor(OntologyOperator.class)).build();
 	}
 
 	@Override
-	protected List<Model> safeApply(List<Model> models) { // 3
+	protected List<Model> safeApply(List<Model> models) {
 
-		//sample output from Ontology 
+		/** sample output from Ontology */
 
 		 Model inputModel=ModelFactory.createDefaultModel();
 		 try {

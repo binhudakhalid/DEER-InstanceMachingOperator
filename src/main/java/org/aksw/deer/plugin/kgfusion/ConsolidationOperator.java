@@ -21,6 +21,11 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a mockup consolidation operator class. Which helping us to simulate
+ * the integration with actual consolidation operator
+ * 
+ * */
 @Extension
 public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperator {
 
@@ -32,35 +37,30 @@ public class ConsolidationOperator extends AbstractParameterizedEnrichmentOperat
 	}
 
 	@Override
-	public ValidatableParameterMap createParameterMap() { // 2
+	public ValidatableParameterMap createParameterMap() {
 		return ValidatableParameterMap.builder()
 				.declareValidationShape(getValidationModelFor(ConsolidationOperator.class)).build();
 	}
 
 	@Override
-	protected List<Model> safeApply(List<Model> models) { // 3
+	protected List<Model> safeApply(List<Model> models) { 
 
-	//	System.out.println("shah" + "The output from Instance Matching Operator models.get(0) " + models.size() ); 
-
-//		System.out.println("The output from Instance Matching Operator models.get(0) " + models.get(0).size() ); 
-		System.out.println(" aop The output from Instance Matching Operator models " + models ); 
-		System.out.println(" end aop khd"); 
+		System.out.println(" The output from Instance Matching Operator models " + models ); 
 		
-
+		/** This object is use to write the output from instance matching
+		 * operator to a file. Which can be then use by consolidation operator */
 		FileWriter writer;
 		try {
 			writer = new FileWriter("outputFromInstanceMatching.nt");
-			models.get(0).write(writer, "N-TRIPLE");
+				/* uncomment this line if you want output in file **/
+			//models.get(0).write(writer, "N-TRIPLE");
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	   
-		//System.out.println("The output from Instance Matching Operator models.get(1) " + models.get(1) ); 
-
-		 
-		// create an empty Model
+		/** create an empty Model */
 		Model model = ModelFactory.createDefaultModel();
 
 		return List.of(model);

@@ -20,30 +20,36 @@ import org.apache.jena.rdf.model.Statement;
  * 2- limeOuputModel
  * 3- finalOuputModel
  * */
-
+/**
+ * This class an output utility class.
+ * It create Reificated output and structured output
+ * 
+ * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
+ * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
+ */
 public class OutputUtility {
 
+	
+	/**
+	 * @param limeOutputfile the limeOutputfile
+	 * @param sourceFilePath the path to the source
+	 * @param targetFilePath the path to the target
+	 * @param type the type
+	 * @param sourceResObj the source object
+	 * @param targetResObj the target object
+	 * @return
+	 */
 	public List<Model> createOuput(String limeOutputfile,
 			String sourceFilePath, String targetFilePath, String type, Restriction sourceResObj,
 			Restriction targetResObj) {
 
-		System.out.println("sourceResObj ::" + sourceResObj);
+  		List<Model> InstanceMatcherOutputList = new ArrayList<>();
 
-		// [restrictionPrefixEntity=[PrefixEntity
-
-		// ------------
-		List<Model> InstanceMatcherOutputList = new ArrayList<>();
-
-		//// information about entities and class
 		Model info = ModelFactory.createDefaultModel();
-		//addStatement("DEER:sourceClass", "DEER:is", sourceRestrictions, info);
-		//addStatement("DEER:targetClass", "DEER:is", targetRestrictions, info);
-
+		
 		addStatement("DEER:dataSourceType", "DEER:is", type, info);
-		// addStatement("DEER:sourceDataSource", "DEER:is", "3", info);
-		// addStatement("DEER:targetDataSource", "DEER:is", "4", info);
-
-		// load accepted.nt into Jena model
+		
+		/** load accepted.nt into Jena model */
 		Model limesOutputModel = ModelFactory.createDefaultModel();
 
 		Model m1 = ModelFactory.createDefaultModel();
@@ -51,8 +57,7 @@ public class OutputUtility {
 		final String NS = "https://w3id.org/deer/";
 		final Property confidence = limesOutputModel.createProperty(NS + "confidence");
 
-		//////////////
-
+		/** Rearrange the limes output*/
 		Model limeOutputModel = ModelFactory.createDefaultModel();
 		try {
 			File myObj = new File("accepted.nt");
@@ -60,14 +65,8 @@ public class OutputUtility {
 			while (myReader.hasNextLine()) {
 				String data = myReader.nextLine();
 
-				// Break line after tab
+				/** Break line after tab */
 				String[] splittedData = data.split("\t", -1);
-
-				/*
-				 * System.out.println("splittedData : " + splittedData[0]);
-				 * System.out.println("splittedData : " + splittedData[1]);
-				 * System.out.println("splittedData : " + splittedData[2]);
-				 */
 
 				Resource subject = m1.createResource(splittedData[0].replace("<", "").replace(">", ""));
 				Property predicate = m1.createProperty("http://www.w3.org/2002/07/owl#sameAs");
@@ -84,18 +83,18 @@ public class OutputUtility {
 			e.printStackTrace();
 		}
 
-		// Ouput Model
+		/** Ouput Model */
 		Model finalOuputModel = ModelFactory.createDefaultModel();
 
-		// Adding source data set
+		/** Adding source data set */
 		addStatement("https://w3id.org/deer/datasetSource", "https://w3id.org/deer/path", sourceFilePath,
 				finalOuputModel);
 
-		// Adding target data set
+		/** Adding target data set */
 		addStatement("https://w3id.org/deer/datasetTarget", "https://w3id.org/deer/path", targetFilePath,
 				finalOuputModel);
 
-		// Adding subject types, or source restrictions
+		/** Adding subject types, or source restrictions */
 		int i = 1;
 		for (PrefixEntity rpe : sourceResObj.restrictionPrefixEntity) {
 			System.out.println("str" + rpe);
@@ -108,7 +107,7 @@ public class OutputUtility {
 			i++;
 		}
 
-		// Adding object types, or target restrictions
+		/** Adding object types, or target restrictions */
 		int j = 1;
 		for (PrefixEntity rpe : targetResObj.restrictionPrefixEntity) {
 			System.out.println("str" + rpe);
@@ -122,18 +121,17 @@ public class OutputUtility {
 		}
 		
 
-		// Add info model
+		/** Add info model */
 		finalOuputModel.add(info);
 
-		// Add Reified statements to final model
+		/** Add Reified statements to final model */
 		finalOuputModel.add(limeOutputModel);
 		InstanceMatcherOutputList.add(finalOuputModel);
-		// System.out.println(" ZGreat: " + InstanceMatcherOutputList);
-
 		return InstanceMatcherOutputList;
 
 	}
 
+	/* Method to create jena statement*/
 	public void addStatement(String s, String p, String o, Model model) {
 		Resource subject = model.createResource(s);
 		Property predicate = model.createProperty(p);
