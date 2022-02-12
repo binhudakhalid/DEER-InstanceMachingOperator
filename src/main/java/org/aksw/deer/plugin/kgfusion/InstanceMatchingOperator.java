@@ -44,8 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class create the DEER Operator for instance matching Operator. It the
- * entry point for the operator.
+ * This class implements the DEER plugin for instance matching Operator.
  * 
  * @author Khalid Bin Huda Siddiqui (khalids@campus.uni-paderborn.de)
  * @author Khalid Khan (kkhan@campus.uni-paderborn.de)
@@ -78,7 +77,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	private HashMap<String, Resource> tabuTargetProperty = new HashMap<String, Resource>();;
 
 	/**
-	 * Declaring the variables from DEER configuration file. 
+	 * Declaring the variables for reading DEER configuration file. 
 	 */
 	public static final Property COVERAGE = DEER.property("coverage");
 	public static final Property MAX_LIMIT = DEER.property("maxLimit");
@@ -127,7 +126,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	@Override
 	protected List<Model> safeApply(List<Model> models) { // 3
 
-		/** output from ontology operator */
+		/** Output from ontology operator */
 		Model ontologyModel = models.get(0);
 
 		List<RestrictionEntity> srcRes_temp = new ArrayList<RestrictionEntity>();
@@ -181,7 +180,7 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 		
 	
 		/**
-		 * only execute if you want to take input from ontology operator.
+		 * only execute if you want to take input from Ontology operator.
 		 */
 		if (ontologyInput.equals("true")) {
 
@@ -199,13 +198,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 					ontologyInputObject = stmt.getObject().toString();
 				}
 
-				/* Get https://w3id.org/deer/SubjectEndPoint */
+				/* Get subject/source end-point https://w3id.org/deer/SubjectEndPoint */
 				if (stmt.getPredicate().toString().equals("https://w3id.org/deer/SubjectEndPoint")) {
 					ontologyInputSubjectEndpoint = stmt.getObject().toString();
 					// get object
 				}
 
-				/* Get https://w3id.org/deer/ObjectEndPoint */
+				/* Get Object/target end-point https://w3id.org/deer/ObjectEndPoint */
 				if (stmt.getPredicate().toString().equals("https://w3id.org/deer/ObjectEndPoint")) {
 					ontologyInputObjectEndpoint = stmt.getObject().toString();
 					// get object
@@ -307,21 +306,13 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			 */
 			removeTabuProperties(tabuSourceProperty, propertiesListSource1);
 			
-			/**
-			 * Remove tabu properties for target
-			 */
+			/**Remove tabu properties for target */
 			removeTabuProperties(tabuTargetProperty, propertiesListTarget1);
 
-			/**
-			 * Remove properties that have less coverage for source than coverage parameter(Set in
-		     * configuration.ttl)
-			 */
+			/** Remove properties that have less coverage than deer:coverage */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 			
-			/**
-			 * Remove properties that have less coverage for target than coverage parameter(Set in
-		     * configuration.ttl)
-			 */
+			/** Remove properties that have less coverage than deer:coverage*/
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
 
 			System.out.println(
@@ -331,26 +322,26 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			
 
 			/**
-			 *If no property have the coverage than the coverage parameter(Set in
-			 * configuration.ttl) then it will stop the execution
+			 *If no property has enough coverage than the deer:coverage
+			 *then it will stop the execution
 			 */
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
 				System.out.println(
 						" Can not proceed because " + "propertiesListSource`s size= " + propertiesListSource1.size()
 								+ " propertiesListTarget`s size=  " + propertiesListTarget1.size());
-				// if the above if is true then the execution should be stopped.
+				/** if the above if is true then the execution should be stopped. */
 				return null;
 			}
 
 			
 			/**
-			 * Check if we get any data if query with following property list for source.
+			 * Check if we get any data from source with the current property list.
 			 */
 			isDataAvailableFile(sourceFilePath, sourceResObj, maxLimit, propertiesListSource1, "source");
 			
 			/**
-			 * Check if we get any data if query with following property list for target.
+			 * Check if we get any data from target with the current property list.
 			 */
 			isDataAvailableFile(targetFilePath, targetResObj, maxLimit, propertiesListTarget1, "target");
 
@@ -385,7 +376,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				targetEndpoint = ontologyInputObjectEndpoint;
 			}
 
-			
 			/**
 			 * Getting properties from Url end-point for source
 			 * 
@@ -406,25 +396,22 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 			}
 			
 			/**
-			 * Remove properties that have less coverage for target than coverage parameter(Set in
-		     * configuration.ttl) for source
+			 *  Remove properties that have less coverage than deer:coverage
 			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListSource1);
 		
 			
 			/**
-			 * Remove properties that have less coverage for target than coverage parameter(Set in
-		     * configuration.ttl) for target
+			 *  Remove properties that have less coverage than deer:coverage
 			 */
 			removePropertiesHavingLowerCoverage(coverage, propertiesListTarget1);
 
 			System.out.println(
 					"rrrrrrrrr -> Total Properties after comparing with Coverage: " + propertiesListTarget1.size());
 
-			 
 			/**
-			 *If no property have the coverage than the coverage parameter(Set in
-			 * configuration.ttl) then it will stop the execution
+			 *If no property has enough coverage than the deer:coverage
+			 *then it will stop the execution
 			 */
 			if (propertiesListSource1.size() < 1 || propertiesListTarget1.size() < 1) {
 
@@ -501,12 +488,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 				"removeTabuProperties -> Total Properties after removing tabu properties: " + propertiesList.size());
 	}
 
-	/*
-	 * remove properties that have lower coverage than Coverage parameter (the
-	 * Parameter set from Configura.ttl file)
-	 */
-
-	
 	 /**
 	   * Remove properties that have lower coverage.
 	   *
@@ -537,7 +518,6 @@ public class InstanceMatchingOperator extends AbstractParameterizedEnrichmentOpe
 	
 	 /**
 	   * Create LIMES Configuration.
-	   *
 	   * @param srcEndpoint  the source end-point
 	   * @param targetEndpoint the target end-point
 	   * @param type  the type (URL or File). 
