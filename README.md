@@ -15,11 +15,11 @@ Step 2:
     
     cd DEER-InstanceMachingOperator
 
-Step 3: 
+Step 3: Change directory to example, Here you can find the configuration.ttl file.
     
     cd example/
 
-Step 4: Run the instance matching operator through docker
+Step 4: Run the instance matching operator through docker and feed the data as well as configuration file
 
 For windows:
 
